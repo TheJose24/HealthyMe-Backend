@@ -20,7 +20,7 @@
         </processorPath>
         <module name="financial-client-service" />
       </profile>
-      <profile name="Annotation profile for security-service" enabled="true">
+      <profile name="Annotation profile for healthy-me" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -29,17 +29,17 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.6.3/mapstruct-processor-1.6.3.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.6.3/mapstruct-1.6.3.jar" />
         </processorPath>
+        <module name="api-gateway" />
         <module name="config-server" />
+        <module name="discovery-server" />
         <module name="bff-service" />
         <module name="security-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="api-gateway" target="21" />
       <module name="bank-commons" target="17" />
       <module name="clientes" target="17" />
       <module name="config" target="17" />
-      <module name="discovery-server" target="21" />
       <module name="eureka" target="17" />
       <module name="financial-products-service" target="17" />
       <module name="gateway" target="17" />

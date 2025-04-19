@@ -9,5 +9,53 @@ spring:
         native:
           search-locations: classpath:/config
 
+# Server configuration
 server:
   port: 8888
+  shutdown: graceful
+
+# Monitoring and metrics
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "info", "metrics", "prometheus", "refresh", "env"]
+  endpoint:
+    health:
+      show-details: always
+  health:
+    db:
+      enabled: true
+  info:
+    git:
+      mode: full
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+# Logging
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud: INFO
+    org.springframework.boot: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/config-server.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 10
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    # el config server debe registrarse despues de Eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true

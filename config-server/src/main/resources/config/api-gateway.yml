@@ -1,5 +1,6 @@
 server:
-    port: 8080
+  port: 8080
+  shutdown: graceful
 
 spring:
   cloud:
@@ -7,8 +8,85 @@ spring:
       discovery:
         locator:
           enabled: true
+          lower-case-service-id: true
       routes:
-        - id: user-service
-          uri: lb://user-service
+        - id: healthyme-storage
+          uri: lb://healthyme-storage
           predicates:
-            - Path=/api/user/**
+            - Path=/api/storage/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: storageServiceCircuitBreaker
+                fallbackUri: forward:/fallback/storage
+        - id: notification-service
+          uri: lb://healthyme-notification
+          predicates:
+            - Path=/api/notificaciones/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: notificationServiceCircuitBreaker
+                fallbackUri: forward:/fallback/notification
+
+# Resilience4j configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        eventConsumerBufferSize: 10
+    instances:
+      storageServiceCircuitBreaker:
+        baseConfig: default
+        waitDurationInOpenState: 15s  # tiempo para servicios que manejan archivos
+      notificationServiceCircuitBreaker:
+        baseConfig: default
+        failureRateThreshold: 60  # tolerante con el servicio de notificaciones
+  timelimiter:
+    instances:
+      storageServiceCircuitBreaker:
+        timeoutDuration: 10s  # timeout para operaciones de archivos
+      notificationServiceCircuitBreaker:
+        timeoutDuration: 5s
+
+# Metrics and monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "info", "metrics", "prometheus", "circuitbreakerevents"]
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+    ratelimiters:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+# Logging
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: INFO
+    reactor.netty: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

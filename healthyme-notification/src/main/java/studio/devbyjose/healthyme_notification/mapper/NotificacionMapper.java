@@ -8,8 +8,6 @@ import studio.devbyjose.healthyme_notification.entity.Notificacion;
 @Mapper(componentModel = "spring", uses = {PlantillaMapper.class})
 public interface NotificacionMapper {
 
-    NotidicacionMapper mapper = Mappers.getMapper(NotificacionMapper.class);
-
     @Mapping(source = "plantilla.idPlantilla", target = "idPlantilla")
     @Mapping(target = "adjuntos", ignore = true)
     NotificacionDTO toDTO(Notificacion notificacion);

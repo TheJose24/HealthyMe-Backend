@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Cita - HealthyMe</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .header {
+            background-color: #007b8a;
+            color: #fff;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            max-height: 60px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px 25px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .message p {
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .appointment-box {
+            background-color: #f0fbfc;
+            border-left: 4px solid #00a8b5;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .appointment-box h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #007b8a;
+            margin-bottom: 15px;
+        }
+
+        .appointment-detail {
+            margin-bottom: 12px;
+            display: flex;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 130px;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .buttons-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 8px 10px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .confirm-button {
+            background-color: #00a8b5;
+            color: #fff;
+        }
+
+        .cancel-button {
+            background-color: #ffffff;
+            color: #00a8b5;
+            border: 2px solid #00a8b5;
+        }
+
+        .location-box {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 25px 0;
+        }
+
+        .location-box h3 {
+            margin-top: 0;
+            font-size: 17px;
+            color: #007b8a;
+        }
+
+        .map-placeholder img {
+            width: 100%;
+            border-radius: 6px;
+        }
+
+        .reminder-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 18px;
+            border-radius: 6px;
+            margin: 30px 0;
+        }
+
+        .reminder-box h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #856404;
+        }
+
+        .reminder-box ul {
+            margin: 10px 0 0 20px;
+            padding: 0;
+        }
+
+        .footer {
+            background-color: #2c3e50;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        .contact-info {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 20px 15px;
+            }
+
+            .button {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .appointment-detail {
+                flex-direction: column;
+            }
+
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img class="logo" th:src="${logoUrl}" alt="HealthyMe Logo" />
+        <h1>Confirmación de Cita Médica</h1>
+        <p>HealthyMe - Tu salud es nuestra prioridad</p>
+    </div>
+
+    <div class="content">
+        <div class="greeting">
+            ¡Hola <span th:text="${nombrePaciente}">Paciente</span>!
+        </div>
+
+        <div class="message">
+            <p>Te confirmamos que tu cita médica ha sido programada correctamente. A continuación te detallamos toda la información que necesitas:</p>
+        </div>
+
+        <div class="appointment-box">
+            <h3>Detalles de tu cita presencial</h3>
+            <div class="appointment-detail">
+                <div class="detail-label">Especialidad:</div>
+                <div class="detail-value" th:text="${especialidad}">Medicina General</div>
+            </div>
+            <div class="appointment-detail">
+                <div class="detail-label">Doctor:</div>
+                <div class="detail-value" th:text="${nombreDoctor}">Dr. Juan Pérez</div>
+            </div>
+            <div class="appointment-detail">
+                <div class="detail-label">Fecha:</div>
+                <div class="detail-value" th:text="${fechaCita}">15 de Mayo, 2025</div>
+            </div>
+            <div class="appointment-detail">
+                <div class="detail-label">Hora:</div>
+                <div class="detail-value" th:text="${horaCita}">15:30</div>
+            </div>
+            <div class="appointment-detail">
+                <div class="detail-label">Tipo de cita:</div>
+                <div class="detail-value"><strong>Presencial</strong></div>
+            </div>
+            <div class="appointment-detail" th:if="${numeroCita}">
+                <div class="detail-label">Número de cita:</div>
+                <div class="detail-value" th:text="${numeroCita}">C-2025-0568</div>
+            </div>
+        </div>
+
+        <div class="buttons-container">
+            <a class="button confirm-button" th:href="${urlConfirmar}">Confirmar asistencia</a>
+            <a class="button cancel-button" th:href="${urlCancelar}">Cancelar cita</a>
+        </div>
+
+        <div class="location-box">
+            <h3>Ubicación de la clínica</h3>
+            <div class="map-placeholder">
+                <a href="https://www.openstreetmap.org/?#map=18/-11.952811/-77.071200">
+                    <img src="https://via.placeholder.com/150" alt="Mapa de la clínica">
+                </a>
+            </div>
+            <p><strong>Dirección:</strong> <span th:text="${direccionClinica}">Av. Arequipa 1235, Lima, Perú</span></p>
+            <p><strong>Referencia:</strong> <span th:text="${referenciaClinica}">A dos cuadras del parque Kennedy</span></p>
+        </div>
+
+        <div class="reminder-box">
+            <h3>Recordatorios importantes</h3>
+            <ul>
+                <li>Llega con 15 minutos de anticipación para el registro.</li>
+                <li>No olvides tu documento de identidad y carnet de seguro (si aplica).</li>
+                <li>Lleva contigo los exámenes médicos relevantes.</li>
+                <li>El uso de mascarilla es obligatorio.</li>
+            </ul>
+        </div>
+
+        <div class="message">
+            <p>Para cualquier reprogramación o consulta, contáctanos al <strong th:text="${telefonoContacto}">+51 1 234-5678</strong> o responde a este correo.</p>
+            <p>Gracias por confiar en nosotros.</p>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <p>Atentamente,</p>
+            <p><strong>Equipo de Atención al Paciente</strong><br>HealthyMe - Clínica Médica</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 HealthyMe. Todos los derechos reservados.</p>
+        <div class="contact-info">
+            <p>Contáctanos: <span th:text="${telefonoContacto}">+51 1 234-5678</span> | <span th:text="${correoContacto}">contacto@healthyme.pe</span></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

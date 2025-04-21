@@ -17,19 +17,21 @@ public class HorarioTrabajoImpl implements HorarioTrabajoService {
     @Autowired
     private HorarioTrabajoRepository horarioTrabajoRepository;
 
+    @Autowired HorarioTrabajoMapper horarioTrabajoMapper;
+
     // CREATE
     @Override
     public HorarioTrabajoDto createHorarioTrabajo(HorarioTrabajoDto horarioTrabajoDto) {
-        HorarioTrabajo horarioTrabajo = HorarioTrabajoMapper.mapper.horarioTrabajoDtoToHorarioTrabajo(horarioTrabajoDto);
+        HorarioTrabajo horarioTrabajo = horarioTrabajoMapper.horarioTrabajoDtoToHorarioTrabajo(horarioTrabajoDto);
         HorarioTrabajo savedHorarioTrabajo = horarioTrabajoRepository.save(horarioTrabajo);
-        return HorarioTrabajoMapper.mapper.horarioTrabajoToHorarioTrabajoDto(savedHorarioTrabajo);
+        return horarioTrabajoMapper.horarioTrabajoToHorarioTrabajoDto(savedHorarioTrabajo);
     }
 
     // SELECT BY ID
     @Override
     public HorarioTrabajoDto getHorarioTrabajoById(int id) {
         HorarioTrabajo horarioTrabajo = horarioTrabajoRepository.findById(id).orElseThrow(() -> new RuntimeException("No existe una horarioTrabajo con e ID"));
-        return HorarioTrabajoMapper.mapper.horarioTrabajoToHorarioTrabajoDto(horarioTrabajo);
+        return horarioTrabajoMapper.horarioTrabajoToHorarioTrabajoDto(horarioTrabajo);
     }
 
     // SELECT ALL
@@ -38,7 +40,7 @@ public class HorarioTrabajoImpl implements HorarioTrabajoService {
         List<HorarioTrabajo> horarioTrabajo = horarioTrabajoRepository.findAll();
 
         return horarioTrabajo.stream().map(
-                HorarioTrabajoMapper.mapper::horarioTrabajoToHorarioTrabajoDto).collect(Collectors.toList()
+                horarioTrabajoMapper::horarioTrabajoToHorarioTrabajoDto).collect(Collectors.toList()
         );
     }
 
@@ -53,7 +55,7 @@ public class HorarioTrabajoImpl implements HorarioTrabajoService {
 
         HorarioTrabajo savedHorarioTrabajo = horarioTrabajoRepository.save(horarioTrabajo);
 
-        return HorarioTrabajoMapper.mapper.horarioTrabajoToHorarioTrabajoDto(savedHorarioTrabajo);
+        return horarioTrabajoMapper.horarioTrabajoToHorarioTrabajoDto(savedHorarioTrabajo);
     }
 
     // DELETE BY ID

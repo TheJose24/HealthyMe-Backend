@@ -8,8 +8,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface EspecialidadMapper {
 
-    EspecialidadMapper mapper = Mappers.getMapper(EspecialidadMapper.class);
-
     // Mapeo de Entidad -> DTO
     EspecialidadDto especialidadToEspecialidadDto(Especialidad especialidad);
 

@@ -8,8 +8,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface UnidadMapper {
 
-    UnidadMapper mapper = Mappers.getMapper(UnidadMapper.class);
-
     // Mapeo de Entidad -> DTO
     UnidadDto unidadToUnidadDto(Unidad unidad);
 

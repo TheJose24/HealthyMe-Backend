@@ -8,8 +8,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface HorarioTrabajoMapper {
 
-    HorarioTrabajoMapper mapper = Mappers.getMapper(HorarioTrabajoMapper.class);
-
     // Mapeo de Entidad -> DTO
     HorarioTrabajoDto horarioTrabajoToHorarioTrabajoDto(HorarioTrabajo horarioTrabajo);
 

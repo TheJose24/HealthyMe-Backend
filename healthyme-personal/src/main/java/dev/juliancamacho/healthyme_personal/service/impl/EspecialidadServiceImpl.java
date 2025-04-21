@@ -17,19 +17,22 @@ public class EspecialidadServiceImpl implements EspecialidadService {
     @Autowired
     private EspecialidadRepository especialidadRepository;
 
+    @Autowired
+    private EspecialidadMapper especialidadMapper;
+
     // CREATE
     @Override
     public EspecialidadDto createEspecialidad(EspecialidadDto especialidadDto) {
-        Especialidad especialidad = EspecialidadMapper.mapper.especialidadDtoToEspecialidad(especialidadDto);
+        Especialidad especialidad =especialidadMapper.especialidadDtoToEspecialidad(especialidadDto);
         Especialidad savedEspecialidad = especialidadRepository.save(especialidad);
-        return EspecialidadMapper.mapper.especialidadToEspecialidadDto(savedEspecialidad);
+        return especialidadMapper.especialidadToEspecialidadDto(savedEspecialidad);
     }
 
     // SELECT BY ID
     @Override
     public EspecialidadDto getEspecialidadById(int id) {
         Especialidad especialidad = especialidadRepository.findById(id).orElseThrow(() -> new RuntimeException("No existe una especialidad con ese ID"));
-        return EspecialidadMapper.mapper.especialidadToEspecialidadDto(especialidad);
+        return especialidadMapper.especialidadToEspecialidadDto(especialidad);
     }
 
     // SELECT ALL
@@ -38,7 +41,7 @@ public class EspecialidadServiceImpl implements EspecialidadService {
         List<Especialidad> especialidades = especialidadRepository.findAll();
 
         return especialidades.stream().map(
-                EspecialidadMapper.mapper::especialidadToEspecialidadDto).collect(Collectors.toList()
+                especialidadMapper::especialidadToEspecialidadDto).collect(Collectors.toList()
         );
     }
 
@@ -52,7 +55,7 @@ public class EspecialidadServiceImpl implements EspecialidadService {
 
         Especialidad savedEspecialidad = especialidadRepository.save(especialidad);
 
-        return EspecialidadMapper.mapper.especialidadToEspecialidadDto(savedEspecialidad);
+        return especialidadMapper.especialidadToEspecialidadDto(savedEspecialidad);
     }
 
     // DELETE BY ID

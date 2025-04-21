@@ -17,18 +17,21 @@ public class UnidadServiceImpl implements UnidadService {
     @Autowired
     private UnidadRepository unidadRepository;
 
+    @Autowired
+    private UnidadMapper unidadMapper;
+
     // CREATE
     public UnidadDto createUnidad(UnidadDto unidadDto) {
-        Unidad unidad = UnidadMapper.mapper.unidadDtoToUnidad(unidadDto);
+        Unidad unidad = unidadMapper.unidadDtoToUnidad(unidadDto);
         Unidad savedUnidad = unidadRepository.save(unidad);
-        return UnidadMapper.mapper.unidadToUnidadDto(savedUnidad);
+        return unidadMapper.unidadToUnidadDto(savedUnidad);
     }
 
     // SELECT BY ID
     @Override
     public UnidadDto getUnidadById(int id) {
         Unidad unidad = unidadRepository.findById(id).orElseThrow(() -> new RuntimeException("No existe una unidad con ese ID"));
-        return UnidadMapper.mapper.unidadToUnidadDto(unidad);
+        return unidadMapper.unidadToUnidadDto(unidad);
     }
 
     // SELECT ALL
@@ -37,7 +40,7 @@ public class UnidadServiceImpl implements UnidadService {
         List<Unidad> unidades = unidadRepository.findAll();
 
         return unidades.stream().map(
-                UnidadMapper.mapper::unidadToUnidadDto).collect(Collectors.toList()
+                unidadMapper::unidadToUnidadDto).collect(Collectors.toList()
         );
     }
 
@@ -51,7 +54,7 @@ public class UnidadServiceImpl implements UnidadService {
 
         Unidad savedUnidad = unidadRepository.save(unidad);
 
-        return UnidadMapper.mapper.unidadToUnidadDto(savedUnidad);
+        return unidadMapper.unidadToUnidadDto(savedUnidad);
     }
 
     // DELETE BY ID

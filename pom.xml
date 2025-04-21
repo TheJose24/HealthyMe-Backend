@@ -25,6 +25,7 @@
         <module>healthyme-commons</module>
         <module>healthyme-storage</module>
         <module>healthyme-notification</module>
+        <module>healthyme-laboratorio</module>
     </modules>
 
     <properties>

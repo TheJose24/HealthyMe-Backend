@@ -27,6 +27,9 @@
         <module>healthyme-notification</module>
         <module>healthyme-laboratorio</module>
         <module>healthyme-consultas</module>
+        <module>healthyme-citas</module>
+        <module>healthyme-infraestructura</module>
+
     </modules>
 
     <properties>

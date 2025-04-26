@@ -7,7 +7,7 @@ import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.entity.Cita;
 import dev.diegoqm.healthyme_citas.repository.CitaRepository;
 import dev.diegoqm.healthyme_citas.service.interfaces.CitaService;
-import dev.diegoqm.healthyme_citas.util.CitaMapper;
+import dev.diegoqm.healthyme_citas.mapper.CitaMapper;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;

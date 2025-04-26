@@ -4,7 +4,7 @@ import dev.choco.healthyme_laboratorio.dto.ReservaLabDTO;
 import dev.choco.healthyme_laboratorio.entity.ReservaLab;
 import dev.choco.healthyme_laboratorio.repository.ReservaLabRepository;
 import dev.choco.healthyme_laboratorio.service.Interfaces.ReservaLabService;
-import dev.choco.healthyme_laboratorio.util.ReservaLabMapper;
+import dev.choco.healthyme_laboratorio.mapper.ReservaLabMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

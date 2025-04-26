@@ -1,5 +1,6 @@
 package dev.choco.healthyme_laboratorio.entity;
 
+import dev.choco.healthyme_laboratorio.enums.EstadoReserva;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.*;
@@ -26,8 +27,5 @@ public class ReservaLab {
     private Integer idTecnico;
     private Integer idLaboratorio;
 
-    public enum EstadoReserva {
-        PENDIENTE, REALIZADA, CANCELADA
-    }
 }
 

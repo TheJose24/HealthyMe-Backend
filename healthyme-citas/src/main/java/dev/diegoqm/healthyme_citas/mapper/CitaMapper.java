@@ -1,4 +1,4 @@
-package dev.diegoqm.healthyme_citas.util;
+package dev.diegoqm.healthyme_citas.mapper;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.entity.Cita;

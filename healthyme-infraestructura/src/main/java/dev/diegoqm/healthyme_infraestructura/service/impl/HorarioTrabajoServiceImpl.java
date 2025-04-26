@@ -4,7 +4,7 @@ import dev.diegoqm.healthyme_infraestructura.dto.HorarioTrabajoDTO;
 import dev.diegoqm.healthyme_infraestructura.entity.HorarioTrabajo;
 import dev.diegoqm.healthyme_infraestructura.repository.HorarioTrabajoRepository;
 import dev.diegoqm.healthyme_infraestructura.service.interfaces.HorarioTrabajoService;
-import dev.diegoqm.healthyme_infraestructura.util.HorarioTrabajoMapper;
+import dev.diegoqm.healthyme_infraestructura.mapper.HorarioTrabajoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;

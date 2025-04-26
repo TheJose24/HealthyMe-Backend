@@ -1,8 +1,7 @@
-package dev.Elmer.healthyme_consultas.util;
+package dev.Elmer.healthyme_consultas.mapper;
 
 import dev.Elmer.healthyme_consultas.dto.RecetaDto;
 import dev.Elmer.healthyme_consultas.entity.Receta;
-import dev.Elmer.healthyme_consultas.entity.Consulta;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

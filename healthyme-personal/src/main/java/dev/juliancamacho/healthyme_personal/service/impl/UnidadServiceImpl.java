@@ -4,7 +4,7 @@ import dev.juliancamacho.healthyme_personal.dto.UnidadDto;
 import dev.juliancamacho.healthyme_personal.entity.Unidad;
 import dev.juliancamacho.healthyme_personal.repository.UnidadRepository;
 import dev.juliancamacho.healthyme_personal.service.interfaces.UnidadService;
-import dev.juliancamacho.healthyme_personal.util.UnidadMapper;
+import dev.juliancamacho.healthyme_personal.mapper.UnidadMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

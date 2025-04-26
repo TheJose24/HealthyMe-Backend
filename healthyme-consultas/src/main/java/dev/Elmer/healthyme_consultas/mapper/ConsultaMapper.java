@@ -1,4 +1,4 @@
-package dev.Elmer.healthyme_consultas.util;
+package dev.Elmer.healthyme_consultas.mapper;
 
 import dev.Elmer.healthyme_consultas.dto.ConsultaDto;
 import dev.Elmer.healthyme_consultas.entity.Consulta;

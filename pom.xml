@@ -29,7 +29,7 @@
         <module>healthyme-consultas</module>
         <module>healthyme-citas</module>
         <module>healthyme-infraestructura</module>
-
+        <module>healthyme-personal</module>
     </modules>
 
     <properties>

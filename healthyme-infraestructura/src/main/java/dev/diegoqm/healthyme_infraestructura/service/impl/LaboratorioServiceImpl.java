@@ -6,7 +6,7 @@ import dev.diegoqm.healthyme_infraestructura.entity.Sede;
 import dev.diegoqm.healthyme_infraestructura.repository.LaboratorioRepository;
 import dev.diegoqm.healthyme_infraestructura.repository.SedeRepository;
 import dev.diegoqm.healthyme_infraestructura.service.interfaces.LaboratorioService;
-import dev.diegoqm.healthyme_infraestructura.util.LaboratorioMapper;
+import dev.diegoqm.healthyme_infraestructura.mapper.LaboratorioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

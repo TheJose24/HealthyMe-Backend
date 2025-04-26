@@ -1,4 +1,4 @@
-package dev.diegoqm.healthyme_infraestructura.util;
+package dev.diegoqm.healthyme_infraestructura.mapper;
 
 import dev.diegoqm.healthyme_infraestructura.dto.HorarioTrabajoDTO;
 import dev.diegoqm.healthyme_infraestructura.entity.HorarioTrabajo;

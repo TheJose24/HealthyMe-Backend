@@ -11,7 +11,7 @@
 	<artifactId>healthyme-infraestructura</artifactId>
 
 	<name>healthyme-infraestructura</name>
-	<description>Servicio de infraestructura</description>
+	<description>HealthyMe - Servicio de infraestructura</description>
 
 	<dependencies>
         <!-- Spring Boot Starters -->

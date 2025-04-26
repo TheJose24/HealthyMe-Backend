@@ -6,7 +6,7 @@ import dev.diegoqm.healthyme_infraestructura.repository.ConsultorioRepository;
 import dev.diegoqm.healthyme_infraestructura.repository.SedeRepository;
 import dev.diegoqm.healthyme_infraestructura.entity.Sede;
 import dev.diegoqm.healthyme_infraestructura.service.interfaces.ConsultorioService;
-import dev.diegoqm.healthyme_infraestructura.util.ConsultorioMapper;
+import dev.diegoqm.healthyme_infraestructura.mapper.ConsultorioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -6,7 +6,7 @@ import dev.diegoqm.healthyme_infraestructura.entity.HorarioTrabajo;
 import dev.diegoqm.healthyme_infraestructura.repository.HorarioTrabajoRepository;
 import dev.diegoqm.healthyme_infraestructura.repository.SedeRepository;
 import dev.diegoqm.healthyme_infraestructura.service.interfaces.SedeService;
-import dev.diegoqm.healthyme_infraestructura.util.SedeMapper;
+import dev.diegoqm.healthyme_infraestructura.mapper.SedeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

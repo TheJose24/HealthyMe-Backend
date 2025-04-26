@@ -1,4 +1,4 @@
-package dev.diegoqm.healthyme_infraestructura.util;
+package dev.diegoqm.healthyme_infraestructura.mapper;
 
 import dev.diegoqm.healthyme_infraestructura.dto.LaboratorioDTO;
 import dev.diegoqm.healthyme_infraestructura.entity.Laboratorio;

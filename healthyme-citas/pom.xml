@@ -11,7 +11,7 @@
 	<artifactId>healthyme-citas</artifactId>
 
 	<name>healthyme-citas</name>
-	<description>Servicio de citas</description>
+	<description>HealthyMe - Servicio de citas</description>
 
 	<dependencies>
         <!-- Spring Boot Starters -->

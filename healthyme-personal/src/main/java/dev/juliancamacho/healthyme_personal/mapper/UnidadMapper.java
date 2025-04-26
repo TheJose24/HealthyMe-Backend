@@ -1,9 +1,8 @@
-package dev.juliancamacho.healthyme_personal.util;
+package dev.juliancamacho.healthyme_personal.mapper;
 
 import dev.juliancamacho.healthyme_personal.dto.UnidadDto;
 import dev.juliancamacho.healthyme_personal.entity.Unidad;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UnidadMapper {

@@ -4,7 +4,7 @@ import dev.juliancamacho.healthyme_personal.dto.EspecialidadDto;
 import dev.juliancamacho.healthyme_personal.entity.Especialidad;
 import dev.juliancamacho.healthyme_personal.repository.EspecialidadRepository;
 import dev.juliancamacho.healthyme_personal.service.interfaces.EspecialidadService;
-import dev.juliancamacho.healthyme_personal.util.EspecialidadMapper;
+import dev.juliancamacho.healthyme_personal.mapper.EspecialidadMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

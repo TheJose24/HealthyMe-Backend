@@ -1,7 +1,6 @@
 package dev.juliancamacho.healthyme_personal.dto;
 
-import dev.juliancamacho.healthyme_personal.entity.HorarioTrabajo;
-
+import dev.juliancamacho.healthyme_personal.enums.DiaSemana;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -10,7 +9,7 @@ import java.time.LocalTime;
 public class HorarioTrabajoDto {
 
     private int idHorario;
-    private HorarioTrabajo.DiaSemana diaSemana;
+    private DiaSemana diaSemana;
     private LocalTime horaInicio;
     private LocalTime horaFin;
 }

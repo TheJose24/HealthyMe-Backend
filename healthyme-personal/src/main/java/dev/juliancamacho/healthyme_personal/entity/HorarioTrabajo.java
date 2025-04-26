@@ -1,5 +1,6 @@
 package dev.juliancamacho.healthyme_personal.entity;
 
+import dev.juliancamacho.healthyme_personal.enums.DiaSemana;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,8 +30,4 @@ public class HorarioTrabajo {
     @Column(name = "hora_fin", nullable = false)
     private LocalTime horaFin;
 
-    // Enumeración para los días de la semana
-    public enum DiaSemana {
-        LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO, DOMINGO
-    }
 }

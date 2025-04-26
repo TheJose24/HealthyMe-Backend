@@ -4,7 +4,7 @@ import dev.juliancamacho.healthyme_personal.dto.HorarioTrabajoDto;
 import dev.juliancamacho.healthyme_personal.entity.HorarioTrabajo;
 import dev.juliancamacho.healthyme_personal.repository.HorarioTrabajoRepository;
 import dev.juliancamacho.healthyme_personal.service.interfaces.HorarioTrabajoService;
-import dev.juliancamacho.healthyme_personal.util.HorarioTrabajoMapper;
+import dev.juliancamacho.healthyme_personal.mapper.HorarioTrabajoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

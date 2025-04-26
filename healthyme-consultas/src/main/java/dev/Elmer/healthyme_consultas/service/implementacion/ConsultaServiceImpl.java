@@ -4,7 +4,7 @@ import dev.Elmer.healthyme_consultas.dto.ConsultaDto;
 import dev.Elmer.healthyme_consultas.entity.Consulta;
 import dev.Elmer.healthyme_consultas.repository.ConsultaRepository;
 import dev.Elmer.healthyme_consultas.service.interfaces.ConsultaService;
-import dev.Elmer.healthyme_consultas.util.ConsultaMapper;
+import dev.Elmer.healthyme_consultas.mapper.ConsultaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

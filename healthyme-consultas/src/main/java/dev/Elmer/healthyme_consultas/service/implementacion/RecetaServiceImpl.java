@@ -6,7 +6,7 @@ import dev.Elmer.healthyme_consultas.entity.Receta;
 import dev.Elmer.healthyme_consultas.repository.ConsultaRepository;
 import dev.Elmer.healthyme_consultas.repository.RecetaRepository;
 import dev.Elmer.healthyme_consultas.service.interfaces.RecetaService;
-import dev.Elmer.healthyme_consultas.util.RecetaMapper;
+import dev.Elmer.healthyme_consultas.mapper.RecetaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

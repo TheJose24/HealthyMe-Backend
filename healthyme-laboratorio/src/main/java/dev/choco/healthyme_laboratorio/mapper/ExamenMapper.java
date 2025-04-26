@@ -1,4 +1,4 @@
-package dev.choco.healthyme_laboratorio.util;
+package dev.choco.healthyme_laboratorio.mapper;
 
 import dev.choco.healthyme_laboratorio.dto.ExamenDTO;
 import dev.choco.healthyme_laboratorio.entity.Examen;

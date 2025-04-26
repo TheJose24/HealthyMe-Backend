@@ -6,7 +6,7 @@ import dev.choco.healthyme_laboratorio.entity.ReservaLab;
 import dev.choco.healthyme_laboratorio.repository.ExamenRepository;
 import dev.choco.healthyme_laboratorio.repository.ReservaLabRepository;
 import dev.choco.healthyme_laboratorio.service.Interfaces.ExamenService;
-import dev.choco.healthyme_laboratorio.util.ExamenMapper;
+import dev.choco.healthyme_laboratorio.mapper.ExamenMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

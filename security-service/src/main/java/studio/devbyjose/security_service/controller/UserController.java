@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import studio.devbyjose.security_service.dto.*;
+import studio.devbyjose.security_service.enums.EstadoUsuario;
 import studio.devbyjose.security_service.service.UserService;
 
 import java.util.List;
@@ -83,7 +84,7 @@ public class UserController {
     @Operation(summary = "Suspender usuario", security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> suspendUser(@PathVariable Integer id) {
-        userService.changeUserStatus(id, "SUSPENDIDO");
+        userService.changeUserStatus(id, String.valueOf(EstadoUsuario.SUSPENDIDO));
         return ResponseEntity.noContent().build();
     }
 
@@ -91,7 +92,7 @@ public class UserController {
     @Operation(summary = "Activar usuario", security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> activateUser(@PathVariable Integer id) {
-        userService.changeUserStatus(id, "ACTIVO");
+        userService.changeUserStatus(id, EstadoUsuario.ACTIVO.name());
         return ResponseEntity.noContent().build();
     }
 
@@ -99,7 +100,7 @@ public class UserController {
     @Operation(summary = "Eliminar usuario", security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-        userService.changeUserStatus(id, "ELIMINADO");
+        userService.changeUserStatus(id, EstadoUsuario.ELIMINADO.name());
         return ResponseEntity.noContent().build();
     }
 

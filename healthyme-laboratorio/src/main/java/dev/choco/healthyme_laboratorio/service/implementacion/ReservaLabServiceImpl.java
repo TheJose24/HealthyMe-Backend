@@ -44,7 +44,7 @@ public class ReservaLabServiceImpl implements ReservaLabService {
 
         reserva.setFecha(dto.getFecha());
         reserva.setHora(dto.getHora());
-        reserva.setEstado(ReservaLab.EstadoReserva.valueOf(dto.getEstado()));
+        reserva.setEstado(dto.getEstado());
         reserva.setIdPaciente(dto.getIdPaciente());
         reserva.setIdTecnico(dto.getIdTecnico());
         reserva.setIdLaboratorio(dto.getIdLaboratorio());

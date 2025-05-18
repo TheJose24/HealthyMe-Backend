@@ -28,6 +28,15 @@ spring:
               args:
                 name: notificationServiceCircuitBreaker
                 fallbackUri: forward:/fallback/notification
+        - id: healthyme-pacientes-service
+          uri: lb://healthyme-pacientes
+          predicates:
+            - Path=/api/v1/pacientes/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: pacientesCircuitBreaker
+                fallbackUri: forward:/fallback/pacientes
 
 # Resilience4j configuration
 resilience4j:
@@ -52,12 +61,28 @@ resilience4j:
       notificationServiceCircuitBreaker:
         baseConfig: default
         failureRateThreshold: 60  # tolerante con el servicio de notificaciones
+      pacientesCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        recordExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.HttpServerErrorException
+          - java.net.ConnectException
   timelimiter:
     instances:
       storageServiceCircuitBreaker:
         timeoutDuration: 10s  # timeout para operaciones de archivos
       notificationServiceCircuitBreaker:
         timeoutDuration: 5s
+      pacientesCircuitBreaker:
+        timeoutDuration: 3s
 
 # Metrics and monitoring
 management:

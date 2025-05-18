@@ -32,6 +32,7 @@
         <module>healthyme-citas</module>
         <module>healthyme-infraestructura</module>
         <module>healthyme-personal</module>
+        <module>healthyme-pacientes</module>
     </modules>
 
     <properties>

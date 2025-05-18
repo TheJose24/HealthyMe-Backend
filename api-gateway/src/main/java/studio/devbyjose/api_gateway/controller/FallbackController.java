@@ -13,6 +13,19 @@ import java.util.Map;
 @RequestMapping("/fallback")
 public class FallbackController {
 
+    @GetMapping("/pacientes")
+    public ResponseEntity<Map<String, Object>> pacientesFallback() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "error");
+        response.put("code", 503);
+        response.put("message", "El servicio de pacientes no está disponible en este momento. Por favor, inténtelo más tarde.");
+        response.put("timestamp", System.currentTimeMillis());
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(response);
+    }
+
     @GetMapping("/notification")
     public ResponseEntity<Map<String, Object>> notificationFallback() {
         Map<String, Object> response = new HashMap<>();

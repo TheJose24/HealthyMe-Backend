@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: healthyme-personal
+  profiles:
+    active: dev
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+      retry:
+        initial-interval: 1000
+        max-interval: 2000
+        max-attempts: 3
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

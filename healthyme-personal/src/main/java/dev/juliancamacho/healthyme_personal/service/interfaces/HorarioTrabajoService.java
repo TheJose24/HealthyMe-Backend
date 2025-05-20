@@ -9,14 +9,14 @@ public interface HorarioTrabajoService {
     HorarioTrabajoDto createHorarioTrabajo(HorarioTrabajoDto horarioTrabajoDto);
 
     // SELECT BY ID
-    HorarioTrabajoDto getHorarioTrabajoById(int id);
+    HorarioTrabajoDto getHorarioTrabajoById(Integer id);
 
     // SELECT ALL
     List<HorarioTrabajoDto> getAllHorarioTrabajo();
 
     // UPDATE
-    HorarioTrabajoDto updateHorarioTrabajo(int id, HorarioTrabajoDto horarioTrabajoDto);
+    HorarioTrabajoDto updateHorarioTrabajo(Integer id, HorarioTrabajoDto horarioTrabajoDto);
 
     // DELETE BY ID
-    void deleteHorarioTrabajoById(int id);
+    void deleteHorarioTrabajoById(Integer id);
 }

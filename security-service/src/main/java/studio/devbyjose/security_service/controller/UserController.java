@@ -31,10 +31,9 @@ public class UserController {
     // ---------------------- Endpoints para consulta de usuarios ----------------------
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener usuario por ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Obtener usuario por ID")
     @ApiResponse(responseCode = "200", description = "Usuario encontrado")
     @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }

@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import studio.devbyjose.healthyme_notification.enums.EntidadOrigen;
-import studio.devbyjose.healthyme_notification.enums.EstadoNotificacion;
+import studio.devbyjose.healthyme_commons.enums.EntidadOrigen;
+import studio.devbyjose.healthyme_commons.enums.notification.EstadoNotificacion;
 
 import java.time.LocalDateTime;
 

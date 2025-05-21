@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import studio.devbyjose.healthyme_notification.entity.Notificacion;
-import studio.devbyjose.healthyme_notification.enums.EntidadOrigen;
-import studio.devbyjose.healthyme_notification.enums.EstadoNotificacion;
+import studio.devbyjose.healthyme_commons.enums.EntidadOrigen;
+import studio.devbyjose.healthyme_commons.enums.notification.EstadoNotificacion;
 
 import java.time.LocalDateTime;
 import java.util.List;

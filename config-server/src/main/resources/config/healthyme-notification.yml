@@ -3,6 +3,10 @@ server:
   shutdown: graceful
 
 spring:
+  jackson:
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+    time-zone: America/Lima
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:healthyme_notification}?createDatabaseIfNotExist=true
     username: ${DB_USER}

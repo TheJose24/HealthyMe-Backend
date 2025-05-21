@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import studio.devbyjose.healthyme_notification.dto.NotificacionDTO;
+import studio.devbyjose.healthyme_commons.client.dto.NotificacionDTO;
 import studio.devbyjose.healthyme_notification.dto.PlantillaDTO;
 import studio.devbyjose.healthyme_notification.service.interfaces.NotificationService;
 

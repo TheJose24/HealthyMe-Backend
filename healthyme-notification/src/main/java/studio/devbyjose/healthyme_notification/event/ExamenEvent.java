@@ -16,7 +16,7 @@ import java.util.Map;
 public class ExamenEvent {
     private Integer idExamen;
     private TipoEventoExamen tipoEvento;
-    private Integer idPaciente;
+    private Long idPaciente;
     private String emailPaciente;
     private String tipoExamen;
     private LocalDateTime fecha;

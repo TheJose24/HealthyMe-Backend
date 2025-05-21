@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.fallback.SecurityClientFallback;
 
-@FeignClient(name = "healthyme-security", 
+@FeignClient(name = "security-service",
              path = "/api",
              fallback = SecurityClientFallback.class)
 public interface SecurityClient {

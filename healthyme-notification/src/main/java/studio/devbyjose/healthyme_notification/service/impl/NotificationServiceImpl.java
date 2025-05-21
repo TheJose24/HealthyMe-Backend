@@ -9,17 +9,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import studio.devbyjose.healthyme_commons.client.dto.AdjuntoDTO;
+import studio.devbyjose.healthyme_commons.client.dto.NotificacionDTO;
+import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
 import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 import studio.devbyjose.healthyme_commons.client.feign.RecetaClient;
 import studio.devbyjose.healthyme_commons.exception.ResourceNotFoundException;
-import studio.devbyjose.healthyme_notification.dto.AdjuntoDTO;
-import studio.devbyjose.healthyme_notification.dto.NotificacionDTO;
 import studio.devbyjose.healthyme_notification.dto.PlantillaDTO;
 import studio.devbyjose.healthyme_notification.entity.Adjunto;
 import studio.devbyjose.healthyme_notification.entity.Notificacion;
 import studio.devbyjose.healthyme_notification.entity.Plantilla;
-import studio.devbyjose.healthyme_notification.enums.EstadoNotificacion;
+import studio.devbyjose.healthyme_commons.enums.notification.EstadoNotificacion;
 import studio.devbyjose.healthyme_notification.event.CitaEvent;
 import studio.devbyjose.healthyme_notification.event.ExamenEvent;
 import studio.devbyjose.healthyme_notification.event.RecetaEvent;
@@ -436,9 +437,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     // Métodos auxiliares para comunicación con otros servicios mediante Feign
     @CircuitBreaker(name = "pacienteService", fallbackMethod = "obtenerNombrePacienteFallback")
-    private String obtenerNombrePaciente(Integer idPaciente) {
+    private String obtenerNombrePaciente(Long idPaciente) {
         try {
-            return pacienteClient.obtenerPaciente(idPaciente).getNombre();
+            PacienteDTO pacienteDTO = pacienteClient.findPacienteById(idPaciente).getBody();
+            return "hola";
         } catch (Exception e) {
             log.warn("No se pudo obtener nombre del paciente ID {}: {}", idPaciente, e.getMessage());
             return "Estimado Paciente";

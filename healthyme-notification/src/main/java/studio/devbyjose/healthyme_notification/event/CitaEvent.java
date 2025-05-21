@@ -15,7 +15,7 @@ import java.time.LocalTime;
 public class CitaEvent {
     private Integer idCita;
     private TipoEventoCita tipoEvento;
-    private Integer idPaciente;
+    private Long idPaciente;
     private String emailPaciente;
     private Integer idMedico;
     private String especialidad;

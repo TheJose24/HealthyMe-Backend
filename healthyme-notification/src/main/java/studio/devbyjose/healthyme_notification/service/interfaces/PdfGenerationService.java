@@ -1,6 +1,6 @@
 package studio.devbyjose.healthyme_notification.service.interfaces;
 
-import studio.devbyjose.healthyme_notification.dto.AdjuntoDTO;
+import studio.devbyjose.healthyme_commons.client.dto.AdjuntoDTO;
 
 import java.util.Map;
 

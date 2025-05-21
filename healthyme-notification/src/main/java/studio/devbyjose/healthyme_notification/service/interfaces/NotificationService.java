@@ -1,7 +1,8 @@
 package studio.devbyjose.healthyme_notification.service.interfaces;
 
 import java.util.List;
-import studio.devbyjose.healthyme_notification.dto.NotificacionDTO;
+
+import studio.devbyjose.healthyme_commons.client.dto.NotificacionDTO;
 import studio.devbyjose.healthyme_notification.dto.PlantillaDTO;
 import studio.devbyjose.healthyme_notification.event.CitaEvent;
 import studio.devbyjose.healthyme_notification.event.ExamenEvent;

@@ -2,7 +2,7 @@ package studio.devbyjose.healthyme_notification.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import studio.devbyjose.healthyme_notification.dto.NotificacionDTO;
+import studio.devbyjose.healthyme_commons.client.dto.NotificacionDTO;
 import studio.devbyjose.healthyme_notification.entity.Notificacion;
 
 @Mapper(componentModel = "spring", uses = {PlantillaMapper.class})

@@ -33,6 +33,7 @@
         <module>healthyme-infraestructura</module>
         <module>healthyme-personal</module>
         <module>healthyme-pacientes</module>
+        <module>healthyme-payment</module>
     </modules>
 
     <properties>

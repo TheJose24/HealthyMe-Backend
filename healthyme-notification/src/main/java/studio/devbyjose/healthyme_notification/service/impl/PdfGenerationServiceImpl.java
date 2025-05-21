@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import studio.devbyjose.healthyme_notification.dto.AdjuntoDTO;
+import studio.devbyjose.healthyme_commons.client.dto.AdjuntoDTO;
 import studio.devbyjose.healthyme_notification.exception.NotificationException;
 import studio.devbyjose.healthyme_notification.service.interfaces.PdfGenerationService;
 

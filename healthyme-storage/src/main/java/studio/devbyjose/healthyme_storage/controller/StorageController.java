@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studio.devbyjose.healthyme_commons.client.dto.FileMetadataDTO;
 import studio.devbyjose.healthyme_storage.dto.FileUploadDTO;
-import studio.devbyjose.healthyme_storage.dto.StorageResponseDTO;
+import studio.devbyjose.healthyme_commons.client.dto.StorageResponseDTO;
 import studio.devbyjose.healthyme_storage.service.interfaces.StorageService;
 
 import java.util.List;
@@ -29,9 +29,9 @@ public class StorageController {
     public ResponseEntity<StorageResponseDTO> uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "module", required = false) String module,
-            @RequestParam(value = "referenceId", required = false) String referenceId,
+            @RequestParam(value = "reference_id", required = false) String referenceId,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "isPublic", required = false) Boolean isPublic) {
+            @RequestParam(value = "is_public", required = false) Boolean isPublic) {
 
         log.info("Recibido archivo para subir: {}, tamaño: {}, tipo: {}",
                 file.getOriginalFilename(), file.getSize(), file.getContentType());

@@ -16,7 +16,7 @@ import java.util.List;
 @FeignClient(name = "healthyme-storage", fallback = StorageClientFallback.class)
 public interface StorageClient {
 
-    @PostMapping("/api/storage/upload")
+    @PostMapping(value = "/api/storage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<StorageResponseDTO> uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "module", required = false) String module,

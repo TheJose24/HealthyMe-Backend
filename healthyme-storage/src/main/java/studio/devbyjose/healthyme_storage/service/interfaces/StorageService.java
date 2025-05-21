@@ -3,7 +3,7 @@ package studio.devbyjose.healthyme_storage.service.interfaces;
 import org.springframework.web.multipart.MultipartFile;
 import studio.devbyjose.healthyme_commons.client.dto.FileMetadataDTO;
 import studio.devbyjose.healthyme_storage.dto.FileUploadDTO;
-import studio.devbyjose.healthyme_storage.dto.StorageResponseDTO;
+import studio.devbyjose.healthyme_commons.client.dto.StorageResponseDTO;
 
 import java.io.InputStream;
 import java.util.List;

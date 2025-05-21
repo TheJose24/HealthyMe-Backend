@@ -1,4 +1,4 @@
-package studio.devbyjose.healthyme_storage.dto;
+package studio.devbyjose.healthyme_commons.client.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

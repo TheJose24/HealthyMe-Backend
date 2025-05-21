@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import studio.devbyjose.healthyme_commons.client.dto.FileMetadataDTO;
 import studio.devbyjose.healthyme_commons.exception.ResourceNotFoundException;
 import studio.devbyjose.healthyme_storage.dto.FileUploadDTO;
-import studio.devbyjose.healthyme_storage.dto.StorageResponseDTO;
+import studio.devbyjose.healthyme_commons.client.dto.StorageResponseDTO;
 import studio.devbyjose.healthyme_storage.entity.FileMetadata;
 import studio.devbyjose.healthyme_storage.exception.StorageException;
 import studio.devbyjose.healthyme_storage.mapper.FileMetadataMapper;

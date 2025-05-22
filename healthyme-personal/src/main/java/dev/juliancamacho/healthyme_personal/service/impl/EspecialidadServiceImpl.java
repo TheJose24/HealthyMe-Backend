@@ -2,9 +2,11 @@ package dev.juliancamacho.healthyme_personal.service.impl;
 
 import dev.juliancamacho.healthyme_personal.dto.EspecialidadDto;
 import dev.juliancamacho.healthyme_personal.entity.Especialidad;
+import dev.juliancamacho.healthyme_personal.exception.NotFoundException;
 import dev.juliancamacho.healthyme_personal.repository.EspecialidadRepository;
 import dev.juliancamacho.healthyme_personal.service.interfaces.EspecialidadService;
 import dev.juliancamacho.healthyme_personal.mapper.EspecialidadMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,26 +14,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EspecialidadServiceImpl implements EspecialidadService {
 
-    @Autowired
-    private EspecialidadRepository especialidadRepository;
-
-    @Autowired
-    private EspecialidadMapper especialidadMapper;
+    private final EspecialidadRepository especialidadRepository;
+    private final EspecialidadMapper especialidadMapper;
 
     // CREATE
     @Override
     public EspecialidadDto createEspecialidad(EspecialidadDto especialidadDto) {
-        Especialidad especialidad =especialidadMapper.especialidadDtoToEspecialidad(especialidadDto);
+        Especialidad especialidad = especialidadMapper.especialidadDtoToEspecialidad(especialidadDto);
         Especialidad savedEspecialidad = especialidadRepository.save(especialidad);
         return especialidadMapper.especialidadToEspecialidadDto(savedEspecialidad);
     }
 
     // SELECT BY ID
     @Override
-    public EspecialidadDto getEspecialidadById(int id) {
-        Especialidad especialidad = especialidadRepository.findById(id).orElseThrow(() -> new RuntimeException("No existe una especialidad con ese ID"));
+    public EspecialidadDto getEspecialidadById(Integer id) {
+        Especialidad especialidad = especialidadRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Especialidad", id));
         return especialidadMapper.especialidadToEspecialidadDto(especialidad);
     }
 
@@ -47,8 +48,9 @@ public class EspecialidadServiceImpl implements EspecialidadService {
 
     // UPDATE
     @Override
-    public EspecialidadDto updateEspecialidad(int id, EspecialidadDto especialidadDto) {
-        Especialidad especialidad = especialidadRepository.findById(id).orElseThrow(() -> new RuntimeException("No existe una especialidad con ese ID"));
+    public EspecialidadDto updateEspecialidad(Integer id, EspecialidadDto especialidadDto) {
+        Especialidad especialidad = especialidadRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Especialidad", id));
 
         especialidad.setNombreEspecialidad(especialidadDto.getNombreEspecialidad());
         especialidad.setImgEspecialidad(especialidadDto.getImgEspecialidad());
@@ -60,7 +62,7 @@ public class EspecialidadServiceImpl implements EspecialidadService {
 
     // DELETE BY ID
     @Override
-    public void deleteEspecialidadById(int id) {
+    public void deleteEspecialidadById(Integer id) {
         especialidadRepository.deleteById(id);
     }
 

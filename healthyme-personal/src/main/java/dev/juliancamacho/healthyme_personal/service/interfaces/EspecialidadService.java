@@ -10,15 +10,15 @@ public interface EspecialidadService {
     EspecialidadDto createEspecialidad(EspecialidadDto especialidadDto);
 
     // SELECT BY ID
-    EspecialidadDto getEspecialidadById(int id);
+    EspecialidadDto getEspecialidadById(Integer id);
 
     // SELECT ALL
     List<EspecialidadDto> getAllEspecialidades();
 
     // UPDATE
-    EspecialidadDto updateEspecialidad(int id, EspecialidadDto especialidadDto);
+    EspecialidadDto updateEspecialidad(Integer id, EspecialidadDto especialidadDto);
 
     // DELETE BY ID
-    void deleteEspecialidadById(int id);
+    void deleteEspecialidadById(Integer id);
 
 }

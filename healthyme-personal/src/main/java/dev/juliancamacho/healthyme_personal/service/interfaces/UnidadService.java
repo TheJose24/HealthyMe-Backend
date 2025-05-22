@@ -10,14 +10,14 @@ public interface UnidadService
     UnidadDto createUnidad(UnidadDto unidadDto);
 
     // SELECT BY ID
-    UnidadDto getUnidadById(int id);
+    UnidadDto getUnidadById(Integer id);
 
     // SELECT ALL
     List<UnidadDto> getAllUnidades();
 
     // UPDATE
-    UnidadDto updateUnidad(int id, UnidadDto unidadDto);
+    UnidadDto updateUnidad(Integer id, UnidadDto unidadDto);
 
     // DELETE BY ID
-    void deleteUnidadById(int id);
+    void deleteUnidadById(Integer id);
 }

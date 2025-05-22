@@ -39,7 +39,7 @@ public class UnidadController {
     // SELECT BY ID
     @Operation(
             summary = "Obtener unidad por ID",
-            description = "Retorna una lista de todas las unidades segun su ID",
+            description = "Retorna una única unidad médica según su ID",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Unidad encontrada"),
                     @ApiResponse(responseCode = "404", description = "Unidad no encontrada")

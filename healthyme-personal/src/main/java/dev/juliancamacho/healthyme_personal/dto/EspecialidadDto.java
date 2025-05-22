@@ -14,6 +14,6 @@ public class EspecialidadDto {
     @Size(max = 50, message = "El nombre no puede exceder los 50 caracteres")
     private String nombreEspecialidad;
 
-    @Pattern(regexp = ".*\\.(jpg|png)", message = "La imagen debe ser JPG o PNG")
+    @Pattern(regexp = "^(?i).+\\.(jpg|png)$", message = "La imagen debe ser JPG o PNG")
     private String imgEspecialidad;
 }

@@ -14,8 +14,20 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
 
-logging:
-  level:
-    studio.devbyjose: DEBUG
-    org.springframework.web: INFO
-    org.hibernate: INFO
+# Documentación API
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+# Monitoreo
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized

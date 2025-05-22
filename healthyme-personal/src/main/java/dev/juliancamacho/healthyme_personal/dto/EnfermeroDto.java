@@ -15,7 +15,6 @@ public class EnfermeroDto {
     private Integer idEnfermero;
 
     @NotNull(message = "El ID usuario no puede ser nulo")
-    @NotNull(message = "El ID usuario debe ser unico")
     private Integer idUsuario;
 
     @NotNull(message = "El ID horario no puede ser nulo")

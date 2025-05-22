@@ -1,6 +1,5 @@
 package dev.juliancamacho.healthyme_personal.exception;
 
-import dev.juliancamacho.healthyme_personal.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

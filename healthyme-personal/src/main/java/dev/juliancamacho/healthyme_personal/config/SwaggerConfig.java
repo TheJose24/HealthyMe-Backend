@@ -14,6 +14,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("API de Personal Médico")
                         .version("1.0")
-                        .description("Documentación de los endpoints para gestionar unidades médicas."));
+                        .description("Documentación de los endpoints para gestionar unidades médicas, médicos, técnicos, enfermeros y otros profesionales de la salud."));
     }
 }

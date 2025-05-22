@@ -7,11 +7,13 @@ import dev.juliancamacho.healthyme_personal.mapper.TecnicoMapper;
 import dev.juliancamacho.healthyme_personal.repository.TecnicoRepository;
 import dev.juliancamacho.healthyme_personal.service.interfaces.TecnicoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +28,8 @@ public class TecnicoServiceImpl implements TecnicoService {
     @Override
     public TecnicoDto createTecnico(TecnicoDto tecnicoDto) {
         // Validar que el usuario existe
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(tecnicoDto.getIdUsuario());
-        if(usuarioDTO == null || usuarioDTO.getIdUsuario() == null) {
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(tecnicoDto.getIdUsuario());
+        if(usuarioDTO == null || Objects.requireNonNull(usuarioDTO.getBody()).getIdUsuario() == null) {
             throw new RuntimeException("El usuario no existe");
         }
 
@@ -43,15 +45,15 @@ public class TecnicoServiceImpl implements TecnicoService {
                 .orElseThrow(() -> new NotFoundException("Tecnico", id));
 
         // Obtener información del usuario
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(tecnico.getIdUsuario());
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(tecnico.getIdUsuario());
 
         TecnicoDto tecnicoDto = tecnicoMapper.tecnicoToTecnicoDto(tecnico);
 
-        tecnicoDto.setNombreUsuario(usuarioDTO.getNombreUsuario());
-        tecnicoDto.setContratos(usuarioDTO.getContratos());
-        tecnicoDto.setImagenPerfil(usuarioDTO.getImagenPerfil());
-        tecnicoDto.setRol(usuarioDTO.getRol());
-        tecnicoDto.setEstado(usuarioDTO.getEstado());
+        tecnicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
+        tecnicoDto.setContratos(usuarioDTO.getBody().getContratos());
+        tecnicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
+        tecnicoDto.setRol(usuarioDTO.getBody().getRol());
+        tecnicoDto.setEstado(usuarioDTO.getBody().getEstado());
 
         return tecnicoDto;
     }
@@ -62,12 +64,12 @@ public class TecnicoServiceImpl implements TecnicoService {
         return tecnicoRepository.findAll()
                 .stream().map(tecnico -> {
                     TecnicoDto tecnicoDto = tecnicoMapper.tecnicoToTecnicoDto(tecnico);
-                    UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(tecnico.getIdUsuario());
-                    tecnicoDto.setNombreUsuario(usuarioDTO.getNombreUsuario());
-                    tecnicoDto.setContratos(usuarioDTO.getContratos());
-                    tecnicoDto.setImagenPerfil(usuarioDTO.getImagenPerfil());
-                    tecnicoDto.setRol(usuarioDTO.getRol());
-                    tecnicoDto.setEstado(usuarioDTO.getEstado());
+                    ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(tecnico.getIdUsuario());
+                    tecnicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
+                    tecnicoDto.setContratos(usuarioDTO.getBody().getContratos());
+                    tecnicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
+                    tecnicoDto.setRol(usuarioDTO.getBody().getRol());
+                    tecnicoDto.setEstado(usuarioDTO.getBody().getEstado());
                     return tecnicoDto;
                 }).collect(Collectors.toList());
     }
@@ -79,12 +81,12 @@ public class TecnicoServiceImpl implements TecnicoService {
                 .orElseThrow(() -> new NotFoundException("Tecnico", id));
 
         // Validar usuario
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(tecnicoDto.getIdUsuario());
-        if(usuarioDTO == null || usuarioDTO.getIdUsuario() == null) {
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(tecnicoDto.getIdUsuario());
+        if(usuarioDTO == null || Objects.requireNonNull(usuarioDTO.getBody()).getIdUsuario() == null) {
             throw new RuntimeException("El usuario no existe");
         }
 
-        tecnico.setIdUsuario(usuarioDTO.getIdUsuario());
+        tecnico.setIdUsuario(usuarioDTO.getBody().getIdUsuario());
         tecnico.setHorarios(tecnicoDto.getIdHorarios());
 
         Tecnico savedTecnico = tecnicoRepository.save(tecnico);

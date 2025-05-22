@@ -16,7 +16,6 @@ public class TecnicoDto {
     private Integer idTecnico;
 
     @NotNull(message = "El ID usuario no puede ser nulo")
-    @NotNull(message = "El ID usuario debe ser unico")
     private Integer idUsuario;
 
     @NotNull(message = "El ID unidad no puede ser nulo")

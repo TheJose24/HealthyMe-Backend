@@ -7,11 +7,13 @@ import dev.juliancamacho.healthyme_personal.mapper.MedicoMapper;
 import dev.juliancamacho.healthyme_personal.repository.MedicoRepository;
 import dev.juliancamacho.healthyme_personal.service.interfaces.MedicoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +28,8 @@ public class MedicoServiceImpl implements MedicoService {
     @Override
     public MedicoDto createMedico(MedicoDto medicoDto) {
         // Validar que el usuario existe
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(medicoDto.getIdUsuario());
-        if(usuarioDTO == null || usuarioDTO.getIdUsuario() == null) {
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medicoDto.getIdUsuario());
+        if(usuarioDTO == null || Objects.requireNonNull(usuarioDTO.getBody()).getIdUsuario() == null) {
             throw new RuntimeException("El usuario no existe");
         }
 
@@ -43,15 +45,15 @@ public class MedicoServiceImpl implements MedicoService {
                 .orElseThrow(() -> new NotFoundException("Medico", id));
 
         // Obtener información del usuario
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
 
         MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
 
-        medicoDto.setNombreUsuario(usuarioDTO.getNombreUsuario());
-        medicoDto.setContratos(usuarioDTO.getContratos());
-        medicoDto.setImagenPerfil(usuarioDTO.getImagenPerfil());
-        medicoDto.setRol(usuarioDTO.getRol());
-        medicoDto.setEstado(usuarioDTO.getEstado());
+        medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
+        medicoDto.setContratos(usuarioDTO.getBody().getContratos());
+        medicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
+        medicoDto.setRol(usuarioDTO.getBody().getRol());
+        medicoDto.setEstado(usuarioDTO.getBody().getEstado());
 
         return medicoDto;
     }
@@ -62,12 +64,12 @@ public class MedicoServiceImpl implements MedicoService {
         return medicoRepository.findAll()
                 .stream().map(medico -> {
                     MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
-                    UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
-                    medicoDto.setNombreUsuario(usuarioDTO.getNombreUsuario());
-                    medicoDto.setContratos(usuarioDTO.getContratos());
-                    medicoDto.setImagenPerfil(usuarioDTO.getImagenPerfil());
-                    medicoDto.setRol(usuarioDTO.getRol());
-                    medicoDto.setEstado(usuarioDTO.getEstado());
+                    ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
+                    medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
+                    medicoDto.setContratos(usuarioDTO.getBody().getContratos());
+                    medicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
+                    medicoDto.setRol(usuarioDTO.getBody().getRol());
+                    medicoDto.setEstado(usuarioDTO.getBody().getEstado());
                     return medicoDto;
                 }).collect(Collectors.toList());
     }
@@ -79,12 +81,12 @@ public class MedicoServiceImpl implements MedicoService {
                 .orElseThrow(() -> new NotFoundException("Medico", id));
 
         // Validar usuario
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(medicoDto.getIdUsuario());
-        if(usuarioDTO == null || usuarioDTO.getIdUsuario() == null) {
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medicoDto.getIdUsuario());
+        if(usuarioDTO == null || Objects.requireNonNull(usuarioDTO.getBody()).getIdUsuario() == null) {
             throw new RuntimeException("El usuario no existe");
         }
 
-        medico.setIdUsuario(usuarioDTO.getIdUsuario());
+        medico.setIdUsuario(usuarioDTO.getBody().getIdUsuario());
         medico.setHorarios(medicoDto.getIdHorarios());
 
         Medico savedMedico = medicoRepository.save(medico);

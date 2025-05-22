@@ -1,5 +1,6 @@
 package studio.devbyjose.healthyme_commons.client.fallback;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
@@ -8,7 +9,7 @@ import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 public class UsuarioClientFallback implements UsuarioClient {
 
     @Override
-    public UsuarioDTO obtenerUsuario(Integer id) {
-        return UsuarioDTO.builder().build();
+    public ResponseEntity<UsuarioDTO> obtenerUsuario(Integer id) {
+        return ResponseEntity.notFound().build();
     }
 }

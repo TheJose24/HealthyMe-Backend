@@ -7,11 +7,13 @@ import dev.juliancamacho.healthyme_personal.mapper.EnfermeroMapper;
 import dev.juliancamacho.healthyme_personal.repository.EnfermeroRepository;
 import dev.juliancamacho.healthyme_personal.service.interfaces.EnfermeroService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +28,8 @@ public class EnfermeroServiceImpl implements EnfermeroService {
     @Override
     public EnfermeroDto createEnfermero(EnfermeroDto enfermeroDto) {
         // Validar que el usuario existe
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(enfermeroDto.getIdUsuario());
-        if(usuarioDTO == null || usuarioDTO.getIdUsuario() == null) {
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(enfermeroDto.getIdUsuario());
+        if(usuarioDTO == null || Objects.requireNonNull(usuarioDTO.getBody()).getIdUsuario() == null) {
             throw new RuntimeException("El usuario no existe");
         }
 
@@ -43,15 +45,15 @@ public class EnfermeroServiceImpl implements EnfermeroService {
                 .orElseThrow(() -> new NotFoundException("Enfermero", id));
 
         // Obtener información del usuario
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(enfermero.getIdUsuario());
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(enfermero.getIdUsuario());
 
         EnfermeroDto enfermeroDto = enfermeroMapper.enfermeroToEnfermeroDto(enfermero);
 
-        enfermeroDto.setNombreUsuario(usuarioDTO.getNombreUsuario());
-        enfermeroDto.setContratos(usuarioDTO.getContratos());
-        enfermeroDto.setImagenPerfil(usuarioDTO.getImagenPerfil());
-        enfermeroDto.setRol(usuarioDTO.getRol());
-        enfermeroDto.setEstado(usuarioDTO.getEstado());
+        enfermeroDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
+        enfermeroDto.setContratos(usuarioDTO.getBody().getContratos());
+        enfermeroDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
+        enfermeroDto.setRol(usuarioDTO.getBody().getRol());
+        enfermeroDto.setEstado(usuarioDTO.getBody().getEstado());
 
         return enfermeroDto;
     }
@@ -62,12 +64,12 @@ public class EnfermeroServiceImpl implements EnfermeroService {
         return enfermeroRepository.findAll()
                 .stream().map(enfermero -> {
                     EnfermeroDto enfermeroDto = enfermeroMapper.enfermeroToEnfermeroDto(enfermero);
-                    UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(enfermero.getIdUsuario());
-                    enfermeroDto.setNombreUsuario(usuarioDTO.getNombreUsuario());
-                    enfermeroDto.setContratos(usuarioDTO.getContratos());
-                    enfermeroDto.setImagenPerfil(usuarioDTO.getImagenPerfil());
-                    enfermeroDto.setRol(usuarioDTO.getRol());
-                    enfermeroDto.setEstado(usuarioDTO.getEstado());
+                    ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(enfermero.getIdUsuario());
+                    enfermeroDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
+                    enfermeroDto.setContratos(usuarioDTO.getBody().getContratos());
+                    enfermeroDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
+                    enfermeroDto.setRol(usuarioDTO.getBody().getRol());
+                    enfermeroDto.setEstado(usuarioDTO.getBody().getEstado());
                     return enfermeroDto;
                 }).collect(Collectors.toList());
     }
@@ -79,12 +81,12 @@ public class EnfermeroServiceImpl implements EnfermeroService {
                 .orElseThrow(() -> new NotFoundException("Enfermero", id));
 
         // Validar usuario
-        UsuarioDTO usuarioDTO = usuarioClient.obtenerUsuario(enfermeroDto.getIdUsuario());
-        if(usuarioDTO == null || usuarioDTO.getIdUsuario() == null) {
+        ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(enfermeroDto.getIdUsuario());
+        if(usuarioDTO == null || Objects.requireNonNull(usuarioDTO.getBody()).getIdUsuario() == null) {
             throw new RuntimeException("El usuario no existe");
         }
 
-        enfermero.setIdUsuario(usuarioDTO.getIdUsuario());
+        enfermero.setIdUsuario(usuarioDTO.getBody().getIdUsuario());
         enfermero.setHorario(enfermeroDto.getHorario());
 
         Enfermero savedEnfermero = enfermeroRepository.save(enfermero);

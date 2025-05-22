@@ -95,6 +95,6 @@ public class HorarioTrabajoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteHorarioTrabajoById(@PathVariable Integer id) {
         horarioTrabajoService.deleteHorarioTrabajoById(id);
-        return new ResponseEntity<>("HorarioTrabajo eliminado con exito", HttpStatus.OK);
+        return new ResponseEntity<>("Horario de trabajo eliminado con éxito", HttpStatus.OK);
     }
 }

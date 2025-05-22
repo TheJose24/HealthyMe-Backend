@@ -10,6 +10,6 @@ import studio.devbyjose.healthyme_commons.client.fallback.UsuarioClientFallback;
 @FeignClient(name = "security-service", fallback = UsuarioClientFallback.class)
 public interface UsuarioClient {
 
-    @GetMapping("api/users/{id}")
+    @GetMapping("/api/users/{id}")
     ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable("id") Integer id);
 }

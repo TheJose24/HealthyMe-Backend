@@ -32,7 +32,7 @@ public class UnidadController {
             }
     )
     @PostMapping()
-    public ResponseEntity<UnidadDto> createUnidada(@Valid @RequestBody UnidadDto unidadDto) {
+    public ResponseEntity<UnidadDto> createUnidad(@Valid @RequestBody UnidadDto unidadDto) {
         return new ResponseEntity<>(unidadService.createUnidad(unidadDto), HttpStatus.CREATED);
     }
 

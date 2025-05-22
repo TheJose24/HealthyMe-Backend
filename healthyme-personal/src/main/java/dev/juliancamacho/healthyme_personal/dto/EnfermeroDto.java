@@ -18,7 +18,7 @@ public class EnfermeroDto {
     private Integer idUsuario;
 
     @NotNull(message = "El ID horario no puede ser nulo")
-    private HorarioTrabajoDto horario;
+    private HorarioTrabajo horario;
 
     // Datos del usuario obtenidos via Feign
     private String nombreUsuario;

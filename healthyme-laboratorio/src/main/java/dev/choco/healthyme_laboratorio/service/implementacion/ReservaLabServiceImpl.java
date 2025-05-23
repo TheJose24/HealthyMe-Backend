@@ -2,6 +2,7 @@ package dev.choco.healthyme_laboratorio.service.implementacion;
 
 import dev.choco.healthyme_laboratorio.dto.ReservaLabDTO;
 import dev.choco.healthyme_laboratorio.entity.ReservaLab;
+import dev.choco.healthyme_laboratorio.exception.ResourceNotFoundException;
 import dev.choco.healthyme_laboratorio.repository.ReservaLabRepository;
 import dev.choco.healthyme_laboratorio.service.Interfaces.ReservaLabService;
 import dev.choco.healthyme_laboratorio.mapper.ReservaLabMapper;
@@ -33,14 +34,14 @@ public class ReservaLabServiceImpl implements ReservaLabService {
     @Override
     public ReservaLabDTO buscarPorId(Integer id) {
         ReservaLab reserva = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + id));
         return mapper.toDTO(reserva);
     }
 
     @Override
     public ReservaLabDTO actualizar(Integer id, ReservaLabDTO dto) {
         ReservaLab reserva = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + id));
 
         reserva.setFecha(dto.getFecha());
         reserva.setHora(dto.getHora());
@@ -54,6 +55,10 @@ public class ReservaLabServiceImpl implements ReservaLabService {
 
     @Override
     public void eliminar(Integer id) {
-        repository.deleteById(id);
+        ReservaLab reserva = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + id));
+        repository.delete(reserva);
     }
+
+
 }

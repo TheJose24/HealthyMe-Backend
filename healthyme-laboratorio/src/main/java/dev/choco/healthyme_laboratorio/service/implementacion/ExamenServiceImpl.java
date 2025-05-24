@@ -3,6 +3,7 @@ package dev.choco.healthyme_laboratorio.service.implementacion;
 import dev.choco.healthyme_laboratorio.dto.ExamenDTO;
 import dev.choco.healthyme_laboratorio.entity.Examen;
 import dev.choco.healthyme_laboratorio.entity.ReservaLab;
+import dev.choco.healthyme_laboratorio.exception.ResourceNotFoundException;
 import dev.choco.healthyme_laboratorio.repository.ExamenRepository;
 import dev.choco.healthyme_laboratorio.repository.ReservaLabRepository;
 import dev.choco.healthyme_laboratorio.service.Interfaces.ExamenService;
@@ -29,24 +30,29 @@ public class ExamenServiceImpl implements ExamenService {
 
     @Override
     public ExamenDTO guardar(ExamenDTO dto) {
-        Examen examen = mapper.toEntity(dto);
         ReservaLab reserva = reservaLabRepository.findById(dto.getIdReservaLab())
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + dto.getIdReservaLab()));
+
+        Examen examen = mapper.toEntity(dto);
         examen.setReservaLab(reserva);
+
         return mapper.toDTO(repository.save(examen));
     }
 
     @Override
     public ExamenDTO buscarPorId(Integer id) {
         Examen examen = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Examen no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado con ID: " + id));
         return mapper.toDTO(examen);
     }
 
     @Override
     public ExamenDTO actualizar(Integer id, ExamenDTO dto) {
         Examen examen = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Examen no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado con ID: " + id));
+
+        ReservaLab reserva = reservaLabRepository.findById(dto.getIdReservaLab())
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + dto.getIdReservaLab()));
 
         examen.setNombreExamen(dto.getNombreExamen());
         examen.setResultados(dto.getResultados());
@@ -55,9 +61,6 @@ public class ExamenServiceImpl implements ExamenService {
         examen.setIdLaboratorio(dto.getIdLaboratorio());
         examen.setIdPaciente(dto.getIdPaciente());
         examen.setIdTecnico(dto.getIdTecnico());
-
-        ReservaLab reserva = reservaLabRepository.findById(dto.getIdReservaLab())
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
         examen.setReservaLab(reserva);
 
         return mapper.toDTO(repository.save(examen));
@@ -65,7 +68,8 @@ public class ExamenServiceImpl implements ExamenService {
 
     @Override
     public void eliminar(Integer id) {
-        repository.deleteById(id);
+        Examen examen = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado con ID: " + id));
+        repository.delete(examen);
     }
-
 }

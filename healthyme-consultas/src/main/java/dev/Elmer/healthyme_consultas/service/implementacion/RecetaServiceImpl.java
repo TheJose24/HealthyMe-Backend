@@ -3,6 +3,7 @@ package dev.Elmer.healthyme_consultas.service.implementacion;
 import dev.Elmer.healthyme_consultas.dto.RecetaDto;
 import dev.Elmer.healthyme_consultas.entity.Consulta;
 import dev.Elmer.healthyme_consultas.entity.Receta;
+import dev.Elmer.healthyme_consultas.exception.*;
 import dev.Elmer.healthyme_consultas.repository.ConsultaRepository;
 import dev.Elmer.healthyme_consultas.repository.RecetaRepository;
 import dev.Elmer.healthyme_consultas.service.interfaces.RecetaService;
@@ -25,10 +26,16 @@ public class RecetaServiceImpl implements RecetaService {
 
     @Override
     public RecetaDto guardar(RecetaDto dto) {
-        Receta receta = recetaMapper.toEntity(dto);
+        if (dto == null || dto.getIdConsulta() == null) {
+            throw new InvalidDataException("Los datos de la receta son inválidos o incompletos.");
+        }
+
         Consulta consulta = consultaRepository.findById(dto.getIdConsulta())
-                .orElseThrow(() -> new RuntimeException("Consulta no encontrada con ID: " + dto.getIdConsulta()));
+                .orElseThrow(() -> new ConsultaNotFoundException(dto.getIdConsulta()));
+
+        Receta receta = recetaMapper.toEntity(dto);
         receta.setConsulta(consulta);
+
         Receta saved = recetaRepository.save(receta);
         return recetaMapper.toDto(saved);
     }
@@ -43,25 +50,28 @@ public class RecetaServiceImpl implements RecetaService {
     @Override
     public RecetaDto buscarPorId(Integer id) {
         Receta receta = recetaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Receta no encontrada con ID: " + id));
+                .orElseThrow(() -> new RecetaNotFoundException(id));
         return recetaMapper.toDto(receta);
     }
 
     @Override
     public RecetaDto actualizar(Integer id, RecetaDto dto) {
+        if (dto == null) {
+            throw new InvalidDataException("Los datos de la receta no pueden ser nulos.");
+        }
+
         Receta receta = recetaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Receta no encontrada con ID: " + id));
+                .orElseThrow(() -> new RecetaNotFoundException(id));
 
         receta.setMedicamento(dto.getMedicamento());
         receta.setDosis(dto.getDosis());
         receta.setInstrucciones(dto.getInstrucciones());
         receta.setFechaEmision(dto.getFechaEmision());
 
-        // Actualiza la relación con Consulta si cambia
         if (!receta.getConsulta().getIdConsulta().equals(dto.getIdConsulta())) {
-            Consulta consulta = consultaRepository.findById(dto.getIdConsulta())
-                    .orElseThrow(() -> new RuntimeException("Consulta no encontrada con ID: " + dto.getIdConsulta()));
-            receta.setConsulta(consulta);
+            Consulta nuevaConsulta = consultaRepository.findById(dto.getIdConsulta())
+                    .orElseThrow(() -> new ConsultaNotFoundException(dto.getIdConsulta()));
+            receta.setConsulta(nuevaConsulta);
         }
 
         Receta updated = recetaRepository.save(receta);
@@ -71,7 +81,7 @@ public class RecetaServiceImpl implements RecetaService {
     @Override
     public void eliminar(Integer id) {
         Receta receta = recetaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Receta no encontrada con ID: " + id));
+                .orElseThrow(() -> new RecetaNotFoundException(id));
         recetaRepository.delete(receta);
     }
 }

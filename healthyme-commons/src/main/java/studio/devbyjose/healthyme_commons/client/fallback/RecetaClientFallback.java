@@ -1,6 +1,7 @@
 package studio.devbyjose.healthyme_commons.client.fallback;
 
 import org.springframework.stereotype.Component;
+import studio.devbyjose.healthyme_commons.client.dto.RecetaDTO;
 import studio.devbyjose.healthyme_commons.client.feign.RecetaClient;
 
 import java.util.HashMap;

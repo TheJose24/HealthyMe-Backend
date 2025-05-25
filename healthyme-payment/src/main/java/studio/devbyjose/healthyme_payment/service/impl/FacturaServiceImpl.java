@@ -9,7 +9,7 @@ import studio.devbyjose.healthyme_commons.client.dto.FacturaDTO;
 import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
-import studio.devbyjose.healthyme_commons.client.feign.SecurityClient;
+import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 import studio.devbyjose.healthyme_payment.dto.CreateFacturaDTO;
 import studio.devbyjose.healthyme_payment.entity.Factura;
 import studio.devbyjose.healthyme_payment.entity.Pago;
@@ -35,7 +35,7 @@ public class FacturaServiceImpl implements FacturaService {
     private final FacturaMapper facturaMapper;
     private final NotificationService notificationService;
     private final PacienteClient pacienteClient;
-    private final SecurityClient securityClient;
+    private final UsuarioClient usuarioClient;
 
     @Override
     @Transactional
@@ -50,6 +50,14 @@ public class FacturaServiceImpl implements FacturaService {
         Optional<Factura> facturaExistente = facturaRepository.findByPago(pago);
         if (facturaExistente.isPresent()) {
             log.warn("Ya existe una factura para el pago con ID: {}", createFacturaDTO.getIdPago());
+            
+            // Si ya existe, intentar enviar por email nuevamente
+            try {
+                sendFacturaByEmail(facturaExistente.get().getId());
+            } catch (Exception e) {
+                log.warn("Error al reenviar factura existente: {}", e.getMessage());
+            }
+            
             return facturaMapper.toDto(facturaExistente.get());
         }
         
@@ -59,6 +67,19 @@ public class FacturaServiceImpl implements FacturaService {
         
         Factura savedFactura = facturaRepository.save(factura);
         log.info("Factura creada exitosamente con número: {}", savedFactura.getNumeroFactura());
+        
+        // Enviar automáticamente por email después de crear la factura
+        try {
+            boolean enviado = sendFacturaByEmail(savedFactura.getId());
+            if (enviado) {
+                log.info("Factura {} enviada exitosamente por email", savedFactura.getNumeroFactura());
+            } else {
+                log.warn("No se pudo enviar la factura {} por email", savedFactura.getNumeroFactura());
+            }
+        } catch (Exception e) {
+            log.error("Error al enviar factura por email: {}", e.getMessage(), e);
+            // No lanzamos excepción para no afectar la creación de la factura
+        }
         
         return facturaMapper.toDto(savedFactura);
     }
@@ -98,7 +119,6 @@ public class FacturaServiceImpl implements FacturaService {
         return facturaMapper.toDto(factura);
     }
 
-    @Override
     @Transactional
     public boolean sendFacturaByEmail(Integer idFactura) {
         log.info("Enviando factura por correo electrónico, ID: {}", idFactura);
@@ -134,7 +154,7 @@ public class FacturaServiceImpl implements FacturaService {
             log.info("Obtenido ID de usuario: {} para paciente ID: {}", idUsuario, idPaciente);
 
             // 2. Obtener el email del usuario
-            ResponseEntity<UsuarioDTO> emailResponse = securityClient.getUsuarioById(idUsuario.intValue());
+            ResponseEntity<UsuarioDTO> emailResponse = usuarioClient.obtenerUsuario(idUsuario.intValue());
 
             if (!emailResponse.getStatusCode().is2xxSuccessful() || emailResponse.getBody() == null) {
                 throw new PaymentException("No se pudo obtener email del usuario con ID: " + idUsuario,

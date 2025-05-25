@@ -18,15 +18,4 @@ public class NotificationClientFallback implements NotificationClient {
         return ResponseEntity.internalServerError().build();
     }
 
-    @Override
-    public ResponseEntity<Boolean> enviarFacturaPorEmail(Map<String, Object> datos) {
-        log.error("Error al enviar factura por email: {}", datos);
-        return ResponseEntity.ok(false);
-    }
-
-    @Override
-    public ResponseEntity<Boolean> notificarPagoCompletado(Map<String, Object> datosPago) {
-        log.error("Error al notificar pago completado: {}", datosPago);
-        return ResponseEntity.ok(false);
-    }
 }

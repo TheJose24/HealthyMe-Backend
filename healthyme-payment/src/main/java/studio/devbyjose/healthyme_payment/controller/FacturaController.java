@@ -40,14 +40,4 @@ public class FacturaController {
         return ResponseEntity.ok(facturaDTO);
     }
 
-    @PostMapping("/{id}/enviar-email")
-    public ResponseEntity<String> sendFacturaByEmail(@PathVariable Integer id) {
-        boolean enviado = facturaService.sendFacturaByEmail(id);
-        if (enviado) {
-            return ResponseEntity.ok("Factura enviada por correo electrónico correctamente");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("No se pudo enviar la factura por correo electrónico");
-        }
-    }
 }

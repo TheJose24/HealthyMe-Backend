@@ -71,18 +71,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    // Implementación completa para envío de correos con entidad origen e ID origen
-    public void enviarEmailRelacionado(String destinatario, String asunto, String nombrePlantilla,
-                                       Map<String, Object> model, List<AdjuntoDTO> adjuntos,
-                                       EntidadOrigen entidadOrigen, Integer idOrigen) {
-        try {
-            enviarEmailInterno(destinatario, asunto, nombrePlantilla, model, adjuntos, entidadOrigen, idOrigen);
-        } catch (Exception e) {
-            log.error("Error al enviar correo relacionado a {}: {}", destinatario, e.getMessage());
-            throw new NotificationException("Error al enviar correo relacionado: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     private void enviarEmailInterno(String destinatario, String asunto, String nombrePlantilla,
                                     Map<String, Object> model, List<AdjuntoDTO> adjuntos,
                                     EntidadOrigen entidadOrigen, Integer idOrigen) throws MessagingException {
@@ -107,69 +95,77 @@ public class EmailServiceImpl implements EmailService {
         // Agregar adjuntos si existen
         if (adjuntos != null && !adjuntos.isEmpty()) {
             for (AdjuntoDTO adjunto : adjuntos) {
-                if (adjunto.getStorageFilename() != null && !adjunto.getStorageFilename().isEmpty()) {
-                    try {
-                        ResponseEntity<byte[]> response = storageClient.getFile(adjunto.getStorageFilename());
+                try {
+                    if (adjunto.getContenido() != null && adjunto.getContenido().length > 0) {
+                        // Adjunto con contenido directo (como PDF generado)
+                        helper.addAttachment(
+                                adjunto.getNombre(),
+                                new ByteArrayResource(adjunto.getContenido()),
+                                adjunto.getTipoContenido()
+                        );
+                        log.info("Adjunto añadido: {} ({} bytes)", adjunto.getNombre(), adjunto.getContenido().length);
 
-                        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                            // Obtener metadatos para el nombre y tipo de contenido
-                            ResponseEntity<FileMetadataDTO> metadataResponse =
-                                    storageClient.getFileMetadata(adjunto.getStorageFilename());
+                    } else if (adjunto.getStorageFilename() != null && !adjunto.getStorageFilename().isEmpty()) {
+                        // Adjunto desde storage service
+                        try {
+                            ResponseEntity<byte[]> response = storageClient.getFile(adjunto.getStorageFilename());
 
-                            FileMetadataDTO metadata = metadataResponse.getBody();
-                            if (metadata != null) {
-                                String nombreArchivo = metadata.getOriginalFilename();
-                                String tipoContenido = metadata.getContentType();
+                            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                                ResponseEntity<FileMetadataDTO> metadataResponse =
+                                        storageClient.getFileMetadata(adjunto.getStorageFilename());
 
-                                helper.addAttachment(
-                                        nombreArchivo,
-                                        new ByteArrayResource(response.getBody()),
-                                        tipoContenido
-                                );
-
-                                log.info("Adjunto obtenido del servicio de almacenamiento: {}", nombreArchivo);
+                                FileMetadataDTO metadata = metadataResponse.getBody();
+                                if (metadata != null) {
+                                    helper.addAttachment(
+                                            metadata.getOriginalFilename(),
+                                            new ByteArrayResource(response.getBody()),
+                                            metadata.getContentType()
+                                    );
+                                    log.info("Adjunto desde storage añadido: {}", metadata.getOriginalFilename());
+                                }
                             }
-                        } else {
-                            log.error("No se pudo obtener el archivo {} del servicio de almacenamiento",
-                                    adjunto.getStorageFilename());
+                        } catch (Exception e) {
+                            log.error("Error al obtener archivo del storage: {}", e.getMessage(), e);
                         }
-                    } catch (Exception e) {
-                        log.error("Error al obtener archivo del servicio de almacenamiento: {}",
-                                e.getMessage(), e);
                     }
-                } else if (adjunto.getContenido() != null) {
-                    helper.addAttachment(
-                            adjunto.getNombre(),
-                            new ByteArrayResource(adjunto.getContenido()),
-                            adjunto.getTipoContenido()
-                    );
+                } catch (Exception e) {
+                    log.error("Error al procesar adjunto {}: {}", adjunto.getNombre(), e.getMessage(), e);
                 }
             }
         }
 
         // Enviar el correo
         emailSender.send(message);
-        log.info("Correo electrónico enviado exitosamente a: {}", destinatario);
-
-        // Buscar la plantilla por nombre
-        Optional<Plantilla> plantillaOpt = plantillaRepository.findByNombre(nombrePlantilla);
-        if (plantillaOpt.isEmpty()) {
-            log.warn("No se encontró la plantilla '{}' al registrar la notificación", nombrePlantilla);
-            return;
-        }
+        log.info("Correo electrónico enviado exitosamente a: {} con {} adjuntos",
+                destinatario, adjuntos != null ? adjuntos.size() : 0);
 
         // Registrar la notificación
-        Notificacion notificacion = Notificacion.builder()
-                .destinatario(destinatario)
-                .fechaEnvio(LocalDateTime.now())
-                .estado(EstadoNotificacion.ENVIADO)
-                .plantilla(plantillaOpt.get())
-                .datosContexto(convertirModelAJson(model))
-                .entidadOrigen(entidadOrigen != null ? entidadOrigen : EntidadOrigen.CITA)
-                .idOrigen(idOrigen)
-                .build();
+        registrarNotificacion(destinatario, nombrePlantilla, model, entidadOrigen, idOrigen);
+    }
 
-        notificacionRepository.save(notificacion);
+    private void registrarNotificacion(String destinatario, String nombrePlantilla,
+                                       Map<String, Object> model, EntidadOrigen entidadOrigen, Integer idOrigen) {
+        try {
+            Optional<Plantilla> plantillaOpt = plantillaRepository.findByNombre(nombrePlantilla);
+            if (plantillaOpt.isEmpty()) {
+                log.warn("No se encontró la plantilla '{}' al registrar la notificación", nombrePlantilla);
+                return;
+            }
+
+            Notificacion notificacion = Notificacion.builder()
+                    .destinatario(destinatario)
+                    .fechaEnvio(LocalDateTime.now())
+                    .estado(EstadoNotificacion.ENVIADO)
+                    .plantilla(plantillaOpt.get())
+                    .datosContexto(convertirModelAJson(model))
+                    .entidadOrigen(entidadOrigen != null ? entidadOrigen : EntidadOrigen.SISTEMA)
+                    .idOrigen(idOrigen)
+                    .build();
+
+            notificacionRepository.save(notificacion);
+        } catch (Exception e) {
+            log.error("Error al registrar notificación: {}", e.getMessage(), e);
+        }
     }
 
     public void enviarEmailFallback(String to, String subject, String templateName,

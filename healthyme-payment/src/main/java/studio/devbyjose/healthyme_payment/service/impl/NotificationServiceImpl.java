@@ -1,19 +1,25 @@
 package studio.devbyjose.healthyme_payment.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import studio.devbyjose.healthyme_commons.client.dto.NotificacionDTO;
+import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
+import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.NotificationClient;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
-import studio.devbyjose.healthyme_commons.client.feign.SecurityClient;
+import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
+import studio.devbyjose.healthyme_commons.enums.EntidadOrigen;
 import studio.devbyjose.healthyme_payment.entity.Factura;
 import studio.devbyjose.healthyme_payment.entity.Pago;
 import studio.devbyjose.healthyme_payment.repository.PagoRepository;
 import studio.devbyjose.healthyme_payment.service.interfaces.NotificationService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +33,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationClient notificationClient;
     private final PagoRepository pagoRepository;
     private final PacienteClient pacienteClient;
-    private final SecurityClient securityClient;
+    private final UsuarioClient usuarioClient;
 
     @Override
     public void notificarPagoExitoso(String paymentIntentId) {
@@ -38,53 +44,113 @@ public class NotificationServiceImpl implements NotificationService {
             Pago pago = pagoOpt.get();
             log.info("Enviando notificación de pago exitoso para ID: {}", pago.getId());
 
-            // Verificar si el paciente existe y obtener id usuario para el email
-            Long idUsuarioPaciente = Objects.requireNonNull(pacienteClient.findPacienteById(pago.getIdPaciente())
-                    .getBody()).getIdUsuario();
-
-            // Obtener el email del paciente
-            String emailPaciente = Objects.requireNonNull(securityClient.getUsuarioById(Math.toIntExact(idUsuarioPaciente))
-                    .getBody()).getPersona().getEmail();
-
-
-            // Preparar datos de contexto
-            Map<String, Object> datosContexto = new HashMap<>();
-            datosContexto.put("monto", pago.getMonto().toString());
-            datosContexto.put("fecha", pago.getFechaPago().toString());
-            datosContexto.put("idPago", pago.getId().toString());
-
-            // Convertir a formato JSON para datosContexto
-            String datosContextoJson;
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                datosContextoJson = objectMapper.writeValueAsString(datosContexto);
-            } catch (Exception e) {
-                datosContextoJson = "{\"monto\":\"" + pago.getMonto() + "\",\"fecha\":\"" +
-                        pago.getFechaPago() + "\"}";
-            }
+                // Preparar datos de contexto como JSON String directamente
+                String datosContextoJson = String.format(
+                        "{\n" +
+                                "  \"monto\": \"%s\",\n" +
+                                "  \"fecha\": \"%s\",\n" +
+                                "  \"idPago\": \"%d\",\n" +
+                                "  \"concepto\": \"%s\"\n" +
+                                "}",
+                        pago.getMonto(), pago.getFechaPago(), pago.getId(), obtenerConceptoPago(pago));
 
-            // Construir la notificación con los campos requeridos por el servicio
-            NotificacionDTO notificacion = NotificacionDTO.builder()
-                    .datosContexto("Su pago por " + pago.getMonto() + " ha sido procesado exitosamente.")
-                    .destinatario(emailPaciente)
-                    .entidadOrigen(pago.getEntidadReferencia())
-                    .idOrigen(pago.getEntidadReferenciaId())
-                    // Campos específicos para el servicio de notificaciones
-                    .idPlantilla(1) // ID de la plantilla para notificaciones de pago exitoso
-                    .datosContexto(datosContextoJson)
-                    .idOrigen(pago.getId())
-                    .build();
+                // Construir la notificación
+                NotificacionDTO notificacion = NotificacionDTO.builder()
+                        .destinatario("paciente_" + pago.getIdPaciente() + "@healthyme.com") // Aquí deberías obtener el email real
+                        .idPlantilla(1) // ID de la plantilla para notificaciones de pago exitoso
+                        .datosContexto(datosContextoJson)
+                        .entidadOrigen(EntidadOrigen.PAGO)
+                        .idOrigen(pago.getId())
+                        .build();
 
-            // Enviar notificación al servicio de notificaciones
-            try {
                 ResponseEntity<Void> response = notificationClient.enviarNotificacion(notificacion);
-                log.info("Notificación de pago exitoso enviada para el pago ID: {} con respuesta: {}",
-                        pago.getId(), response.getStatusCode());
+                log.info("Notificación enviada con estado: {}", response.getStatusCode());
             } catch (Exception e) {
-                log.error("Error al enviar notificación de pago exitoso: {}", e.getMessage(), e);
+                log.error("Error al enviar notificación: {}", e.getMessage(), e);
             }
         } else {
             log.warn("No se pudo enviar notificación. Pago no encontrado para paymentIntentId: {}", paymentIntentId);
+        }
+    }
+
+    @Override
+    public boolean enviarFacturaPorEmail(Factura factura, String emailDestino) {
+        log.info("Preparando para enviar factura {} por email a: {}", factura.getNumeroFactura(), emailDestino);
+
+        try {
+            // Obtener información del paciente
+            ResponseEntity<PacienteDTO> pacienteResponse = pacienteClient.findPacienteById(factura.getPago().getIdPaciente().longValue());
+            ResponseEntity<UsuarioDTO> usuarioResponse = usuarioClient.obtenerUsuario(pacienteResponse.getBody().getIdUsuario().intValue());
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            // Preparar los datos completos de la factura
+            Map<String, Object> datosFactura = new HashMap<>();
+            datosFactura.put("numero_factura", factura.getNumeroFactura());
+            datosFactura.put("fecha_emision", factura.getFechaEmision().format(dateFormatter));
+            datosFactura.put("fecha_pago", factura.getPago().getFechaPago().format(dateTimeFormatter));
+            datosFactura.put("subtotal", factura.getSubtotal());
+            datosFactura.put("impuestos", factura.getImpuestos());
+            datosFactura.put("total", factura.getTotal());
+            datosFactura.put("id_pago", factura.getPago().getId());
+            datosFactura.put("id_factura", factura.getId());
+            datosFactura.put("email", emailDestino);
+            datosFactura.put("nombre_paciente", usuarioResponse.getBody().getPersona().getNombre() + " " + usuarioResponse.getBody().getPersona().getApellido());
+            datosFactura.put("dni_paciente", usuarioResponse.getBody().getPersona().getDni());
+            datosFactura.put("email_paciente", emailDestino);
+            datosFactura.put("concepto", obtenerConceptoPago(factura.getPago()));
+            datosFactura.put("metodo_pago", "Tarjeta de Crédito");
+
+            // Convertir a JSON para datosContexto
+            String datosContextoJson;
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new JavaTimeModule());
+                objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                datosContextoJson = objectMapper.writeValueAsString(datosFactura);
+            } catch (Exception e) {
+                log.error("Error al serializar datos de factura", e);
+                return false;
+            }
+
+            // Crear NotificacionDTO para envío de factura
+            NotificacionDTO notificacionFactura = NotificacionDTO.builder()
+                    .destinatario(emailDestino)
+                    .idPlantilla(3) // ID de la plantilla para facturas por email
+                    .datosContexto(datosContextoJson)
+                    .entidadOrigen(EntidadOrigen.SISTEMA)
+                    .idOrigen(factura.getId())
+                    .build();
+
+            // Enviar usando el endpoint principal del servicio de notificaciones
+            ResponseEntity<Void> response = notificationClient.enviarNotificacion(notificacionFactura);
+
+            boolean enviado = response.getStatusCode().is2xxSuccessful();
+            if (enviado) {
+                log.info("Factura {} enviada correctamente por email", factura.getNumeroFactura());
+            } else {
+                log.warn("El servicio de notificaciones reportó error al enviar la factura {}", factura.getNumeroFactura());
+            }
+
+            return enviado;
+        } catch (Exception e) {
+            log.error("Error al enviar factura por email: {}", e.getMessage(), e);
+            return false;
+        }
+    }
+
+    private String obtenerConceptoPago(Pago pago) {
+        switch (pago.getEntidadReferencia()) {
+            case CITA:
+                return "Consulta Médica";
+            case EXAMEN:
+                return "Examen de Laboratorio";
+            case RECETA:
+                return "Medicamentos";
+            default:
+                return "Servicio Médico";
         }
     }
 
@@ -144,37 +210,5 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    @Override
-    public boolean enviarFacturaPorEmail(Factura factura, String emailDestino) {
-        log.info("Preparando para enviar factura {} por email a: {}", factura.getNumeroFactura(), emailDestino);
 
-        try {
-            // Preparar los datos de la factura
-            Map<String, Object> datosFactura = new HashMap<>();
-            datosFactura.put("id_factura", factura.getId());
-            datosFactura.put("numero_factura", factura.getNumeroFactura());
-            datosFactura.put("fecha_emision", factura.getFechaEmision().toString());
-            datosFactura.put("subtotal", factura.getSubtotal().toString());
-            datosFactura.put("impuestos", factura.getImpuestos().toString());
-            datosFactura.put("total", factura.getTotal().toString());
-            datosFactura.put("id_pago", factura.getPago().getId());
-            datosFactura.put("email", emailDestino);
-            datosFactura.put("id_paciente", factura.getPago().getIdPaciente());
-
-            // Enviar al servicio de notificaciones
-            ResponseEntity<Boolean> response = notificationClient.enviarFacturaPorEmail(datosFactura);
-
-            boolean enviado = response.getBody() != null && response.getBody();
-            if (enviado) {
-                log.info("Factura {} enviada correctamente por email", factura.getNumeroFactura());
-            } else {
-                log.warn("El servicio de notificaciones reportó error al enviar la factura {}", factura.getNumeroFactura());
-            }
-
-            return enviado;
-        } catch (Exception e) {
-            log.error("Error al enviar factura por email: {}", e.getMessage(), e);
-            return false;
-        }
-    }
 }

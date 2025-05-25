@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura HealthyMe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e88e5 50%, #42a5f5 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            color: #e3f2fd;
+            font-size: 16px;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .invoice-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .main-content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .greeting .name {
+            color: #1e88e5;
+            font-weight: 600;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #1e88e5, #42a5f5);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e88e5;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '📄';
+            font-size: 18px;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+            transition: all 0.3s ease;
+        }
+
+        .info-row:hover {
+            background-color: #f8f9fa;
+            margin: 0 -10px;
+            padding: 12px 10px;
+            border-radius: 6px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 18px;
+            border-radius: 8px;
+            padding: 16px 12px;
+            margin: 10px -5px 0;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #5f6368;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .payment-card .card-title::before {
+            content: '💳';
+        }
+
+        .total-amount {
+            background: linear-gradient(135deg, #1e88e5, #42a5f5);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+        }
+
+        .total-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .total-value {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .attachment-note {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 25px 0;
+            font-size: 14px;
+            color: #e65100;
+        }
+
+        .attachment-note::before {
+            content: '📎 ';
+            font-size: 16px;
+            margin-right: 8px;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .thank-you {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e88e5;
+            margin-bottom: 15px;
+        }
+
+        .contact-info {
+            font-size: 14px;
+            color: #5f6368;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .contact-info a {
+            color: #1e88e5;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: #9e9e9e;
+            border-top: 1px solid #e9ecef;
+            padding-top: 15px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .main-content, .footer {
+                padding: 25px 20px;
+            }
+
+            .logo {
+                font-size: 28px;
+            }
+
+            .total-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="content">
+            <div class="logo">HealthyMe</div>
+            <div class="tagline">Centro Médico Integral</div>
+            <div class="invoice-badge">Factura Electrónica</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="status-badge">✓ Pago Confirmado</div>
+
+        <div class="greeting">
+            Estimado/a <span class="name" th:text="${nombre_paciente}">Paciente</span>,<br>
+            Su pago ha sido procesado exitosamente. A continuación encontrará los detalles de su factura.
+        </div>
+
+        <div class="total-amount">
+            <div class="total-label">Total Facturado</div>
+            <div class="total-value" th:text="'S/ ' + ${#numbers.formatDecimal(total, 1, 2)}">S/ 118.00</div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-title">Detalles de la Factura</div>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">Número de Factura</span>
+                    <span class="info-value" th:text="${numero_factura}">F-2025-001</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fecha de Emisión</span>
+                    <span class="info-value" th:text="${fecha_emision_formateada ?: fecha_emision}">24/05/2025</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Concepto</span>
+                    <span class="info-value" th:text="${concepto ?: 'Servicio Médico'}">Consulta Médica</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Subtotal</span>
+                    <span class="info-value" th:text="'S/ ' + ${#numbers.formatDecimal(subtotal, 1, 2)}">S/ 100.00</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">IGV (18%)</span>
+                    <span class="info-value" th:text="'S/ ' + ${#numbers.formatDecimal(impuestos, 1, 2)}">S/ 18.00</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">TOTAL</span>
+                    <span class="info-value" th:text="'S/ ' + ${#numbers.formatDecimal(total, 1, 2)}">S/ 118.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card payment-card">
+            <div class="card-title">Información del Pago</div>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">ID de Pago</span>
+                    <span class="info-value" th:text="${id_pago}">PAY-123456</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fecha de Pago</span>
+                    <span class="info-value" th:text="${fecha_pago_formateada ?: fecha_pago}">24/05/2025 14:30</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Método de Pago</span>
+                    <span class="info-value" th:text="${metodo_pago}">Tarjeta de Crédito</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="attachment-note">
+            <strong>Importante:</strong> Su factura en formato PDF se encuentra adjunta a este correo electrónico para sus registros contables.
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <div class="thank-you">¡Gracias por confiar en HealthyMe!</div>
+            <div class="contact-info">
+                Para cualquier consulta sobre su factura:<br>
+                📧 <a href="mailto:facturacion@healthyme.com">facturacion@healthyme.com</a><br>
+                📞 (01) 123-4567 | 🌐 www.healthyme.com
+            </div>
+            <div class="copyright">
+                © 2025 HealthyMe Centro Médico. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

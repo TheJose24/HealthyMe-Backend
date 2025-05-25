@@ -188,9 +188,6 @@ public class StripeServiceImpl implements StripeService {
 
         // Buscar el pago correspondiente a este PaymentIntent
         actualizarEstadoPago(paymentIntent.getId(), EstadoPago.COMPLETADO);
-
-        // Enviar notificación de pago exitoso
-        notificationService.notificarPagoExitoso(paymentIntent.getId());
     }
 
     private void handlePaymentIntentFailed(Object dataObject) {

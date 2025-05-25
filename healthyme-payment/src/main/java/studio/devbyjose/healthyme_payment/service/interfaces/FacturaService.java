@@ -32,11 +32,5 @@ public interface FacturaService {
      * @return la factura encontrada
      */
     FacturaDTO getFacturaByPago(Integer idPago);
-    
-    /**
-     * Envía la factura por correo electrónico al cliente
-     * @param idFactura identificador de la factura
-     * @return true si se envió correctamente
-     */
-    boolean sendFacturaByEmail(Integer idFactura);
+
 }

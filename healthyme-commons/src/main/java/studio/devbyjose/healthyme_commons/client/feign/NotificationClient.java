@@ -17,9 +17,4 @@ public interface NotificationClient {
     @PostMapping
     ResponseEntity<Void> enviarNotificacion(@RequestBody NotificacionDTO notificacion);
 
-    @PostMapping("/email-con-factura")
-    ResponseEntity<Boolean> enviarFacturaPorEmail(@RequestBody Map<String, Object> datos);
-
-    @PostMapping("/pago-completado")
-    ResponseEntity<Boolean> notificarPagoCompletado(@RequestBody Map<String, Object> datosPago);
 }

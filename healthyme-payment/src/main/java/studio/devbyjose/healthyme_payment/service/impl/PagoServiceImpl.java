@@ -46,7 +46,6 @@ public class PagoServiceImpl implements PagoService {
     private final PagoMapperExtended pagoMapperExtended;
     private final FacturaService facturaService;
     private final StripeService stripeService;
-    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -163,13 +162,6 @@ public class PagoServiceImpl implements PagoService {
                 createFacturaDTO.setIdPago(pago.getId());
 
                 facturaService.createFactura(createFacturaDTO);
-
-                // Enviar notificación
-                if (pago.getPaymentIntentId() != null) {
-                    notificationService.notificarPagoExitoso(pago.getPaymentIntentId());
-                } else {
-                    log.warn("No se puede enviar notificación: paymentIntentId es nulo para el pago ID: {}", pago.getId());
-                }
             } catch (Exception e) {
                 throw new PaymentProcessingException("Error al completar el proceso de pago: " + e.getMessage(), e);
             }

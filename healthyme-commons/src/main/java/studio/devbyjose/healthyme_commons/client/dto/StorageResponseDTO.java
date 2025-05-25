@@ -13,6 +13,7 @@ public class StorageResponseDTO {
     private Long fileId;
     private String filename;
     private String downloadUrl;
+    private String contentType;
     private String message;
     private boolean success;
 }

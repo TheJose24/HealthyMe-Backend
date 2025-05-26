@@ -1,10 +1,12 @@
 package dev.Elmer.healthyme_consultas.entity;
 
-import dev.Elmer.healthyme_consultas.dto.MedicamentoDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -25,10 +27,18 @@ public class Receta {
 
     @ElementCollection
     @CollectionTable(name = "medicamento_receta", joinColumns = @JoinColumn(name = "id_receta"))
-    private List<MedicamentoDto> medicamentos;
+    private List<Medicamento> medicamentos;
 
     @ManyToOne
     @JoinColumn(name = "id_consulta", nullable = false)
     private Consulta consulta;
+
+    @CreationTimestamp
+    @Column(name = "fecha_creacion", updatable = false)
+    private LocalDateTime fechaCreacion;
+
+    @UpdateTimestamp
+    @Column(name = "ultima_modificacion")
+    private LocalDateTime ultimaModificacion;
 
 }

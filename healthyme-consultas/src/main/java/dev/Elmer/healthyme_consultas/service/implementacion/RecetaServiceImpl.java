@@ -63,8 +63,8 @@ public class RecetaServiceImpl implements RecetaService {
         Receta receta = recetaRepository.findById(id)
                 .orElseThrow(() -> new RecetaNotFoundException(id));
 
-        List<MedicamentoDto> medicamentos = dto.getMedicamentos().stream()
-                .map(m -> new MedicamentoDto(m.getNombre(), m.getDosis(), m.getIndicaciones()))
+        List<Medicamento> medicamentos = dto.getMedicamentos().stream()
+                .map(m -> new Medicamento(m.getNombre(), m.getDosis(), m.getIndicaciones()))
                 .collect(Collectors.toList());
 
         receta.setMedicamentos(medicamentos);

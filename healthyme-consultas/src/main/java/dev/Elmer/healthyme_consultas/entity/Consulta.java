@@ -2,8 +2,11 @@ package dev.Elmer.healthyme_consultas.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "consulta")
@@ -34,6 +37,14 @@ public class Consulta {
 
     @Column(name = "id_medico")
     private Integer idMedico;
+
+    @CreationTimestamp
+    @Column(name = "fecha_creacion", updatable = false)
+    private LocalDateTime fechaCreacion;
+
+    @UpdateTimestamp
+    @Column(name = "ultima_modificacion")
+    private LocalDateTime ultimaModificacion;
 
 }
 

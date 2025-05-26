@@ -6,5 +6,6 @@ public enum EntidadOrigen {
     EXAMEN,
     PAGO,
     RECETA,
-    SISTEMA
+    SISTEMA,
+    RECLAMACIONES
 }

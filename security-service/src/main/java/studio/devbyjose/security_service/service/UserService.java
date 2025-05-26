@@ -424,4 +424,14 @@ public class UserService {
             throw new AccessDeniedException("No tiene permisos para modificar este usuario");
         }
     }
+
+    /**
+     * Obtiene usuarios activos por rol.
+     */
+    public List<UserDTO> getUsersByRole(String rolNombre) {
+        List<Usuario> usuarios = usuarioRepository.findByRolNombreAndEstado(rolNombre, EstadoUsuario.ACTIVO);
+        return usuarios.stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,41 +1,35 @@
 package dev.diegoqm.healthyme_citas.entity;
 
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.*;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "cita")
-public class Cita {
+@Document(collection = "cita")
+public class Cita extends Auditable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cita")
-    private Integer id;
+    private String id;
 
-    @Column(nullable = false)
     private LocalDate fecha;
 
-    @Column(nullable = false)
     private LocalTime hora;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    
     private EstadoCita estado;
-
-    @Column(name = "id_paciente", nullable = false)
-    private Integer idPaciente;
-
-    @Column(name = "id_medico", nullable = false)
-    private Integer idMedico;
-
-    @Column(name = "id_consultorio")
-    private Integer idConsultorio;
+    @Field("id_paciente")
+    private String idPaciente;
+    @Field("id_medico")
+    private String idMedico;
+    @Field("id_consultorio")
+    private String idConsultorio;
 
 }

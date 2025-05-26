@@ -1,38 +1,47 @@
 package dev.diegoqm.healthyme_citas.service.impl;
 
+import dev.diegoqm.healthyme_citas.dto.CitaDTO;
+import dev.diegoqm.healthyme_citas.entity.Cita;
+import dev.diegoqm.healthyme_citas.exception.CitaNotFoundException;
+import dev.diegoqm.healthyme_citas.mapper.CitaMapper;
+import dev.diegoqm.healthyme_citas.repository.CitaRepository;
+import dev.diegoqm.healthyme_citas.service.interfaces.CitaService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
+import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
+
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import dev.diegoqm.healthyme_citas.dto.CitaDTO;
-import dev.diegoqm.healthyme_citas.entity.Cita;
-import dev.diegoqm.healthyme_citas.repository.CitaRepository;
-import dev.diegoqm.healthyme_citas.service.interfaces.CitaService;
-import dev.diegoqm.healthyme_citas.mapper.CitaMapper;
-import jakarta.validation.Valid;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
-
 @Service
+@RequiredArgsConstructor
 public class CitaServiceImpl implements CitaService {
 
-    @Autowired
-    private CitaRepository citaRepository;
-
-    @Autowired
-    private CitaMapper citaMapper;
+    private final CitaRepository citaRepository;
+    private final CitaMapper citaMapper;
+    private final PacienteClient pacienteClient;
 
     @Override
     public CitaDTO createCita(CitaDTO citaDto) {
+        // Validar si el paciente existe
+        ResponseEntity<PacienteDTO> pacienteResponse = pacienteClient.findPacienteById(citaDto.getIdPaciente());
+        if (!pacienteResponse.getStatusCode().is2xxSuccessful()) {
+            throw new CitaNotFoundException("Paciente con id " + citaDto.getIdPaciente() + " no encontrado", HttpStatus.NOT_FOUND);
+        }
         Cita cita = citaMapper.toEntity(citaDto);
         Cita saved = citaRepository.save(cita);
         return citaMapper.toDTO(saved);
     }
 
     @Override
-    public CitaDTO getCitaById(int id) {
+    public CitaDTO getCitaById(String id) {
         Cita cita = citaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cita con id " + id + " no encontrada"));
+                .orElseThrow(() -> new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND));
         return citaMapper.toDTO(cita);
     }
 
@@ -45,14 +54,19 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public CitaDTO updateCita(int id, @Valid CitaDTO citaDto) {
+    public CitaDTO updateCita(String id, @Valid CitaDTO citaDto) {
         Cita cita = citaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cita con id " + id + " no encontrada"));
+                .orElseThrow(() -> new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND));
 
+        // Validar si el paciente existe
+        ResponseEntity<PacienteDTO> pacienteDTO= pacienteClient.findPacienteById(citaDto.getIdPaciente());
+        if (!pacienteDTO.getStatusCode().is2xxSuccessful() || pacienteDTO.getBody() == null) {
+            throw new CitaNotFoundException("Paciente con id " + citaDto.getIdPaciente() + " no encontrado", HttpStatus.NOT_FOUND);
+        }
         cita.setFecha(citaDto.getFecha());
         cita.setHora(citaDto.getHora());
         cita.setEstado(citaDto.getEstado());
-        cita.setIdPaciente(citaDto.getIdPaciente());
+        cita.setIdPaciente(pacienteDTO.getBody().getId());
         cita.setIdMedico(citaDto.getIdMedico());
         cita.setIdConsultorio(citaDto.getIdConsultorio());
         Cita updated = citaRepository.save(cita);
@@ -60,9 +74,9 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public void deleteCitaById(int id) {
+    public void deleteCitaById(String id) {
         if (!citaRepository.existsById(id)) {
-            throw new RuntimeException("Cita con id " + id + " no encontrada");
+            throw new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND);
         }
         citaRepository.deleteById(id);
     }

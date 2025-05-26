@@ -15,7 +15,7 @@ public interface PacienteClient {
     ResponseEntity<List<PacienteDTO>> findAllPacientes();
     
     @GetMapping("/api/v1/pacientes/{id}")
-    ResponseEntity<PacienteDTO> findPacienteById(@PathVariable("id") Long id);
+    ResponseEntity<PacienteDTO> findPacienteById(@PathVariable("id") String id);
     
     @GetMapping("/api/v1/pacientes/usuario/{idUsuario}")
     ResponseEntity<PacienteDTO> findPacienteByIdUsuario(@PathVariable("idUsuario") Long idUsuario);
@@ -24,8 +24,8 @@ public interface PacienteClient {
     ResponseEntity<PacienteDTO> createPaciente(@RequestBody PacienteDTO pacienteDTO);
     
     @PutMapping("/api/v1/pacientes/{id}")
-    ResponseEntity<PacienteDTO> updatePaciente(@PathVariable("id") Long id, @RequestBody PacienteDTO pacienteDTO);
+    ResponseEntity<PacienteDTO> updatePaciente(@PathVariable("id") String id, @RequestBody PacienteDTO pacienteDTO);
     
     @DeleteMapping("/api/v1/pacientes/{id}")
-    ResponseEntity<Void> deletePaciente(@PathVariable("id") Long id);
+    ResponseEntity<Void> deletePaciente(@PathVariable("id") String id);
 }

@@ -1,0 +1,24 @@
+spring:
+  data:
+    mongodb:
+      url: mongodb://${DB_HOST:localhost}:${DB_PORT:27017}/${DB_NAME:healthyme_citas}
+
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  logging:
+  level:
+    org.springframework.web: INFO

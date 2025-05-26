@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "horario_trabajo")
-public class HorarioTrabajo {
+public class HorarioTrabajo extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_horario")

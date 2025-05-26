@@ -10,6 +10,6 @@ public class LaboratorioDTO {
     private String nombre;
     private Integer piso;
     private Integer numeroHabitacion;
-    private Sede sede;
+    private Integer idSede;
     private Integer idUnidad;
 }

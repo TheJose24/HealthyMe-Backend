@@ -1,6 +1,5 @@
 package dev.Elmer.healthyme_consultas.controller;
 
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import dev.Elmer.healthyme_consultas.exception.*;
 import org.springframework.http.HttpStatus;

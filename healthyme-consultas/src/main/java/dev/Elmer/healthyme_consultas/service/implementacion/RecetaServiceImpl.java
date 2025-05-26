@@ -1,8 +1,10 @@
 package dev.Elmer.healthyme_consultas.service.implementacion;
 
 import dev.Elmer.healthyme_consultas.dto.RecetaDto;
+import dev.Elmer.healthyme_consultas.dto.MedicamentoDto;
 import dev.Elmer.healthyme_consultas.entity.Consulta;
 import dev.Elmer.healthyme_consultas.entity.Receta;
+import dev.Elmer.healthyme_consultas.entity.Medicamento;
 import dev.Elmer.healthyme_consultas.exception.*;
 import dev.Elmer.healthyme_consultas.repository.ConsultaRepository;
 import dev.Elmer.healthyme_consultas.repository.RecetaRepository;
@@ -10,8 +12,6 @@ import dev.Elmer.healthyme_consultas.service.interfaces.RecetaService;
 import dev.Elmer.healthyme_consultas.mapper.RecetaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,9 +63,11 @@ public class RecetaServiceImpl implements RecetaService {
         Receta receta = recetaRepository.findById(id)
                 .orElseThrow(() -> new RecetaNotFoundException(id));
 
-        receta.setMedicamento(dto.getMedicamento());
-        receta.setDosis(dto.getDosis());
-        receta.setInstrucciones(dto.getInstrucciones());
+        List<MedicamentoDto> medicamentos = dto.getMedicamentos().stream()
+                .map(m -> new MedicamentoDto(m.getNombre(), m.getDosis(), m.getIndicaciones()))
+                .collect(Collectors.toList());
+
+        receta.setMedicamentos(medicamentos);
         receta.setFechaEmision(dto.getFechaEmision());
 
         if (!receta.getConsulta().getIdConsulta().equals(dto.getIdConsulta())) {

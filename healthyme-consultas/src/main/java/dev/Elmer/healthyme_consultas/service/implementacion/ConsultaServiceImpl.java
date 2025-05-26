@@ -33,7 +33,6 @@ public class ConsultaServiceImpl implements ConsultaService {
             throw new InvalidDataException("Los datos de la consulta son inválidos o incompletos.");
         }
 
-        // Verificación básica por duplicados (puedes mejorar esto con reglas de negocio reales)
         Optional<Consulta> existente = repository.findAll().stream()
                 .filter(c -> c.getFecha().equals(dto.getFecha()) &&
                         c.getIdPaciente().equals(dto.getIdPaciente()) &&

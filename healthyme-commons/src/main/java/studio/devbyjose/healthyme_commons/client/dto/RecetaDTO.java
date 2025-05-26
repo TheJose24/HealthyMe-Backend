@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,8 +15,6 @@ import java.time.LocalDate;
 public class RecetaDTO {
 
     private Integer idReceta;
-    private String medicamento;
-    private String dosis;
-    private Integer instrucciones;
     private LocalDate fechaEmision;
+    private List<MedicamentoDTO> medicamentos; // si lo vas a usar en reportes, PDFs, etc.
 }

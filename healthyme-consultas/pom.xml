@@ -22,7 +22,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
@@ -33,11 +32,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>studio.devbyjose</groupId>
-            <artifactId>healthyme-commons</artifactId>
-        </dependency>
-
+		<dependency>
+			<groupId>studio.devbyjose</groupId>
+			<artifactId>healthyme-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- Utilidades -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
@@ -51,7 +50,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
@@ -79,6 +77,11 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>html2pdf</artifactId>
+			<version>6.2.0</version>
 		</dependency>
 
     </dependencies>

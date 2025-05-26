@@ -1,30 +1,36 @@
 package studio.devbyjose.healthyme_commons.client.fallback;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import studio.devbyjose.healthyme_commons.client.dto.MedicamentoDTO;
 import studio.devbyjose.healthyme_commons.client.dto.RecetaDTO;
 import studio.devbyjose.healthyme_commons.client.feign.RecetaClient;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
 public class RecetaClientFallback implements RecetaClient {
-    @Override
-    public Map<String, Object> obtenerReceta(Integer id) {
-        Map<String, Object> recetaDefault = new HashMap<>();
-        recetaDefault.put("nombrePaciente", "Paciente");
-        recetaDefault.put("nombreMedico", "Dr./Dra.");
-        recetaDefault.put("especialidad", "Medicina General");
-        recetaDefault.put("fecha", "No disponible");
-        recetaDefault.put("indicaciones", "No disponible");
-        recetaDefault.put("medicamentos", List.of(
-                Map.of(
-                        "nombre", "No disponible",
-                        "dosis", "No disponible",
-                        "indicaciones", "No disponible"
-                )
-        ));
-        return recetaDefault;
+    @Override public ResponseEntity<RecetaDTO> obtenerReceta(Integer id) {
+        RecetaDTO recetaDefault = RecetaDTO.builder()
+                .idReceta(id)
+                .nombrePaciente("Paciente")
+                .nombreMedico("Dr./Dra.")
+                .especialidad("Medicina General")
+                .fecha(LocalDate.parse("No disponible"))
+                .indicaciones("No disponible")
+                .medicamentos(List.of(
+                        MedicamentoDTO.builder()
+                        .nombre("No disponible")
+                        .dosis("No disponible")
+                                .indicaciones("No disponible")
+                                .build()
+                ))
+                .build();
+        return ResponseEntity.status(503).body(recetaDefault); // 503 Service Unavailable
+    } @Override public ResponseEntity<byte[]> obtenerPdfReceta(Integer id) {
+        return ResponseEntity.status(503).body(null);
     }
 }

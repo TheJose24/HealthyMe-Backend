@@ -597,7 +597,27 @@ public class NotificationServiceImpl implements NotificationService {
     @CircuitBreaker(name = "recetaService", fallbackMethod = "obtenerDatosRecetaFallback")
     private Map<String, Object> obtenerDatosReceta(Integer idReceta) {
         try {
-            return recetaClient.obtenerReceta(idReceta);
+            ResponseEntity<RecetaDTO> response = recetaClient.obtenerReceta(idReceta);
+
+            // Extraer el cuerpo de la respuesta
+            RecetaDTO recetaDTO = response.getBody();
+
+            if (recetaDTO == null) {
+                log.warn("Respuesta vacía para la receta ID {}", idReceta);
+                return new HashMap<>();
+            }
+
+            // Convertir RecetaDTO a Map<String, Object>
+            Map<String, Object> recetaMap = new HashMap<>();
+            recetaMap.put("idReceta", recetaDTO.getIdReceta());
+            recetaMap.put("nombrePaciente", recetaDTO.getNombrePaciente());
+            recetaMap.put("nombreMedico", recetaDTO.getNombreMedico());
+            recetaMap.put("especialidad", recetaDTO.getEspecialidad());
+            recetaMap.put("fecha", recetaDTO.getFecha());
+            recetaMap.put("indicaciones", recetaDTO.getIndicaciones());
+            recetaMap.put("medicamentos", recetaDTO.getMedicamentos());
+
+            return recetaMap;
         } catch (Exception e) {
             log.warn("No se pudo obtener datos de la receta ID {}: {}", idReceta, e.getMessage());
             return new HashMap<>();

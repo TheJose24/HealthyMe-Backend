@@ -13,8 +13,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecetaDTO {
-
     private Integer idReceta;
-    private LocalDate fechaEmision;
-    private List<MedicamentoDTO> medicamentos; // si lo vas a usar en reportes, PDFs, etc.
+    private String nombrePaciente;
+    private String nombreMedico;
+    private String especialidad;
+    private LocalDate fecha;
+    private String indicaciones;
+    private List<MedicamentoDTO> medicamentos;
 }

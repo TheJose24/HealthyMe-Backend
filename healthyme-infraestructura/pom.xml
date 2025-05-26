@@ -14,7 +14,7 @@
 	<description>HealthyMe - Servicio de infraestructura</description>
 
 	<dependencies>
-        <!-- Spring Boot Starters -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

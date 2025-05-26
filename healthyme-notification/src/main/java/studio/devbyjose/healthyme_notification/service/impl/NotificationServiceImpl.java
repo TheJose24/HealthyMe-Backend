@@ -7,14 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import studio.devbyjose.healthyme_commons.client.dto.AdjuntoDTO;
-import studio.devbyjose.healthyme_commons.client.dto.NotificacionDTO;
-import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
+import studio.devbyjose.healthyme_commons.client.dto.*;
 import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 import studio.devbyjose.healthyme_commons.client.feign.RecetaClient;
+import studio.devbyjose.healthyme_commons.client.feign.StorageClient;
 import studio.devbyjose.healthyme_commons.exception.ResourceNotFoundException;
 import studio.devbyjose.healthyme_notification.dto.PlantillaDTO;
 import studio.devbyjose.healthyme_notification.entity.Adjunto;
@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.hibernate.internal.util.collections.CollectionHelper.listOf;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -52,11 +54,13 @@ public class NotificationServiceImpl implements NotificationService {
     private final AdjuntoRepository adjuntoRepository;
     private final ObjectMapper objectMapper;
     private final EventPublisherService eventPublisherService;
+    private final FacturaPdfService facturaPdfService;
 
     // Clientes Feign
     private final PacienteClient pacienteClient;
     private final MedicoClient medicoClient;
     private final RecetaClient recetaClient;
+    private final StorageClient storageClient;
 
     // Mappers
     private final NotificacionMapper notificacionMapper;
@@ -78,29 +82,162 @@ public class NotificationServiceImpl implements NotificationService {
                     objectMapper.getTypeFactory().constructMapType(HashMap.class, String.class, Object.class)
             );
 
-            // Enviar email (con o sin adjuntos)
+            // Guardar la notificación
+            Notificacion notificacion = Notificacion.builder()
+                    .destinatario(notificacionDTO.getDestinatario())
+                    .fechaEnvio(LocalDateTime.now())
+                    .estado(EstadoNotificacion.PENDIENTE)
+                    .plantilla(plantilla)
+                    .datosContexto(notificacionDTO.getDatosContexto())
+                    .entidadOrigen(notificacionDTO.getEntidadOrigen())
+                    .idOrigen(notificacionDTO.getIdOrigen())
+                    .build();
+
+            notificacion = notificacionRepository.save(notificacion);
+            log.info("Notificación guardada con ID: {}", notificacion.getIdNotificacion());
+
+            // Verificar si es una plantilla de factura para generar PDF
+            List<AdjuntoDTO> adjuntosCompletos = new ArrayList<>();
+            if (esPlantillaFactura(plantilla.getNombre())) {
+                // Generar PDF de factura on-the-fly
+                byte[] pdfFactura = facturaPdfService.generarFacturaPdf(datosContexto);
+
+                // Crear adjunto con el PDF generado
+                AdjuntoDTO adjuntoPdf = AdjuntoDTO.builder()
+                        .nombre("factura_" + datosContexto.get("numero_factura") + ".pdf")
+                        .tipoContenido("application/pdf")
+                        .contenido(pdfFactura)
+                        .build();
+
+                adjuntosCompletos.add(adjuntoPdf);
+
+                // Guardar referencia del adjunto en BD
+                guardarAdjuntoEnBD(adjuntoPdf, notificacion);
+            }
+
+            // Procesar adjuntos adicionales si existen
             if (notificacionDTO.getAdjuntos() != null && !notificacionDTO.getAdjuntos().isEmpty()) {
+                List<AdjuntoDTO> adjuntosAdicionales = procesarAdjuntos(notificacionDTO.getAdjuntos(), notificacion);
+                adjuntosCompletos.addAll(adjuntosAdicionales);
+            }
+
+            // Enviar email
+            String asuntoProcesado = procesarAsunto(plantilla.getAsunto(), datosContexto);
+
+            if (!adjuntosCompletos.isEmpty()) {
                 emailService.enviarEmailConAdjuntos(
                         notificacionDTO.getDestinatario(),
-                        plantilla.getAsunto(),
+                        asuntoProcesado,
                         plantilla.getNombre(),
                         datosContexto,
-                        notificacionDTO.getAdjuntos()
+                        adjuntosCompletos
                 );
             } else {
                 emailService.enviarEmail(
                         notificacionDTO.getDestinatario(),
-                        plantilla.getAsunto(),
+                        asuntoProcesado,
                         plantilla.getNombre(),
                         datosContexto
                 );
             }
+
+            // Actualizar estado
+            notificacion.setEstado(EstadoNotificacion.ENVIADO);
+            notificacionRepository.save(notificacion);
 
             log.info("Notificación enviada a: {}", notificacionDTO.getDestinatario());
         } catch (Exception e) {
             log.error("Error al enviar notificación: {}", e.getMessage(), e);
             throw new NotificationException("Error al enviar notificación: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private boolean esPlantillaFactura(String nombrePlantilla) {
+        return "factura-electronica".equals(nombrePlantilla) ||
+                nombrePlantilla.toLowerCase().contains("factura");
+    }
+
+    private List<AdjuntoDTO> procesarAdjuntos(List<AdjuntoDTO> adjuntosDTO, Notificacion notificacion) {
+        List<AdjuntoDTO> adjuntosCompletos = new ArrayList<>();
+
+        for (AdjuntoDTO adjuntoDTO : adjuntosDTO) {
+            try {
+                AdjuntoDTO adjuntoCompleto;
+
+                if (adjuntoDTO.getStorageFilename() != null) {
+                    // Obtener archivo desde storage
+                    adjuntoCompleto = obtenerAdjuntoDesdeStorage(adjuntoDTO);
+                } else if (adjuntoDTO.getContenido() != null) {
+                    // Usar contenido directo
+                    adjuntoCompleto = adjuntoDTO;
+                } else {
+                    log.warn("Adjunto sin contenido ni referencia a storage, saltando...");
+                    continue;
+                }
+
+                // Guardar referencia del adjunto en BD
+                guardarAdjuntoEnBD(adjuntoCompleto, notificacion);
+                adjuntosCompletos.add(adjuntoCompleto);
+
+            } catch (Exception e) {
+                log.error("Error al procesar adjunto: {}", e.getMessage(), e);
+            }
+        }
+
+        return adjuntosCompletos;
+    }
+
+    private AdjuntoDTO obtenerAdjuntoDesdeStorage(AdjuntoDTO adjuntoDTO) {
+        try {
+            // Obtener metadata del archivo
+            ResponseEntity<FileMetadataDTO> metadataResponse = storageClient.getFileMetadata(adjuntoDTO.getStorageFilename());
+            FileMetadataDTO metadata = metadataResponse.getBody();
+
+            // Descargar el archivo
+            ResponseEntity<byte[]> fileResponse = storageClient.getFile(adjuntoDTO.getStorageFilename());
+            byte[] contenido = fileResponse.getBody();
+
+            assert metadata != null;
+            return AdjuntoDTO.builder()
+                    .nombre(metadata.getFilename())
+                    .tipoContenido(metadata.getContentType())
+                    .contenido(contenido)
+                    .storageFilename(adjuntoDTO.getStorageFilename())
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Error al obtener archivo del storage: {}", adjuntoDTO.getStorageFilename(), e);
+            throw new RuntimeException("Error al obtener archivo del storage", e);
+        }
+    }
+
+    private void guardarAdjuntoEnBD(AdjuntoDTO adjuntoDTO, Notificacion notificacion) {
+        Adjunto adjunto = Adjunto.builder()
+                .nombre(adjuntoDTO.getNombre())
+                .tipoContenido(adjuntoDTO.getTipoContenido())
+                .notificacion(notificacion)
+                .urlAlmacenamiento("inline") // Para adjuntos generados on-the-fly
+                .build();
+
+        adjuntoRepository.save(adjunto);
+    }
+
+    private String procesarAsunto(String asuntoPlantilla, Map<String, Object> datosContexto) {
+        String asunto = asuntoPlantilla;
+
+        log.info("Asunto original: {}", asunto);
+
+        // Reemplazar variables en el asunto
+        for (Map.Entry<String, Object> entry : datosContexto.entrySet()) {
+            String placeholder = "{{" + entry.getKey() + "}}";
+            if (asunto.contains(placeholder)) {
+                log.info("Reemplazando placeholder: {} con valor: {}", placeholder, entry.getValue());
+                asunto = asunto.replace(placeholder, String.valueOf(entry.getValue()));
+            }
+        }
+
+        log.info("Asunto procesado: {}", asunto);
+        return asunto;
     }
 
     @Override

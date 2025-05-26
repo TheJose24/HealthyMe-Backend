@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura HealthyMe</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.4;
+            color: #2c3e50;
+            background: #ffffff;
+        }
+
+        .document {
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+        }
+
+        /* Header simplificado */
+        .header {
+            background-color: #1e88e5;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header-content {
+            width: 100%;
+        }
+
+        .header-row {
+            width: 100%;
+            display: table;
+        }
+
+        .header-left {
+            display: table-cell;
+            width: 60%;
+            vertical-align: top;
+        }
+
+        .header-right {
+            display: table-cell;
+            width: 40%;
+            vertical-align: top;
+            text-align: right;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .company-tagline {
+            font-size: 12px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .company-details {
+            font-size: 9px;
+            line-height: 1.3;
+            opacity: 0.8;
+        }
+
+        .invoice-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .invoice-number {
+            font-size: 14px;
+            background-color: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        /* Status badge simplificado */
+        .status-paid {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            background-color: #4caf50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        /* Info section */
+        .info-section {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            width: 100%;
+            display: table;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            display: table-cell;
+            width: 48%;
+            vertical-align: top;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .info-box:first-child {
+            margin-right: 20px;
+        }
+
+        .info-box-header {
+            background-color: #34495e;
+            color: white;
+            padding: 10px 12px;
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .info-box-content {
+            padding: 12px;
+        }
+
+        .info-item {
+            margin-bottom: 6px;
+            width: 100%;
+            display: table;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            display: table-cell;
+            font-weight: bold;
+            color: #5a6c7d;
+            width: 35%;
+        }
+
+        .info-value {
+            display: table-cell;
+            color: #2c3e50;
+            font-weight: normal;
+        }
+
+        /* Services table */
+        .services-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border: 1px solid #e9ecef;
+        }
+
+        .services-table thead {
+            background-color: #1e88e5 !important;
+            color: white !important;
+        }
+
+        .services-table th {
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+            border: 1px solid #ffffff;
+        }
+
+        .services-table th:last-child {
+            text-align: right;
+        }
+
+        .services-table td {
+            padding: 10px;
+            border: 1px solid #e9ecef;
+            background-color: #fdfdfd;
+        }
+
+        .services-table td:last-child {
+            text-align: right;
+        }
+
+        .services-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        /* Totals section */
+        .totals-section {
+            margin-top: 25px;
+            width: 100%;
+            display: table;
+        }
+
+        .totals-left {
+            display: table-cell;
+            width: 58%;
+            vertical-align: top;
+            padding-right: 15px;
+        }
+
+        .totals-right {
+            display: table-cell;
+            width: 40%;
+            vertical-align: top;
+        }
+
+        .totals-box {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .total-row {
+            width: 100%;
+            display: table;
+            margin-bottom: 6px;
+            padding: 6px 0;
+        }
+
+        .total-row.total-final {
+            background-color: #1e88e5;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 10px 12px;
+            margin: 8px 0 0 0;
+            border-radius: 4px;
+        }
+
+        .total-label {
+            display: table-cell;
+            font-weight: bold;
+        }
+
+        .total-value {
+            display: table-cell;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* Observations */
+        .observations {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .observations h4 {
+            color: #e65100;
+            margin-bottom: 6px;
+            font-size: 11px;
+        }
+
+        .observations p {
+            color: #5d4037;
+            font-size: 9px;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        /* QR section */
+        .qr-section {
+            text-align: center;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-top: 12px;
+        }
+
+        .qr-placeholder {
+            width: 70px;
+            height: 70px;
+            background-color: #f0f0f0;
+            margin: 0 auto;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: #999;
+        }
+
+        .qr-text {
+            font-size: 8px;
+            color: #6c757d;
+            margin-top: 6px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            border-top: 2px solid #e9ecef;
+            padding-top: 12px;
+            text-align: center;
+            font-size: 8px;
+            color: #6c757d;
+        }
+
+        .footer-content {
+            margin-bottom: 4px;
+        }
+
+        .footer-links {
+            color: #1e88e5;
+        }
+
+        /* Utility classes */
+        .currency {
+            font-size: 9px;
+            opacity: 0.8;
+        }
+
+        .amount {
+            font-weight: bold;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mb-small {
+            margin-bottom: 8px;
+        }
+
+        .text-small {
+            font-size: 8px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<div class="document">
+    <!-- Status badge -->
+    <div class="status-paid">
+        <span class="status-badge">✓ PAGADO</span>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-row">
+                <div class="header-left">
+                    <div class="company-name">HealthyMe</div>
+                    <div class="company-tagline">Centro Médico Integral</div>
+                    <div class="company-details">
+                        RUC: 20123456789<br>
+                        Av. Salud 123, Lima - Perú<br>
+                        Teléfono: (01) 123-4567 | www.healthyme.com
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="invoice-title">FACTURA ELECTRÓNICA</div>
+                    <div class="invoice-number" th:text="${numero_factura}">F-2025-001</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info section -->
+    <div class="info-section">
+        <div class="info-row">
+            <div class="info-box">
+                <div class="info-box-header">Datos del Cliente</div>
+                <div class="info-box-content">
+                    <div class="info-item">
+                        <div class="info-label">Nombre:</div>
+                        <div class="info-value" th:text="${nombre_paciente}">Juan Pérez</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">DNI:</div>
+                        <div class="info-value" th:text="${dni_paciente}">12345678</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email:</div>
+                        <div class="info-value" th:text="${email_paciente}">cliente@email.com</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-header">Datos de la Factura</div>
+                <div class="info-box-content">
+                    <div class="info-item">
+                        <div class="info-label">F. Emisión:</div>
+                        <div class="info-value" th:text="${fecha_emision_formateada ?: fecha_emision}">24/05/2025</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">F. Pago:</div>
+                        <div class="info-value" th:text="${fecha_pago_formateada ?: fecha_pago}">24/05/2025</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">ID Pago:</div>
+                        <div class="info-value" th:text="${id_pago}">PAY-123456</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services table -->
+    <table class="services-table">
+        <thead>
+        <tr style="background-color: #1e88e5; color: white;">
+            <th style="background-color: #1e88e5; color: white; text-align: left;">Descripción del Servicio</th>
+            <th style="background-color: #1e88e5; color: white; text-align: center;">Cant.</th>
+            <th style="background-color: #1e88e5; color: white; text-align: right;">Precio Unit.</th>
+            <th style="background-color: #1e88e5; color: white; text-align: right;">Importe</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <strong th:text="${concepto ?: 'Servicio Médico'}">Consulta Médica General</strong><br>
+                <span class="text-small">Atención médica especializada</span>
+            </td>
+            <td class="text-center">1</td>
+            <td class="text-right">
+                <span class="currency">S/</span>
+                <span class="amount" th:text="${#numbers.formatDecimal(subtotal, 1, 2)}">100.00</span>
+            </td>
+            <td class="text-right">
+                <span class="currency">S/</span>
+                <span class="amount" th:text="${#numbers.formatDecimal(subtotal, 1, 2)}">100.00</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Totals section -->
+    <div class="totals-section">
+        <div class="totals-left">
+            <div class="observations">
+                <h4>Información del Pago</h4>
+                <p><strong>Método de pago:</strong> <span th:text="${metodo_pago}">Tarjeta de Crédito</span></p>
+                <p><strong>Estado:</strong> Pago confirmado y procesado exitosamente</p>
+                <p><strong>Fecha de procesamiento:</strong> <span th:text="${fecha_pago_formateada ?: fecha_pago}">24/05/2025 14:30</span></p>
+            </div>
+
+            <div class="qr-section">
+                <div class="qr-placeholder">QR CODE</div>
+                <div class="qr-text">Código QR para verificación</div>
+            </div>
+        </div>
+
+        <div class="totals-right">
+            <div class="totals-box">
+                <div class="total-row">
+                    <div class="total-label">Subtotal:</div>
+                    <div class="total-value">
+                        S/ <span th:text="${#numbers.formatDecimal(subtotal, 1, 2)}">100.00</span>
+                    </div>
+                </div>
+                <div class="total-row">
+                    <div class="total-label">IGV (18%):</div>
+                    <div class="total-value">
+                        S/ <span th:text="${#numbers.formatDecimal(impuestos, 1, 2)}">18.00</span>
+                    </div>
+                </div>
+                <div class="total-row total-final">
+                    <div class="total-label">TOTAL A PAGAR:</div>
+                    <div class="total-value">
+                        S/ <span th:text="${#numbers.formatDecimal(total, 1, 2)}">118.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <strong>HealthyMe Centro Médico Integral</strong> |
+            RUC: 20123456789 |
+            <span class="footer-links">www.healthyme.com | facturacion@healthyme.com</span>
+        </div>
+        <div>Factura electrónica generada automáticamente - Válida sin firma ni sello</div>
+    </div>
+</div>
+</body>
+</html>

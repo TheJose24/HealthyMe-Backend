@@ -1,12 +1,18 @@
 package dev.choco.healthyme_laboratorio.controller;
 
 import dev.choco.healthyme_laboratorio.dto.ExamenDTO;
+import dev.choco.healthyme_laboratorio.entity.Examen;
+import dev.choco.healthyme_laboratorio.exception.ResourceNotFoundException;
+import dev.choco.healthyme_laboratorio.repository.ExamenRepository;
 import dev.choco.healthyme_laboratorio.service.Interfaces.ExamenService;
+import dev.choco.healthyme_laboratorio.service.Interfaces.PdfService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +25,8 @@ import java.util.List;
 
 public class ExamenController {
     private final ExamenService service;
+    private final ExamenRepository examenRepository;
+    private final PdfService pdfService;
 
     @Operation(
             summary = "Registrar nuevo examen",
@@ -65,5 +73,19 @@ public class ExamenController {
         service.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> generarPdf(@PathVariable Integer id) {
+        Examen examen = examenRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado"));
+
+        byte[] pdfBytes = pdfService.generarPdfExamen(examen);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=examen-" + id + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
+    }
+
 }
 

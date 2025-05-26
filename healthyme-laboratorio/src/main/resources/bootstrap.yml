@@ -12,6 +12,12 @@ spring:
         max-attempts: 6
         max-interval: 2000
         multiplier: 1.1
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
 
 eureka:
   client:

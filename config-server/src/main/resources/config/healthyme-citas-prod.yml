@@ -1,0 +1,19 @@
+spring:
+  data:
+    mongodb:
+       url: mongodb://${DB_HOST}:${DB_PORT:27017}/${DB_NAME:healthyme_citas}
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: never

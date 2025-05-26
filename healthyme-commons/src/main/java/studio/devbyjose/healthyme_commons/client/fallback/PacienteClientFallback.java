@@ -20,7 +20,7 @@ public class PacienteClientFallback implements PacienteClient {
     }
 
     @Override
-    public ResponseEntity<PacienteDTO> findPacienteById(Long id) {
+    public ResponseEntity<PacienteDTO> findPacienteById(String id) {
         log.error("Fallback: Error al obtener paciente con ID {}", id);
         return ResponseEntity.notFound().build();
     }
@@ -38,13 +38,13 @@ public class PacienteClientFallback implements PacienteClient {
     }
 
     @Override
-    public ResponseEntity<PacienteDTO> updatePaciente(Long id, PacienteDTO pacienteDTO) {
+    public ResponseEntity<PacienteDTO> updatePaciente(String id, PacienteDTO pacienteDTO) {
         log.error("Fallback: Error al actualizar paciente con ID {}", id);
         return ResponseEntity.internalServerError().build();
     }
 
     @Override
-    public ResponseEntity<Void> deletePaciente(Long id) {
+    public ResponseEntity<Void> deletePaciente(String id) {
         log.error("Fallback: Error al eliminar paciente con ID {}", id);
         return ResponseEntity.internalServerError().build();
     }

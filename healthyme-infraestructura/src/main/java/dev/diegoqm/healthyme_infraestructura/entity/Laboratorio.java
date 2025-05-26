@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "laboratorio")
-public class Laboratorio {
+public class Laboratorio extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

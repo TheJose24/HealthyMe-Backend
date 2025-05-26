@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: healthyme-citas
+  jackson:
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+    time-zone: America/Lima
+  data:
+    mongodb:
+      url: mongodb://${DB_HOST:localhost}:${DB_PORT:27017}/${DB_NAME:healthyme_citas}
+
+server:
+  port: ${PORT:8082}

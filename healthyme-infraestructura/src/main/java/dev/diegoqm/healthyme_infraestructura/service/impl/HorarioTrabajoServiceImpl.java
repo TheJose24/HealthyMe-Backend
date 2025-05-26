@@ -2,24 +2,23 @@ package dev.diegoqm.healthyme_infraestructura.service.impl;
 
 import dev.diegoqm.healthyme_infraestructura.dto.HorarioTrabajoDTO;
 import dev.diegoqm.healthyme_infraestructura.entity.HorarioTrabajo;
+import dev.diegoqm.healthyme_infraestructura.exception.HorarioTrabajoNotFoundException;
+import dev.diegoqm.healthyme_infraestructura.mapper.HorarioTrabajoMapper;
 import dev.diegoqm.healthyme_infraestructura.repository.HorarioTrabajoRepository;
 import dev.diegoqm.healthyme_infraestructura.service.interfaces.HorarioTrabajoService;
-import dev.diegoqm.healthyme_infraestructura.mapper.HorarioTrabajoMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class HorarioTrabajoServiceImpl implements HorarioTrabajoService {
 
-    @Autowired
-    private HorarioTrabajoRepository repository;
-
-    @Autowired
-    private HorarioTrabajoMapper mapper;
+    private final HorarioTrabajoRepository repository;
+    private final HorarioTrabajoMapper mapper;
 
     @Override
     public HorarioTrabajoDTO createHorarioTrabajo(HorarioTrabajoDTO dto) {
@@ -31,7 +30,7 @@ public class HorarioTrabajoServiceImpl implements HorarioTrabajoService {
     @Override
     public HorarioTrabajoDTO getHorarioTrabajoById(int id) {
         HorarioTrabajo horario = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+                .orElseThrow(() -> new HorarioTrabajoNotFoundException("Horario no encontrado con id: " + id, HttpStatus.NOT_FOUND));
         return mapper.toDTO(horario);
     }
 
@@ -46,18 +45,21 @@ public class HorarioTrabajoServiceImpl implements HorarioTrabajoService {
     @Override
     public HorarioTrabajoDTO updateHorarioTrabajo(int id, HorarioTrabajoDTO dto) {
         HorarioTrabajo horarioTrabajo = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+                .orElseThrow(() -> new HorarioTrabajoNotFoundException("Horario no encontrado con id: " + id, HttpStatus.NOT_FOUND));
 
-                horarioTrabajo.setDiaSemana(dto.getDiaSemana());
-                horarioTrabajo.setHoraInicio(dto.getHoraInicio());
-                horarioTrabajo.setHoraFin(dto.getHoraFin());
-        
+        horarioTrabajo.setDiaSemana(dto.getDiaSemana());
+        horarioTrabajo.setHoraInicio(dto.getHoraInicio());
+        horarioTrabajo.setHoraFin(dto.getHoraFin());
+
         HorarioTrabajo updated = repository.save(horarioTrabajo);
         return mapper.toDTO(updated);
     }
 
     @Override
     public void deleteHorarioTrabajoById(int id) {
+        if (!repository.existsById(id)) {
+            throw new HorarioTrabajoNotFoundException("Horario no encontrado con id: " + id, HttpStatus.NOT_FOUND);
+        }
         repository.deleteById(id);
     }
 }

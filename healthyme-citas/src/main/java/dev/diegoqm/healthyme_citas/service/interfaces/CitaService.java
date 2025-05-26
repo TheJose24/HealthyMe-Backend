@@ -8,15 +8,15 @@ public interface CitaService {
     CitaDTO createCita(CitaDTO citaDto);
 
     // SELECT BY ID
-    CitaDTO getCitaById(int id);
+    CitaDTO getCitaById(String id);
 
     // SELECT ALL
     List<CitaDTO> getAllCitas();
 
     // UPDATE
-    CitaDTO updateCita(int id, CitaDTO citaDto);
+    CitaDTO updateCita(String id, CitaDTO citaDto);
 
     // DELETE BY ID
-    void deleteCitaById(int id);
+    void deleteCitaById(String id);
 
 }

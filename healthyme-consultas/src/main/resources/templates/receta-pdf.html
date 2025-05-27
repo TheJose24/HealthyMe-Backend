@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informe de Receta - HealthyMe</title>
+  <style>
+    body {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 20px;
+        color: #2c3e50;
+    }
+
+    .container {
+        max-width: 750px;
+        margin: auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 30px;
+    }
+
+    .header {
+        background-color: #007b8a;
+        color: #fff;
+        padding: 25px;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .logo {
+        max-height: 70px;
+        margin-bottom: 15px;
+    }
+
+    .header h1 {
+        font-size: 28px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .section-title {
+        font-size: 22px;
+        color: #007b8a;
+        border-bottom: 2px solid #e0f2f7;
+        padding-bottom: 10px;
+        margin-top: 30px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #4a6572;
+    }
+
+    .result-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+    }
+
+    .result-table th, .result-table td {
+        border: 1px solid #e0e0e0;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .result-table th {
+        background-color: #f0fbfc;
+        color: #007b8a;
+        font-weight: bold;
+    }
+
+    .result-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .notes-box {
+        background-color: #fffde7;
+        border-left: 4px solid #ffc107;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 30px;
+    }
+
+    .footer {
+        background-color: #2c3e50;
+        color: #ffffff;
+        text-align: center;
+        padding: 15px;
+        font-size: 14px;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .contact-info {
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .container {
+            padding: 20px;
+        }
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        .info-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Informe de Consulta Médica</h1>
+    <p>HealthyMe - Cuidado Integral</p>
+  </div>
+
+  <!-- Información básica de la consulta -->
+  <div class="section">
+    <h2 class="section-title">Detalles de la Consulta</h2>
+    <div class="info-grid">
+      <div class="info-item"><span class="info-label">ID Consulta:</span> <span th:text="${consulta.idConsulta}">123</span></div>
+      <div class="info-item"><span class="info-label">Fecha:</span> <span th:text="${consulta.fecha}">2025-05-25</span></div>
+      <div class="info-item"><span class="info-label">Síntomas:</span> <span th:text="${consulta.sintomas}">Dolor de cabeza y fiebre</span></div>
+      <div class="info-item"><span class="info-label">Diagnóstico:</span> <span th:text="${consulta.diagnostico}">Gripe estacional</span></div>
+      <div class="info-item"><span class="info-label">ID Paciente:</span> <span th:text="${consulta.idPaciente}">5</span></div>
+      <div class="info-item"><span class="info-label">ID Médico:</span> <span th:text="${consulta.idMedico}">2</span></div>
+    </div>
+  </div>
+
+  <!-- Información de la receta -->
+  <div class="section" th:if="${receta != null}">
+    <h2 class="section-title">Receta Médica</h2>
+    <div class="info-grid">
+      <div class="info-item"><span class="info-label">ID Receta:</span> <span th:text="${receta.idReceta}">77</span></div>
+      <div class="info-item"><span class="info-label">Fecha de Emisión:</span> <span th:text="${receta.fechaEmision}">2025-05-25</span></div>
+    </div>
+  </div>
+
+  <!-- Medicamentos -->
+  <div class="section" th:if="${receta != null and receta.medicamentos != null}">
+    <h2 class="section-title">Medicamentos Recetados</h2>
+    <table class="result-table">
+      <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Dosis</th>
+        <th>Indicaciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="med : ${receta.medicamentos}">
+        <td th:text="${med.nombre}">Paracetamol</td>
+        <td th:text="${med.dosis}">500mg</td>
+        <td th:text="${med.indicaciones}">Cada 8 horas por 5 días</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>HealthyMe - Comprometidos con tu salud</p>
+  </div>
+</div>
+
+</body>
+</html>

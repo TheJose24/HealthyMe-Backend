@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: healthyme-reclamaciones
+  jackson:
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+    time-zone: America/Lima
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:healthyme_reclamaciones}?createDatabaseIfNotExist=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+server:
+  port: ${PORT:8089}
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+logging:
+  level:
+    dev.choco.healthyme_laboratorio: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
+
+
+healthyme:
+  reclamaciones:
+    notification:
+      enabled: true
+      cliente:
+        habilitado: true
+      interno:
+        habilitado: true
+      url-base: "https://healthyme.com/reclamaciones"
+    plantillas:
+      recepcion: 1
+      cambio-estado: 2
+      nueva-respuesta: 3
+      cierre: 4
+      asignacion: 5
+      escalamiento: 6
+      vencida: 7
+      por-vencer: 8
+      resumen-diario: 9
+      reporte-semanal: 10
+      alertas-criticas: 11

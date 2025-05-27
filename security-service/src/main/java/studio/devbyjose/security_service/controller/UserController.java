@@ -46,15 +46,15 @@ public class UserController {
     }
 
     @GetMapping("/dni/{dni}")
-    @Operation(summary = "Obtener usuario por DNI", security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Obtener usuario por DNI")
+    @ApiResponse(responseCode = "200", description = "Usuario encontrado")
     public ResponseEntity<UserDTO> getUserByDni(@PathVariable String dni) {
         return ResponseEntity.ok(userService.getUserByDni(dni));
     }
 
     @GetMapping("/username/{username}")
-    @Operation(summary = "Obtener usuario por nombre de usuario", security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasRole('ADMIN') or principal.username == #username")
+    @Operation(summary = "Obtener usuario por nombre de usuario")
+    @ApiResponse(responseCode = "200", description = "Usuario encontrado")
     public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserByUsername(username));
     }
@@ -75,6 +75,14 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserStatsDTO> getUserStats() {
         return ResponseEntity.ok(userService.getUserStats());
+    }
+
+    @GetMapping("/by-role/{rolNombre}")
+    @Operation(summary = "Obtener usuarios por rol", security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserDTO>> getUsersByRole(@PathVariable String rolNombre) {
+        List<UserDTO> usuarios = userService.getUsersByRole(rolNombre);
+        return ResponseEntity.ok(usuarios);
     }
 
     // ---------------------- Endpoints para gestión de estado de usuarios ----------------------

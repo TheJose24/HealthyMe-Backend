@@ -87,7 +87,7 @@ public class TecnicoServiceImpl implements TecnicoService {
         }
 
         tecnico.setIdUsuario(usuarioDTO.getBody().getIdUsuario());
-        tecnico.setHorarios(tecnicoDto.getIdHorarios());
+        tecnico.setHorariosTecnico(tecnicoDto.getIdHorarios());
 
         Tecnico savedTecnico = tecnicoRepository.save(tecnico);
 

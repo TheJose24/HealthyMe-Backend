@@ -1,5 +1,6 @@
 package dev.juliancamacho.healthyme_personal.dto;
 
+import dev.juliancamacho.healthyme_personal.entity.HorarioTecnico;
 import dev.juliancamacho.healthyme_personal.entity.HorarioTrabajo;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class TecnicoDto {
     @NotNull(message = "El ID unidad no puede ser nulo")
     private Integer idUnidad;
 
-    private Set<HorarioTrabajo> idHorarios;
+    private Set<HorarioTecnico> idHorarios;
 
     // Datos del usuario obtenidos via Feign
     private String nombreUsuario;

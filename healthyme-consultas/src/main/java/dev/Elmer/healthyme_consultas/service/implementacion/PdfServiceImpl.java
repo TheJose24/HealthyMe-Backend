@@ -1,6 +1,5 @@
 package dev.Elmer.healthyme_consultas.service.implementacion;
 
-
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import dev.Elmer.healthyme_consultas.entity.Receta;

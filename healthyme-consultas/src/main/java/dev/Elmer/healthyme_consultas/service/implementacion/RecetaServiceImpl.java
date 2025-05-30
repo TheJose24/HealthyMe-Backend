@@ -1,15 +1,17 @@
 package dev.Elmer.healthyme_consultas.service.implementacion;
 
 import dev.Elmer.healthyme_consultas.dto.RecetaDto;
-import dev.Elmer.healthyme_consultas.dto.MedicamentoDto;
 import dev.Elmer.healthyme_consultas.entity.Consulta;
 import dev.Elmer.healthyme_consultas.entity.Receta;
 import dev.Elmer.healthyme_consultas.entity.Medicamento;
-import dev.Elmer.healthyme_consultas.exception.*;
+import dev.Elmer.healthyme_consultas.exception.ConsultaNotFoundException;
+import dev.Elmer.healthyme_consultas.exception.InvalidDataException;
+import dev.Elmer.healthyme_consultas.exception.RecetaNotFoundException;
+import dev.Elmer.healthyme_consultas.mapper.RecetaMapper;
 import dev.Elmer.healthyme_consultas.repository.ConsultaRepository;
 import dev.Elmer.healthyme_consultas.repository.RecetaRepository;
 import dev.Elmer.healthyme_consultas.service.interfaces.RecetaService;
-import dev.Elmer.healthyme_consultas.mapper.RecetaMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class RecetaServiceImpl implements RecetaService {
     private final RecetaMapper recetaMapper;
 
     @Override
+    @Transactional
     public RecetaDto guardar(RecetaDto dto) {
         if (dto == null || dto.getIdConsulta() == null) {
             throw new InvalidDataException("Los datos de la receta son inválidos o incompletos.");
@@ -41,6 +44,7 @@ public class RecetaServiceImpl implements RecetaService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class, dontRollbackOn = {})
     public List<RecetaDto> listar() {
         return recetaRepository.findAll().stream()
                 .map(recetaMapper::toDto)
@@ -48,6 +52,7 @@ public class RecetaServiceImpl implements RecetaService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class, dontRollbackOn = {})
     public RecetaDto buscarPorId(Integer id) {
         Receta receta = recetaRepository.findById(id)
                 .orElseThrow(() -> new RecetaNotFoundException(id));
@@ -55,6 +60,7 @@ public class RecetaServiceImpl implements RecetaService {
     }
 
     @Override
+    @Transactional
     public RecetaDto actualizar(Integer id, RecetaDto dto) {
         if (dto == null) {
             throw new InvalidDataException("Los datos de la receta no pueden ser nulos.");
@@ -81,6 +87,7 @@ public class RecetaServiceImpl implements RecetaService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Integer id) {
         Receta receta = recetaRepository.findById(id)
                 .orElseThrow(() -> new RecetaNotFoundException(id));

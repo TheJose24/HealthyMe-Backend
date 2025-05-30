@@ -2,12 +2,15 @@ package dev.Elmer.healthyme_consultas.service.implementacion;
 
 import dev.Elmer.healthyme_consultas.dto.ConsultaDto;
 import dev.Elmer.healthyme_consultas.entity.Consulta;
-import dev.Elmer.healthyme_consultas.exception.*;
+import dev.Elmer.healthyme_consultas.exception.ConsultaConflictException;
+import dev.Elmer.healthyme_consultas.exception.ConsultaNotFoundException;
+import dev.Elmer.healthyme_consultas.exception.InvalidDataException;
+import dev.Elmer.healthyme_consultas.mapper.ConsultaMapper;
 import dev.Elmer.healthyme_consultas.repository.ConsultaRepository;
 import dev.Elmer.healthyme_consultas.service.interfaces.ConsultaService;
-import dev.Elmer.healthyme_consultas.mapper.ConsultaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ConsultaServiceImpl implements ConsultaService {
 
     private final ConsultaRepository repository;
@@ -28,6 +32,7 @@ public class ConsultaServiceImpl implements ConsultaService {
     }
 
     @Override
+    @Transactional
     public ConsultaDto guardar(ConsultaDto dto) {
         if (dto == null || dto.getIdPaciente() == null || dto.getIdMedico() == null) {
             throw new InvalidDataException("Los datos de la consulta son inválidos o incompletos.");
@@ -55,6 +60,7 @@ public class ConsultaServiceImpl implements ConsultaService {
     }
 
     @Override
+    @Transactional
     public ConsultaDto actualizar(Integer id, ConsultaDto dto) {
         if (dto == null) {
             throw new InvalidDataException("Los datos proporcionados para la actualización no pueden ser nulos.");
@@ -74,6 +80,7 @@ public class ConsultaServiceImpl implements ConsultaService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Integer id) {
         if (!repository.existsById(id)) {
             throw new ConsultaNotFoundException(id);

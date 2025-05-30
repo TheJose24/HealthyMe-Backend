@@ -15,7 +15,7 @@ import java.util.List;
 @Tag(name = "Citas", description = "API para gestionar citas")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/citas")
+@RequestMapping("/api/v1/citas")
 public class CitaController {
 
     private final CitaService citaService;

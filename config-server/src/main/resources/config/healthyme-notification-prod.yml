@@ -1,55 +1,98 @@
+server:
+  port: 8090
+  shutdown: graceful
+
 spring:
+  application:
+    name: healthyme-notification
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+    time-zone: America/Lima
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME:healthyme_notification_prod}
-    username: ${DB_USER_PROD}
-    password: ${DB_PASSWORD_PROD}
+    url: jdbc:mysql://mysql:3306/healthyme_notification?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: j0s33nr1qu3
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 15
+      maximum-pool-size: 20
       minimum-idle: 5
-      idle-timeout: 300000
-      max-lifetime: 1200000
+      connection-timeout: 30000
   jpa:
-    show-sql: false
     hibernate:
-      ddl-auto: none
-
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: false
   mail:
-    host: ${MAIL_HOST_PROD:smtp.gmail.com}
-    port: ${MAIL_PORT_PROD:587}
-    username: ${MAIL_USERNAME_PROD}
-    password: ${MAIL_PASSWORD_PROD}
-
+    host: smtp.gmail.com
+    port: 587
+    username: alfred.asistente.soporte@gmail.com
+    password: pplg hffd asbt evpp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connection-timeout: 5000
+          timeout: 5000
+          write-timeout: 5000
+  thymeleaf:
+    prefix: file:/app/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: true
+    check-template: false
+    check-template-location: false
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-prod-1:9092,kafka-prod-2:9092,kafka-prod-3:9092}
+    bootstrap-servers: kafka:9092
     consumer:
-      group-id: notification-service-prod
-      auto-offset-reset: latest
-
-logging:
-  level:
-    root: WARN
-    studio.devbyjose: INFO
-    org.springframework: WARN
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: /var/log/healthyme/notification.log
-    max-size: 10MB
-    max-history: 7
+      group-id: notification-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
 
 resilience4j:
   circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
     instances:
       emailService:
-        failureRateThreshold: 40  # Más estricto
-        waitDurationInOpenState: 30s  # Mayor tiempo para estabilizarse
-        slidingWindowSize: 20  # Ventana más amplia para detectar patrones
-      storageService:
-        failureRateThreshold: 30
-        waitDurationInOpenState: 60s
+        baseConfig: default
+      medicoService:
+        baseConfig: default
+      pacienteService:
+        baseConfig: default
 
-  timelimiter:
-    instances:
-      emailService:
-        timeoutDuration: 15s  # Mayor tiempo de espera
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    studio.devbyjose.healthyme_notification: INFO
+    org.springframework.mail: WARN
+    org.apache.kafka: WARN

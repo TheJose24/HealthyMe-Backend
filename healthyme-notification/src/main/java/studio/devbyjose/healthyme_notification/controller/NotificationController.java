@@ -12,7 +12,7 @@ import studio.devbyjose.healthyme_notification.service.interfaces.NotificationSe
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/notificaciones")
+@RequestMapping("/api/v1/notificaciones")
 @RequiredArgsConstructor
 public class NotificationController {
 

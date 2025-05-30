@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/recetas")
+@RequestMapping("/api/v1/recetas")
 @RequiredArgsConstructor
 @Tag(name = "Recetas", description = "Gestión de Recetas Médicas")
 public class RecetaController {

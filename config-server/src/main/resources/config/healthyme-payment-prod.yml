@@ -1,44 +1,60 @@
 spring:
+  application:
+    name: healthyme-payment
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+    time-zone: America/Lima
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://mysql:3306/healthyme_payment?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: j0s33nr1qu3
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 15
+      maximum-pool-size: 20
       minimum-idle: 5
-      idle-timeout: 300000
-      max-lifetime: 1200000
+      connection-timeout: 30000
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
-        format_sql: false
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
-# Configuración Stripe
+server:
+  port: 8086
+  shutdown: graceful
+
 stripe:
   key:
-    secret: ${STRIPE_SECRET_KEY}
+    secret: sk_test_51RNiRqEPwXgcSj17AFBXg4SH7No83FCGjLvAIJHmgww9ip2INMKeOJOk80mWMuBascyi5uPxw2OR5AJYSRpUnh4q00d3D75rxD
   webhook:
-    secret: ${STRIPE_WEBHOOK_SECRET}
+    secret: whsec_1234567890abcdef
 
-# Documentación API
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: false
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 10000
 
-# Monitoreo
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: health,info,metrics
   endpoint:
     health:
-      show-details: never
+      show-details: always
+
+logging:
+  level:
+    studio.devbyjose.healthyme_payment: INFO
+    org.hibernate.SQL: WARN

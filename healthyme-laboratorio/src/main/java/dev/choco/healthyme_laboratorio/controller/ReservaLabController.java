@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reservas")
+@RequestMapping("/api/v1/reservas-lab")
 @RequiredArgsConstructor
 @Tag(name = "Reservas de Laboratorio", description = "Gestión de reservas para exámenes de laboratorio")
 

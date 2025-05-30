@@ -24,10 +24,10 @@ public class CitaDTO {
     private EstadoCita estado;
 
     @NotNull(message = "El id del paciente es obligatorio")
-    private String idPaciente;
+    private Long idPaciente;
 
     @NotNull(message = "El id del medico es obligatorio")
-    private String idMedico;
-    private String idConsultorio;
+    private Long idMedico;
+    private Long idConsultorio;
 
 }

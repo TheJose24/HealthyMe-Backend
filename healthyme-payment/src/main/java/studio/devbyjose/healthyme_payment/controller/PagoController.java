@@ -22,7 +22,7 @@ import studio.devbyjose.healthyme_payment.service.interfaces.PagoService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pagos")
+@RequestMapping("/api/v1/pagos")
 @RequiredArgsConstructor
 public class PagoController {
 

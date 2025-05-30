@@ -1,8 +1,6 @@
 spring:
   application:
-    name: ${APP_NAME:healthyme-infraestructura}
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    name: healthyme-infraestructura
   cloud:
     config:
       discovery:
@@ -18,7 +16,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+      defaultZone: http://discovery-server:8761/eureka/
   instance:
     instance-id: ${spring.application.name}:${random.uuid}
     prefer-ip-address: true

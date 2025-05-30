@@ -21,7 +21,7 @@ import studio.devbyjose.security_service.service.UserService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
 public class UserController {

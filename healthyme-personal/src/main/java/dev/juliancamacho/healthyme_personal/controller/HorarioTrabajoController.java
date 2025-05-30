@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/horario-trabajo")
+@RequestMapping("/api/v1/horario-trabajo")
 @RequiredArgsConstructor
 @Tag(name = "Horario de Trabajo",
         description = "API para gestionar horario de trabajo")

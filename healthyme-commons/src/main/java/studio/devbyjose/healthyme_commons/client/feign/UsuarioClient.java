@@ -12,15 +12,15 @@ import java.util.List;
 @FeignClient(name = "security-service", fallback = UsuarioClientFallback.class)
 public interface UsuarioClient {
 
-    @GetMapping("/api/users/{id}")
+    @GetMapping("/api/v1/users/{id}")
     ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable("id") Integer id);
 
-    @GetMapping("/api/users/dni/{dni}")
+    @GetMapping("/api/v1/users/dni/{dni}")
     ResponseEntity<UsuarioDTO> obtenerUsuarioPorDni(@PathVariable("dni") String dni);
 
-    @GetMapping("/api/users/username/{username}")
+    @GetMapping("/api/v1/users/username/{username}")
     ResponseEntity<UsuarioDTO> obtenerUsuarioPorUsername(@PathVariable("username") String username);
 
-    @GetMapping("/api/users/by-role/{rolNombre}")
+    @GetMapping("/api/v1/users/by-role/{rolNombre}")
     ResponseEntity<List<UsuarioDTO>> obtenerUsuariosPorRol(@PathVariable("rolNombre") String rolNombre);
 }

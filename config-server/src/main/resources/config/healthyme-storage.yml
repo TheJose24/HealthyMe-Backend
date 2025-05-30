@@ -9,8 +9,8 @@ spring:
     time-zone: America/Lima
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:healthyme_storage}?createDatabaseIfNotExist=true
-    username: ${DB_USER_DEV}
-    password: ${DB_PASSWORD_DEV}
+    username: ${DB_USER_DEV:root}
+    password: ${DB_PASSWORD_DEV:j0s33nr1qu3}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

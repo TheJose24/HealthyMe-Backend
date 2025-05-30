@@ -8,8 +8,8 @@ spring:
     show-sql: true
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:healthyme_auth}?createDatabaseIfNotExist=true
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:j0s33nr1qu3}
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     data: classpath:script.sql

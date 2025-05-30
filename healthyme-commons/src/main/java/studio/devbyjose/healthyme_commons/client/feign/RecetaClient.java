@@ -9,7 +9,7 @@ import studio.devbyjose.healthyme_commons.client.fallback.RecetaClientFallback;
 
 import java.util.Map;
 
-@FeignClient(name = "healthyme-consultas", path = "/api/recetas", fallback = RecetaClientFallback.class)
+@FeignClient(name = "healthyme-consultas", path = "/api/v1/recetas", fallback = RecetaClientFallback.class)
 public interface RecetaClient {
 
     @GetMapping("/{id}")

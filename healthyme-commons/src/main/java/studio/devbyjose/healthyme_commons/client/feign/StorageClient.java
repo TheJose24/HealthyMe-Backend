@@ -17,7 +17,7 @@ import java.util.List;
 @FeignClient(name = "healthyme-storage", fallback = StorageClientFallback.class)
 public interface StorageClient {
 
-    @PostMapping(value = "/api/storage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/api/v1/storage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<StorageResponseDTO> uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "module", required = false) String module,
@@ -25,12 +25,12 @@ public interface StorageClient {
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "is_public", required = false) Boolean isPublic);
 
-    @GetMapping("/api/storage/files/{filename}")
+    @GetMapping("/api/v1/storage/files/{filename}")
     ResponseEntity<byte[]> getFile(@PathVariable("filename") String filename);
 
-    @GetMapping("/api/storage/metadata/filename/{filename}")
+    @GetMapping("/api/v1/storage/metadata/filename/{filename}")
     ResponseEntity<FileMetadataDTO> getFileMetadata(@PathVariable("filename") String filename);
 
-    @GetMapping("/api/storage/files/module/{module}")
+    @GetMapping("/api/v1/storage/files/module/{module}")
     ResponseEntity<List<FileMetadataDTO>> getFilesByModule(@PathVariable("module") String module);
 }

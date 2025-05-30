@@ -1,50 +1,70 @@
+server:
+  port: 8088
+  shutdown: graceful
+
 spring:
+  application:
+    name: healthyme-storage
+  jackson:
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+    time-zone: America/Lima
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd HH:mm:ss
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME:healthyme_storage_prod}
-    username: ${DB_USER_PROD}
-    password: ${DB_PASSWORD_PROD}
+    url: jdbc:mysql://mysql:3306/healthyme_storage?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: j0s33nr1qu3
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 15
+      maximum-pool-size: 20
       minimum-idle: 5
-      idle-timeout: 300000
-      max-lifetime: 1200000
+      connection-timeout: 30000
   jpa:
-    show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
   servlet:
     multipart:
-      max-file-size: 15MB
-      max-request-size: 15MB
+      max-file-size: 50MB
+      max-request-size: 100MB
 
 storage:
-  location: ${STORAGE_LOCATION:/mnt/storage/healthyme/files}
-  max-capacity-mb: 102400  # 100GB para producción
+  location: /app/storage/files
+  max-file-size: 50MB
+  max-capacity-mb: 2048
   allowed-content-types: >
     image/jpeg,image/png,image/gif,application/pdf,
     application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,
     application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
-logging:
-  level:
-    root: WARN
-    studio.devbyjose: INFO
-    org.springframework: WARN
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: /var/log/healthyme/storage.log
-    max-size: 25MB
-    max-history: 14
-
 resilience4j:
   circuitbreaker:
     instances:
       fileOperationBreaker:
-        failureRateThreshold: 40
-        waitDurationInOpenState: 30s
-        slidingWindowSize: 20
-      dbOperationBreaker:
-        failureRateThreshold: 30
-        waitDurationInOpenState: 60s
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 15s
+        failureRateThreshold: 50
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    studio.devbyjose.healthyme_storage: INFO
+    org.hibernate.SQL: WARN

@@ -15,7 +15,7 @@ import java.util.List;
 @Tag(name = "Laboratorios", description = "API para gestionar laboratorios")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/laboratorios")
+@RequestMapping("/api/v1/laboratorios")
 public class LaboratorioController {
 
     private final LaboratorioService laboratorioService;

@@ -12,7 +12,7 @@ import studio.devbyjose.healthyme_payment.exception.PaymentProcessingException;
 import studio.devbyjose.healthyme_payment.service.interfaces.StripeService;
 
 @RestController
-@RequestMapping("/api/stripe/webhook")
+@RequestMapping("/api/v1/stripe")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Stripe Webhook", description = "Endpoint para recibir eventos de Stripe")

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/especialidades")
+@RequestMapping("/api/v1/especialidades")
 @RequiredArgsConstructor
 @Tag(name = "Especialidades",
         description = "API para gestionar especialidades")

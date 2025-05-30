@@ -9,6 +9,6 @@ import studio.devbyjose.healthyme_commons.client.fallback.MedicoClientFallback;
 @FeignClient(name = "healthyme-personal", fallback = MedicoClientFallback.class)
 public interface MedicoClient {
 
-    @GetMapping("/api/medicos/{id}")
+    @GetMapping("/api/v1/medicos/{id}")
     MedicoDTO obtenerMedico(@PathVariable("id") Integer id);
 }

@@ -8,50 +8,38 @@ spring:
 
 eureka:
   instance:
-    hostname: localhost
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 10
-    lease-expiration-duration-in-seconds: 30
+    hostname: discovery-server
+    prefer-ip-address: false
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
   server:
-    enable-self-preservation: false
+    enable-self-preservation: true
     renewal-percent-threshold: 0.85
-    eviction-interval-timer-in-ms: 30000
-    response-cache-update-interval-ms: 5000
+    eviction-interval-timer-in-ms: 60000
+    response-cache-update-interval-ms: 30000
+    response-cache-auto-expiration-in-seconds: 180
   client:
     register-with-eureka: false
     fetch-registry: false
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
 
-# Métricas y monitoreo
+# Métricas y monitoreo para producción
 management:
   endpoints:
     web:
       exposure:
-        include: ["health", "info", "metrics", "prometheus"]
+        include: ["health", "info", "metrics"]
   endpoint:
     health:
-      show-details: always
-  info:
-    env:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
+      show-details: when-authorized
 
-# Logging
+# Logging para producción
 logging:
   level:
-    root: INFO
+    root: WARN
     com.netflix.eureka: INFO
     com.netflix.discovery: INFO
+    org.springframework.cloud: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: logs/discovery-server.log
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB
-      max-history: 10

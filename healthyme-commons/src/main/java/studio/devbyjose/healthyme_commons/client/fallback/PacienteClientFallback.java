@@ -20,7 +20,7 @@ public class PacienteClientFallback implements PacienteClient {
     }
 
     @Override
-    public ResponseEntity<PacienteDTO> findPacienteById(String id) {
+    public ResponseEntity<PacienteDTO> findPacienteById(Long id) {
         log.error("Fallback: Error al obtener paciente con ID {}", id);
         return ResponseEntity.notFound().build();
     }

@@ -10,19 +10,19 @@ import java.util.List;
 @FeignClient(name = "healthyme-citas", fallback = CitaClientFallback.class)
 public interface CitaClient {
 
-    @PostMapping("/api/citas")
+    @PostMapping("/api/v1/citas")
     CitaDTO createCita(@RequestBody CitaDTO citaDTO);
 
-    @GetMapping("/api/citas/{id}")
+    @GetMapping("/api/v1/citas/{id}")
     CitaDTO getCitaById(@PathVariable("id") Integer id);
 
-    @GetMapping("/api/citas")
+    @GetMapping("/api/v1/citas")
     List<CitaDTO> getAllCitas();
 
-    @PutMapping("/api/citas/{id}")
+    @PutMapping("/api/v1/citas/{id}")
     CitaDTO updateCita(@PathVariable("id") Integer id,
                        @RequestBody CitaDTO citaDTO);
 
-    @DeleteMapping("/api/citas/{id}")
+    @DeleteMapping("/api/v1/citas/{id}")
     void deleteCitaById(@PathVariable("id") Integer id);
 }

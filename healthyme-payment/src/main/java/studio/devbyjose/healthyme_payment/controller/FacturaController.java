@@ -10,7 +10,7 @@ import studio.devbyjose.healthyme_payment.dto.CreateFacturaDTO;
 import studio.devbyjose.healthyme_payment.service.interfaces.FacturaService;
 
 @RestController
-@RequestMapping("/api/facturas")
+@RequestMapping("/api/v1/facturas")
 @RequiredArgsConstructor
 public class FacturaController {
 

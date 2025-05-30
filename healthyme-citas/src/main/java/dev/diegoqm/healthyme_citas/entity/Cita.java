@@ -26,10 +26,10 @@ public class Cita extends Auditable{
     
     private EstadoCita estado;
     @Field("id_paciente")
-    private String idPaciente;
+    private Long idPaciente;
     @Field("id_medico")
-    private String idMedico;
+    private Long idMedico;
     @Field("id_consultorio")
-    private String idConsultorio;
+    private Long idConsultorio;
 
 }

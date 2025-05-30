@@ -3,6 +3,8 @@ server:
   shutdown: graceful
 
 spring:
+  application:
+    name: api-gateway
   cloud:
     gateway:
       discovery:
@@ -10,33 +12,126 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: healthyme-storage
-          uri: lb://healthyme-storage
+        # Security Service
+        - id: security-service
+          uri: lb://security-service
           predicates:
-            - Path=/api/storage/**
+            - Path=/api/v1/auth/**,/api/v1/users/**
           filters:
             - name: CircuitBreaker
               args:
-                name: storageServiceCircuitBreaker
-                fallbackUri: forward:/fallback/storage
-        - id: notification-service
-          uri: lb://healthyme-notification
-          predicates:
-            - Path=/api/notificaciones/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: notificationServiceCircuitBreaker
-                fallbackUri: forward:/fallback/notification
-        - id: healthyme-pacientes-service
+                name: securityServiceCircuitBreaker
+                fallbackUri: forward:/fallback/security
+
+        # Healthyme Pacientes
+        - id: healthyme-pacientes
           uri: lb://healthyme-pacientes
           predicates:
-            - Path=/api/v1/pacientes/**
+            - Path=/api/v1/pacientes/**,/api/v1/seguros/**,/api/v1/historiales/**,/api/v1/triajes/**
           filters:
             - name: CircuitBreaker
               args:
                 name: pacientesCircuitBreaker
                 fallbackUri: forward:/fallback/pacientes
+
+        # Healthyme Personal
+        - id: healthyme-personal
+          uri: lb://healthyme-personal
+          predicates:
+            - Path=/api/v1/medicos/**,/api/v1/enfermeros/**,/api/v1/tecnicos/**,/api/v1/especialidades/**,/api/v1/unidades/**,/api/v1/horarios-trabajo/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: personalCircuitBreaker
+                fallbackUri: forward:/fallback/personal
+
+        # Healthyme Infraestructura
+        - id: healthyme-infraestructura
+          uri: lb://healthyme-infraestructura
+          predicates:
+            - Path=/api/v1/sedes/**,/api/v1/consultorios/**,/api/v1/laboratorios/**,/api/v1/horarios/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: infraestructuraCircuitBreaker
+                fallbackUri: forward:/fallback/infraestructura
+
+        # Healthyme Citas
+        - id: healthyme-citas
+          uri: lb://healthyme-citas
+          predicates:
+            - Path=/api/v1/citas/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: citasCircuitBreaker
+                fallbackUri: forward:/fallback/citas
+
+        # Healthyme Consultas
+        - id: healthyme-consultas
+          uri: lb://healthyme-consultas
+          predicates:
+            - Path=/api/v1/consultas/**,/api/v1/recetas/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: consultasCircuitBreaker
+                fallbackUri: forward:/fallback/consultas
+
+        # Healthyme Payment
+        - id: healthyme-payment
+          uri: lb://healthyme-payment
+          predicates:
+            - Path=/api/v1/pagos/**,/api/v1/facturas/**,/api/v1/metodos-pago/**,/api/v1/transacciones/**,/api/v1/stripe/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: paymentCircuitBreaker
+                fallbackUri: forward:/fallback/payment
+
+        # Healthyme Laboratorio
+        - id: healthyme-laboratorio
+          uri: lb://healthyme-laboratorio
+          predicates:
+            - Path=/api/v1/examenes/**,/api/v1/reservas-lab/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: laboratorioCircuitBreaker
+                fallbackUri: forward:/fallback/laboratorio
+
+        # Healthyme Storage
+        - id: healthyme-storage
+          uri: lb://healthyme-storage
+          predicates:
+            - Path=/api/v1/storage/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: storageServiceCircuitBreaker
+                fallbackUri: forward:/fallback/storage
+
+        # Healthyme Notification
+        - id: healthyme-notification
+          uri: lb://healthyme-notification
+          predicates:
+            - Path=/api/v1/notificaciones/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: notificationServiceCircuitBreaker
+                fallbackUri: forward:/fallback/notification
+
+        # Healthyme Reclamaciones
+        - id: healthyme-reclamaciones
+          uri: lb://healthyme-reclamaciones
+          predicates:
+            - Path=/api/v1/reclamaciones/**,/api/v1/respuestas/**,/api/v1/reportes/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: reclamacionesCircuitBreaker
+                fallbackUri: forward:/fallback/reclamaciones
 
 # Resilience4j configuration
 resilience4j:
@@ -55,34 +150,57 @@ resilience4j:
         slowCallDurationThreshold: 2s
         eventConsumerBufferSize: 10
     instances:
+      securityServiceCircuitBreaker:
+        baseConfig: default
+        failureRateThreshold: 30  # Más estricto para seguridad
+      pacientesCircuitBreaker:
+        baseConfig: default
+      personalCircuitBreaker:
+        baseConfig: default
+      infraestructuraCircuitBreaker:
+        baseConfig: default
+      citasCircuitBreaker:
+        baseConfig: default
+      consultasCircuitBreaker:
+        baseConfig: default
+      paymentCircuitBreaker:
+        baseConfig: default
+        failureRateThreshold: 40  # Más estricto para pagos
+      laboratorioCircuitBreaker:
+        baseConfig: default
       storageServiceCircuitBreaker:
         baseConfig: default
-        waitDurationInOpenState: 15s  # tiempo para servicios que manejan archivos
+        waitDurationInOpenState: 15s  # Más tiempo para archivos
       notificationServiceCircuitBreaker:
         baseConfig: default
-        failureRateThreshold: 60  # tolerante con el servicio de notificaciones
-      pacientesCircuitBreaker:
-        registerHealthIndicator: true
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 5
-        permittedNumberOfCallsInHalfOpenState: 3
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        waitDurationInOpenState: 5s
-        failureRateThreshold: 50
-        eventConsumerBufferSize: 10
-        recordExceptions:
-          - java.io.IOException
-          - java.util.concurrent.TimeoutException
-          - org.springframework.web.client.HttpServerErrorException
-          - java.net.ConnectException
+        failureRateThreshold: 60  # Más tolerante
+      reclamacionesCircuitBreaker:
+        baseConfig: default
+
   timelimiter:
     instances:
-      storageServiceCircuitBreaker:
-        timeoutDuration: 10s  # timeout para operaciones de archivos
-      notificationServiceCircuitBreaker:
-        timeoutDuration: 5s
+      securityServiceCircuitBreaker:
+        timeoutDuration: 3s
       pacientesCircuitBreaker:
         timeoutDuration: 3s
+      personalCircuitBreaker:
+        timeoutDuration: 3s
+      infraestructuraCircuitBreaker:
+        timeoutDuration: 3s
+      citasCircuitBreaker:
+        timeoutDuration: 5s
+      consultasCircuitBreaker:
+        timeoutDuration: 5s
+      paymentCircuitBreaker:
+        timeoutDuration: 10s  # Más tiempo para pagos
+      laboratorioCircuitBreaker:
+        timeoutDuration: 5s
+      storageServiceCircuitBreaker:
+        timeoutDuration: 10s  # Más tiempo para archivos
+      notificationServiceCircuitBreaker:
+        timeoutDuration: 5s
+      reclamacionesCircuitBreaker:
+        timeoutDuration: 5s
 
 # Metrics and monitoring
 management:
@@ -102,9 +220,6 @@ management:
     export:
       prometheus:
         enabled: true
-  info:
-    env:
-      enabled: true
 
 # Logging
 logging:

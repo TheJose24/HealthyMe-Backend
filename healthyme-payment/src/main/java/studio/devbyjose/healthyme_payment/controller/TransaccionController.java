@@ -12,7 +12,7 @@ import studio.devbyjose.healthyme_payment.service.interfaces.TransaccionService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transacciones")
+@RequestMapping("/api/v1/transacciones")
 @RequiredArgsConstructor
 public class TransaccionController {
 

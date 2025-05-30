@@ -1,0 +1,442 @@
+services:
+  # ==========================================
+  # INFRASTRUCTURE SERVICES
+  # ==========================================
+  
+  # Discovery Server (Eureka)
+  discovery-server:
+    build:
+      context: ./discovery-server
+      dockerfile: Dockerfile
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 120s
+    networks:
+      - healthyme-network
+    restart: on-failure
+
+  # Config Server
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 120s
+    networks:
+      - healthyme-network
+    restart: on-failure
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 120s
+    networks:
+      - healthyme-network
+    restart: on-failure
+
+  # ==========================================
+  # DATABASE SERVICES
+  # ==========================================
+
+  # MongoDB para Citas
+  mongo-citas:
+    image: mongo:4.4
+    container_name: mongo-citas
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: healthyme_citas
+    volumes:
+      - mongo_citas_data:/data/db
+    networks:
+      - healthyme-network
+    restart: on-failure
+
+  # ==========================================
+  # MESSAGING
+  # ==========================================
+
+  # Zookeeper
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - healthyme-network
+    restart: on-failure
+
+  # Kafka
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - healthyme-network
+    restart: on-failure
+
+  # ==========================================
+  # BUSINESS SERVICES
+  # ==========================================
+
+  # Security Service
+  security-service:
+    build:
+      context: ./security-service
+      dockerfile: Dockerfile
+    container_name: security-service
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  # Healthyme Pacientes
+  healthyme-pacientes:
+    build:
+      context: ./healthyme-pacientes
+      dockerfile: Dockerfile
+    container_name: healthyme-pacientes
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  # Healthyme Personal
+  healthyme-personal:
+    build:
+      context: ./healthyme-personal
+      dockerfile: Dockerfile
+    container_name: healthyme-personal
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  # Healthyme Notification
+  healthyme-notification:
+    build:
+      context: ./healthyme-notification
+      dockerfile: Dockerfile
+    container_name: healthyme-notification
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    volumes:
+      # 📁 Volumen para plantillas Thymeleaf
+      - ./healthyme-notification/src/main/resources/templates:/app/templates:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  # Healthyme Laboratorio
+  healthyme-laboratorio:
+    build:
+      context: ./healthyme-laboratorio
+      dockerfile: Dockerfile
+    container_name: healthyme-laboratorio
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    volumes:
+      # 📁 Volumen para plantillas Thymeleaf del laboratorio
+      - ./healthyme-laboratorio/src/main/resources/Templates:/app/templates:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8087/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  # Healthyme Consultas
+  healthyme-consultas:
+    build:
+      context: ./healthyme-consultas
+      dockerfile: Dockerfile
+    container_name: healthyme-consultas
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    volumes:
+      # 📁 Volumen para plantillas de recetas
+      - ./healthyme-consultas/src/main/resources/templates:/app/templates:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8089/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  # Healthyme Storage
+  healthyme-storage:
+    build:
+      context: ./healthyme-storage
+      dockerfile: Dockerfile
+    container_name: healthyme-storage
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    volumes:
+      # 📁 Volumen principal para archivos almacenados
+      - storage_files:/app/storage/files
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  # Healthyme Reclamaciones
+  healthyme-reclamaciones:
+    build:
+      context: ./healthyme-reclamaciones
+      dockerfile: Dockerfile
+    container_name: healthyme-reclamaciones
+    ports:
+      - "8091:8091"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  # Resto de servicios...
+  healthyme-infraestructura:
+    build:
+      context: ./healthyme-infraestructura
+      dockerfile: Dockerfile
+    container_name: healthyme-infraestructura
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+  healthyme-citas:
+    build:
+      context: ./healthyme-citas
+      dockerfile: Dockerfile
+    container_name: healthyme-citas
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      mongo-citas:
+        condition: service_started
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+    restart: no
+
+  healthyme-payment:
+    build:
+      context: ./healthyme-payment
+      dockerfile: Dockerfile
+    container_name: healthyme-payment
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health"]
+      interval: 90s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+    networks:
+      - healthyme-network
+      - database_db_mysql
+    restart: no
+
+# ==========================================
+# VOLUMES
+# ==========================================
+volumes:
+  mongo_citas_data:
+  kafka_data:
+  storage_files:
+
+# ==========================================
+# NETWORKS
+# ==========================================
+networks:
+  healthyme-network:
+    driver: bridge
+  database_db_mysql:
+    external: true

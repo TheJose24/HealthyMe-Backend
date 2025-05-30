@@ -31,7 +31,7 @@ public class HorarioTecnico extends Auditable {
 
     @Embeddable
     public class HorarioTecnicoId implements Serializable {
-        private Long idTecnico;
-        private Long idHorario;
+        private Integer idTecnico;
+        private Integer idHorario;
     }
 }

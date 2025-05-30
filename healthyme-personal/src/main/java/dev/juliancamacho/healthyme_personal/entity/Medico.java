@@ -29,11 +29,6 @@ public class Medico extends Auditable {
     @JoinColumn(name = "id_especialidad", nullable = false)
     private Especialidad especialidad;
 
-    @ManyToMany
-    @JoinTable(
-            name = "horario_medico",
-            joinColumns = @JoinColumn(name = "id_medico"),
-            inverseJoinColumns = @JoinColumn(name = "id_horario")
-    )
-    private Set<HorarioTrabajo> horarios;
+    @OneToMany(mappedBy = "medico")
+    private Set<HorarioMedico> horariosMedico;
 }

@@ -94,6 +94,11 @@ public class MedicoServiceImpl implements MedicoService {
         return medicoMapper.medicoToMedicoDto(savedMedico);
     }
 
+    @Override
+    public Long countMedicos() {
+        return medicoRepository.count();
+    }
+
     // DELETE BY ID
     @Override
     public void deleteMedicoById(Integer id) {

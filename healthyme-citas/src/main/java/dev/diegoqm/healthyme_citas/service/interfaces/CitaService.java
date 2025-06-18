@@ -16,6 +16,9 @@ public interface CitaService {
     // UPDATE
     CitaDTO updateCita(String id, CitaDTO citaDto);
 
+    // COUNT
+    Long countCitas();
+
     // DELETE BY ID
     void deleteCitaById(String id);
 

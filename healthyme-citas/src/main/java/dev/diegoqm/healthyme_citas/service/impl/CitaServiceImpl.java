@@ -74,6 +74,11 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
+    public Long countCitas() {
+        return citaRepository.count();
+    }
+
+    @Override
     public void deleteCitaById(String id) {
         if (!citaRepository.existsById(id)) {
             throw new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND);

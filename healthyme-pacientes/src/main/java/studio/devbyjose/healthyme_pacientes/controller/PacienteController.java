@@ -11,6 +11,7 @@ import studio.devbyjose.healthyme_pacientes.dto.PacienteDTO;
 import studio.devbyjose.healthyme_pacientes.service.interfaces.PacienteService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/pacientes")
@@ -47,6 +48,19 @@ public class PacienteController {
     @Operation(summary = "Actualizar un paciente existente")
     public ResponseEntity<PacienteDTO> update(@PathVariable Long id, @Valid @RequestBody PacienteDTO pacienteDTO) {
         return ResponseEntity.ok(pacienteService.update(id, pacienteDTO));
+    }
+
+    @GetMapping("/count")
+    @Operation(summary = "Obtener el número total de pacientes")
+    public ResponseEntity<Long> getTotalPacientes() {
+        return ResponseEntity.ok(pacienteService.countPacientes());
+    }
+
+    @Operation(summary = "Obtener pacientes agrupados por mes")
+    @GetMapping("/por-mes")
+    public ResponseEntity<Map<Integer, Long>> getPacientesPorMes() {
+        Map<Integer, Long> pacientesPorMes = pacienteService.getPacientesPorMes();
+        return ResponseEntity.ok(pacientesPorMes);
     }
 
     @DeleteMapping("/{id}")

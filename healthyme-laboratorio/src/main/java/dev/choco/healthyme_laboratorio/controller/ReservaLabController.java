@@ -57,6 +57,12 @@ public class ReservaLabController {
         return ResponseEntity.ok(service.actualizar(id, dto));
     }
 
+    @Operation(summary = "Obtener el número total de reservas de laboratorio")
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalReservas() {
+        return ResponseEntity.ok(service.countReservas());
+    }
+
     @Operation(
             summary = "Eliminar una reserva",
             description = "Elimina una reserva de laboratorio por su ID"

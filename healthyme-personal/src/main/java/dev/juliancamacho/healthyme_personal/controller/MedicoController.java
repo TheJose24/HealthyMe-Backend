@@ -97,4 +97,11 @@ public class MedicoController {
         medicoService.deleteMedicoById(id);
         return ResponseEntity.ok("Medico eliminado con éxito");
     }
+
+    // COUNT
+    @GetMapping("/count")
+    @Operation(summary = "Obtener el número total de médicos")
+    public ResponseEntity<Long> getTotalMedicos() {
+        return ResponseEntity.ok(medicoService.countMedicos());
+    }
 }

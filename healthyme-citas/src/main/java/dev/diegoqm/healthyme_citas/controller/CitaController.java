@@ -49,6 +49,12 @@ public class CitaController {
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener el número total de citas")
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalCitas() {
+        return ResponseEntity.ok(citaService.countCitas());
+    }
+
     @Operation(summary = "Eliminar una cita por ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCitaById(@PathVariable String id) {

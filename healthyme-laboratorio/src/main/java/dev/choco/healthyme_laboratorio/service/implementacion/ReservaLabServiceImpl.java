@@ -54,6 +54,11 @@ public class ReservaLabServiceImpl implements ReservaLabService {
     }
 
     @Override
+    public Long countReservas() {
+        return repository.count();
+    }
+
+    @Override
     public void eliminar(Integer id) {
         ReservaLab reserva = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + id));

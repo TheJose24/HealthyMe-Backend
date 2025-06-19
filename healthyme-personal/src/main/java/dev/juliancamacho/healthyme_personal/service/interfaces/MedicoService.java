@@ -18,6 +18,9 @@ public interface MedicoService
     // UPDATE
     MedicoDto updateMedico(Integer id, MedicoDto medicoDto);
 
+    // COUNT
+    Long countMedicos();
+
     // DELETE BY ID
     void deleteMedicoById(Integer id);
 }

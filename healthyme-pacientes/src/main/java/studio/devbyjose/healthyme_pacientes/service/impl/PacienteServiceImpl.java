@@ -13,6 +13,8 @@ import studio.devbyjose.healthyme_pacientes.mapper.PacienteMapper;
 import studio.devbyjose.healthyme_pacientes.repository.PacienteRepository;
 import studio.devbyjose.healthyme_pacientes.service.interfaces.PacienteService;
 
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,6 +85,23 @@ public class PacienteServiceImpl implements PacienteService {
         Paciente updatedPaciente = pacienteRepository.save(paciente);
         log.info("Paciente actualizado con éxito");
         return pacienteMapper.toDTO(updatedPaciente);
+    }
+
+    @Override
+    public Long countPacientes() {
+        return pacienteRepository.count();
+    }
+
+    @Override
+    public Map<Integer, Long> getPacientesPorMes() {
+        List<Object[]> resultados = pacienteRepository.countPacientesPorMes();
+        Map<Integer, Long> pacientesPorMes = new HashMap<>();
+        for (Object[] fila : resultados) {
+            Integer mes = ((Number)fila[0]).intValue();  // El mes (1 a 12)
+            Long total = ((Number)fila[1]).longValue();   // La cantidad
+            pacientesPorMes.put(mes, total);
+        }
+        return pacientesPorMes;
     }
 
     @Override

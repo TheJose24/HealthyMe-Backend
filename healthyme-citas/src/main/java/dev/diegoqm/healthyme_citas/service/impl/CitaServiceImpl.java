@@ -1,6 +1,7 @@
 package dev.diegoqm.healthyme_citas.service.impl;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
+import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
 import dev.diegoqm.healthyme_citas.entity.Cita;
 import dev.diegoqm.healthyme_citas.exception.CitaNotFoundException;
 import dev.diegoqm.healthyme_citas.mapper.CitaMapper;
@@ -11,10 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import studio.devbyjose.healthyme_commons.client.dto.MedicoDTO;
 import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
+import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +30,7 @@ public class CitaServiceImpl implements CitaService {
     private final CitaRepository citaRepository;
     private final CitaMapper citaMapper;
     private final PacienteClient pacienteClient;
+    private final MedicoClient medicoClient;
 
     @Override
     public CitaDTO createCita(CitaDTO citaDto) {
@@ -76,6 +82,31 @@ public class CitaServiceImpl implements CitaService {
     @Override
     public Long countCitas() {
         return citaRepository.count();
+    }
+
+    @Override
+    public List<CitasHoyDTO> getCitasDeHoy() {
+        LocalDate hoy = LocalDate.now();
+        List<Cita> citasHoy = citaRepository.findByFecha(hoy);
+        List<CitasHoyDTO> resultado = new ArrayList<>();
+
+        for (Cita cita : citasHoy) {
+            CitasHoyDTO dto = new CitasHoyDTO();
+            dto.setHoraInicio(cita.getHora()); // Suponiendo que 'hora' es un LocalTime en la entidad Cita
+
+            // Convierto también el idMedico (en el DTO de cita es String) a Integer
+            try {
+                Integer idMedico = Integer.valueOf(cita.getIdMedico());
+                MedicoDTO medicoDTO = medicoClient.obtenerMedico(idMedico);
+                dto.setNombreMedico(medicoDTO.getNombre() + " " + medicoDTO.getApellido());
+                dto.setEspecialidad(medicoDTO.getEspecialidad());
+            } catch (Exception e) {
+                dto.setNombreMedico("Desconocido");
+                dto.setEspecialidad("Desconocida");
+            }
+            resultado.add(dto);
+        }
+        return resultado;
     }
 
     @Override

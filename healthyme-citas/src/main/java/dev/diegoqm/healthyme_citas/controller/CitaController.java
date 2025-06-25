@@ -1,6 +1,7 @@
 package dev.diegoqm.healthyme_citas.controller;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
+import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
 import dev.diegoqm.healthyme_citas.service.interfaces.CitaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,6 +54,13 @@ public class CitaController {
     @GetMapping("/count")
     public ResponseEntity<Long> getTotalCitas() {
         return ResponseEntity.ok(citaService.countCitas());
+    }
+
+    @GetMapping("/hoy")
+    @Operation(summary = "Obtener citas de hoy", description = "Retorna las citas del día actual con nombre del médico, especialidad y hora de inicio")
+    public ResponseEntity<List<CitasHoyDTO>> getCitasDeHoy() {
+        List<CitasHoyDTO> citas = citaService.getCitasDeHoy();
+        return ResponseEntity.ok(citas);
     }
 
     @Operation(summary = "Eliminar una cita por ID")

@@ -16,6 +16,7 @@ import studio.devbyjose.healthyme_commons.client.dto.PagoDTO;
 import studio.devbyjose.healthyme_commons.dto.ErrorResponseDTO;
 import studio.devbyjose.healthyme_commons.enums.EntidadOrigen;
 import studio.devbyjose.healthyme_commons.enums.payment.EstadoPago;
+import studio.devbyjose.healthyme_payment.dto.HistorialPagoDTO;
 import studio.devbyjose.healthyme_payment.dto.PagoResponseDTO;
 import studio.devbyjose.healthyme_payment.service.interfaces.PagoService;
 
@@ -91,5 +92,12 @@ public class PagoController {
             @RequestParam Integer idReferencia) {
         PagoDTO pago = pagoService.getPagoByReferencia(entidad, idReferencia);
         return ResponseEntity.ok(pago);
+    }
+
+    @GetMapping("/historial")
+    @Operation(summary = "Obtener historial de pagos", description = "Retorna los 3 últimos pagos con información extendida, incluyendo nombre del médico, área, fecha, hora y monto")
+    public ResponseEntity<List<HistorialPagoDTO>> getHistorialPagos() {
+        List<HistorialPagoDTO> historial = pagoService.getHistorialPagos();
+        return ResponseEntity.ok(historial);
     }
 }

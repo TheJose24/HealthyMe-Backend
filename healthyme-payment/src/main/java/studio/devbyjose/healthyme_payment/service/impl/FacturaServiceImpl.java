@@ -143,7 +143,7 @@ public class FacturaServiceImpl implements FacturaService {
 
         try {
             // 1. Obtener el paciente por su ID
-            ResponseEntity<PacienteDTO> pacienteResponse = pacienteClient.findPacienteById(idPaciente);
+            ResponseEntity<PacienteDTO> pacienteResponse = pacienteClient.findPacienteById(String.valueOf(idPaciente));
 
             if (!pacienteResponse.getStatusCode().is2xxSuccessful() || pacienteResponse.getBody() == null) {
                 throw new PaymentException("No se pudo obtener datos del paciente con ID: " + idPaciente,

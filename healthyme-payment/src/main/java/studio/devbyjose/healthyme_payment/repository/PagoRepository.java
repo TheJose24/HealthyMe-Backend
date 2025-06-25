@@ -16,4 +16,5 @@ public interface PagoRepository extends JpaRepository<Pago, Integer> {
     List<Pago> findByEstado(EstadoPago estado);
     Optional<Pago> findByPaymentIntentId(String paymentIntentId);
     Optional<Pago> findByEntidadReferenciaAndEntidadReferenciaId(EntidadOrigen entidadReferencia, Integer idReferencia);
+    List<Pago> findTop3ByOrderByFechaPagoDesc();
 }

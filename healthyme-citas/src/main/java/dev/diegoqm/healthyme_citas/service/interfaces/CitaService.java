@@ -1,6 +1,8 @@
 package dev.diegoqm.healthyme_citas.service.interfaces;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
+import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
+
 import java.util.List;
 
 public interface CitaService {
@@ -18,6 +20,8 @@ public interface CitaService {
 
     // COUNT
     Long countCitas();
+
+    List<CitasHoyDTO> getCitasDeHoy();
 
     // DELETE BY ID
     void deleteCitaById(String id);

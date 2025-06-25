@@ -4,6 +4,7 @@ import studio.devbyjose.healthyme_commons.client.dto.CreatePagoDTO;
 import studio.devbyjose.healthyme_commons.client.dto.PagoDTO;
 import studio.devbyjose.healthyme_commons.enums.EntidadOrigen;
 import studio.devbyjose.healthyme_commons.enums.payment.EstadoPago;
+import studio.devbyjose.healthyme_payment.dto.HistorialPagoDTO;
 import studio.devbyjose.healthyme_payment.dto.PagoResponseDTO;
 
 import java.util.List;
@@ -60,4 +61,6 @@ public interface PagoService {
      * @return el pago encontrado
      */
     PagoDTO getPagoByReferencia(EntidadOrigen entidadReferencia, Integer idReferencia);
+
+    List<HistorialPagoDTO> getHistorialPagos();
 }

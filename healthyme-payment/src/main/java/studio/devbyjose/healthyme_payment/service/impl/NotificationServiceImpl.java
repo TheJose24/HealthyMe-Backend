@@ -80,7 +80,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         try {
             // Obtener información del paciente
-            ResponseEntity<PacienteDTO> pacienteResponse = pacienteClient.findPacienteById(factura.getPago().getIdPaciente().longValue());
+            ResponseEntity<PacienteDTO> pacienteResponse = pacienteClient.findPacienteById(String.valueOf(factura.getPago().getIdPaciente().longValue()));
             ResponseEntity<UsuarioDTO> usuarioResponse = usuarioClient.obtenerUsuario(pacienteResponse.getBody().getIdUsuario().intValue());
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

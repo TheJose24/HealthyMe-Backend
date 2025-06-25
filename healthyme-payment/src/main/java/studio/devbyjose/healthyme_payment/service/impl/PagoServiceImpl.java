@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studio.devbyjose.healthyme_commons.client.dto.CreatePagoDTO;
+import studio.devbyjose.healthyme_commons.client.dto.MedicoDTO;
 import studio.devbyjose.healthyme_commons.client.dto.PagoDTO;
 import studio.devbyjose.healthyme_commons.enums.EntidadOrigen;
 import studio.devbyjose.healthyme_commons.enums.payment.EstadoPago;
 import studio.devbyjose.healthyme_payment.dto.CreateFacturaDTO;
+import studio.devbyjose.healthyme_payment.dto.HistorialPagoDTO;
 import studio.devbyjose.healthyme_payment.dto.PagoResponseDTO;
 import studio.devbyjose.healthyme_payment.dto.PaymentIntentDTO;
 import studio.devbyjose.healthyme_payment.entity.MetodoPago;
@@ -27,9 +29,11 @@ import studio.devbyjose.healthyme_payment.service.interfaces.FacturaService;
 import studio.devbyjose.healthyme_payment.service.interfaces.NotificationService;
 import studio.devbyjose.healthyme_payment.service.interfaces.PagoService;
 import studio.devbyjose.healthyme_payment.service.interfaces.StripeService;
+import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +50,12 @@ public class PagoServiceImpl implements PagoService {
     private final PagoMapperExtended pagoMapperExtended;
     private final FacturaService facturaService;
     private final StripeService stripeService;
+    private final MedicoClient medicoClient;
 
     @Override
     @Transactional
     public PagoDTO createPago(CreatePagoDTO createPagoDTO) {
-        // Verificar si el método de pago existe
+        // Verificar si el metodo de pago existe
         MetodoPago metodoPago = metodoPagoRepository.findById(createPagoDTO.getIdMetodoPago())
                 .orElseThrow(() -> new MetodoPagoNotFoundException(createPagoDTO.getIdMetodoPago()));
 
@@ -178,4 +183,42 @@ public class PagoServiceImpl implements PagoService {
 
         return pagoMapper.toDto(pago);
     }
+
+    @Override
+    public List<HistorialPagoDTO> getHistorialPagos() {
+        // Obtén los 3 últimos pagos, por ejemplo:
+        List<Pago> ultimosPagos = pagoRepository.findTop3ByOrderByFechaPagoDesc();
+        List<HistorialPagoDTO> historial = new ArrayList<>();
+
+        for (Pago pago : ultimosPagos) {
+            HistorialPagoDTO dto = new HistorialPagoDTO();
+            dto.setFecha(pago.getFechaPago().toLocalDate());
+            dto.setHora(pago.getFechaPago().toLocalTime());
+            dto.setMonto(pago.getMonto());
+
+            // Dependiendo del tipo de entidad referenciada, suponemos que para CITA o CONSULTA se trata de un médico:
+            if (pago.getEntidadReferencia().toString().equals("CITA")
+                    || pago.getEntidadReferencia().toString().equals("CONSULTA")) {
+
+                // Llamada al otro microservicio utilizando el Feign Client
+                try {
+                    MedicoDTO medicoDTO = medicoClient.obtenerMedico(pago.getEntidadReferenciaId());
+                    dto.setDoctor(medicoDTO.getNombre()); // Asume que MedicoDTO tiene el campo 'nombre'
+                    dto.setAreaTrabajo(medicoDTO.getEspecialidad()); // Y que 'especialidad' tiene 'nombre'
+                } catch (Exception e) {
+                    // Manejar la excepción según la política de error de la aplicación.
+                    dto.setDoctor("Desconocido");
+                    dto.setAreaTrabajo("Desconocido");
+                }
+            } else if (pago.getEntidadReferencia().toString().equals("EXAMEN")) {
+                // Si es examen, quizá se llame a otro cliente o se asuma otro dato
+                dto.setDoctor("Técnico responsable");
+                dto.setAreaTrabajo("Laboratorio Clínico");
+            }
+
+            historial.add(dto);
+        }
+        return historial;
+    }
+
 }

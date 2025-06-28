@@ -5,6 +5,19 @@ server:
 spring:
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
       discovery:
         locator:
           enabled: true
@@ -37,6 +50,26 @@ spring:
               args:
                 name: pacientesCircuitBreaker
                 fallbackUri: forward:/fallback/pacientes
+
+        - id: healthyme-citas
+          uri: lb://healthyme-citas
+          predicates:
+            - Path=/api/citas/**
+
+        - id: healthyme-laboratorio
+          uri: lb://healthyme-laboratorio
+          predicates:
+            - Path=/api/**
+
+        - id: healthyme-payment
+          uri: lb://healthyme-payment
+          predicates:
+            - Path=/payment/api/**
+
+        - id: healthyme-personal
+          uri: lb://healthyme-personal
+          predicates:
+            - Path=/api/medicos/**
 
 # Resilience4j configuration
 resilience4j:

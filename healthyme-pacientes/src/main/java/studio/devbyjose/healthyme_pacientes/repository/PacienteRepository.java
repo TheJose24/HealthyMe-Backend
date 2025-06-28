@@ -11,8 +11,7 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
     Optional<Paciente> findByIdUsuario(Long idUsuario);
     boolean existsByIdUsuario(Long idUsuario);
 
-    @Query("SELECT FUNCTION('MONTH', p.fechaCreacion) AS mes, COUNT(p) AS total " +
-            "FROM Paciente p " +
-            "GROUP BY FUNCTION('MONTH', p.fechaCreacion)")
+    @Query("SELECT FUNCTION('MONTH', p.fechaCreacion), COUNT(p) FROM Paciente p GROUP BY FUNCTION('MONTH', p.fechaCreacion)")
     List<Object[]> countPacientesPorMes();
+
 }

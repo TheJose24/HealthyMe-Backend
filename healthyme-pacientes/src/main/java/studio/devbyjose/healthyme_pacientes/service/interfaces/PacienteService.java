@@ -1,6 +1,7 @@
 package studio.devbyjose.healthyme_pacientes.service.interfaces;
 
 import studio.devbyjose.healthyme_pacientes.dto.PacienteDTO;
+import studio.devbyjose.healthyme_pacientes.dto.PacientesPorMesDTO;
 
 import java.util.Map;
 import java.util.List;
@@ -57,7 +58,8 @@ public interface PacienteService {
     //COUNT
     Long countPacientes();
 
-    Map<Integer, Long> getPacientesPorMes();
+
+    List<PacientesPorMesDTO> getPacientesPorMes();
 
     /**
      * Elimina un paciente

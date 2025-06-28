@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studio.devbyjose.healthyme_pacientes.dto.PacienteDTO;
+import studio.devbyjose.healthyme_pacientes.dto.PacientesPorMesDTO;
 import studio.devbyjose.healthyme_pacientes.entity.Paciente;
 import studio.devbyjose.healthyme_pacientes.exception.BadRequestException;
 import studio.devbyjose.healthyme_pacientes.exception.PacienteNotFoundException;
@@ -13,8 +14,7 @@ import studio.devbyjose.healthyme_pacientes.mapper.PacienteMapper;
 import studio.devbyjose.healthyme_pacientes.repository.PacienteRepository;
 import studio.devbyjose.healthyme_pacientes.service.interfaces.PacienteService;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,16 +93,23 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public Map<Integer, Long> getPacientesPorMes() {
+    public List<PacientesPorMesDTO> getPacientesPorMes() {
         List<Object[]> resultados = pacienteRepository.countPacientesPorMes();
-        Map<Integer, Long> pacientesPorMes = new HashMap<>();
-        for (Object[] fila : resultados) {
-            Integer mes = ((Number)fila[0]).intValue();  // El mes (1 a 12)
-            Long total = ((Number)fila[1]).longValue();   // La cantidad
-            pacientesPorMes.put(mes, total);
-        }
-        return pacientesPorMes;
+        String[] nombresMeses = {
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        };
+
+        return resultados.stream()
+                .map(fila -> {
+                    Integer mes = ((Number) fila[0]).intValue();
+                    Long total = ((Number) fila[1]).longValue();
+                    return new PacientesPorMesDTO(nombresMeses[mes - 1], total);
+                })
+                .sorted(Comparator.comparing(dto -> dto.getMes()))
+                .collect(Collectors.toList());
     }
+
 
     @Override
     @Transactional

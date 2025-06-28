@@ -1,46 +1,55 @@
 package studio.devbyjose.healthyme_payment.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class HistorialPagoDTO {
-    private String doctor;
-    private String areaTrabajo;
-    private LocalDate fecha;
-    private LocalTime hora;
-    private BigDecimal monto;
+    private String id;
+    private String patient;
+    private BigDecimal amount;
+    private String date; // Formato: yyyy-MM-dd
+    private String status; // paid | pending | failed
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPatient() {
+        return patient;
+    }
+
+    public void setPatient(String patient) {
+        this.patient = patient;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     // Getters y Setters
 
-    public String getDoctor() {
-        return doctor;
-    }
-    public void setDoctor(String doctor) {
-        this.doctor = doctor;
-    }
-    public String getAreaTrabajo() {
-        return areaTrabajo;
-    }
-    public void setAreaTrabajo(String areaTrabajo) {
-        this.areaTrabajo = areaTrabajo;
-    }
-    public LocalDate getFecha() {
-        return fecha;
-    }
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-    public LocalTime getHora() {
-        return hora;
-    }
-    public void setHora(LocalTime hora) {
-        this.hora = hora;
-    }
-    public BigDecimal getMonto() {
-        return monto;
-    }
-    public void setMonto(BigDecimal monto) {
-        this.monto = monto;
-    }
+
 }

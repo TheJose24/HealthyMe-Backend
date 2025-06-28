@@ -1,7 +1,10 @@
 package studio.devbyjose.healthyme_payment.service.interfaces;
 
 import studio.devbyjose.healthyme_commons.client.dto.FacturaDTO;
+import studio.devbyjose.healthyme_payment.dto.BalanceMensualDTO;
 import studio.devbyjose.healthyme_payment.dto.CreateFacturaDTO;
+
+import java.util.List;
 
 public interface FacturaService {
     
@@ -33,4 +36,5 @@ public interface FacturaService {
      */
     FacturaDTO getFacturaByPago(Integer idPago);
 
+    List<BalanceMensualDTO> obtenerBalanceMensual();
 }

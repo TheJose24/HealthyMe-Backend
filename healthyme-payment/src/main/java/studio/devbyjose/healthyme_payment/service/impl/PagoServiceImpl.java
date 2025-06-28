@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import studio.devbyjose.healthyme_commons.client.dto.CreatePagoDTO;
-import studio.devbyjose.healthyme_commons.client.dto.MedicoDTO;
-import studio.devbyjose.healthyme_commons.client.dto.PagoDTO;
+import studio.devbyjose.healthyme_commons.client.dto.*;
+import studio.devbyjose.healthyme_commons.client.fallback.PacienteClientFallback;
+import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 import studio.devbyjose.healthyme_commons.enums.EntidadOrigen;
 import studio.devbyjose.healthyme_commons.enums.payment.EstadoPago;
 import studio.devbyjose.healthyme_payment.dto.CreateFacturaDTO;
@@ -30,6 +30,7 @@ import studio.devbyjose.healthyme_payment.service.interfaces.NotificationService
 import studio.devbyjose.healthyme_payment.service.interfaces.PagoService;
 import studio.devbyjose.healthyme_payment.service.interfaces.StripeService;
 import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
+import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -51,6 +52,8 @@ public class PagoServiceImpl implements PagoService {
     private final FacturaService facturaService;
     private final StripeService stripeService;
     private final MedicoClient medicoClient;
+    private final PacienteClient pacienteClient;
+    private final UsuarioClient usuarioClient;
 
     @Override
     @Transactional
@@ -186,39 +189,41 @@ public class PagoServiceImpl implements PagoService {
 
     @Override
     public List<HistorialPagoDTO> getHistorialPagos() {
-        // Obtén los 3 últimos pagos, por ejemplo:
         List<Pago> ultimosPagos = pagoRepository.findTop3ByOrderByFechaPagoDesc();
         List<HistorialPagoDTO> historial = new ArrayList<>();
 
         for (Pago pago : ultimosPagos) {
             HistorialPagoDTO dto = new HistorialPagoDTO();
-            dto.setFecha(pago.getFechaPago().toLocalDate());
-            dto.setHora(pago.getFechaPago().toLocalTime());
-            dto.setMonto(pago.getMonto());
+            dto.setId("PAY" + String.format("%03d", pago.getId()));
+            dto.setAmount(pago.getMonto());
+            dto.setDate(pago.getFechaPago().toLocalDate().toString());
 
-            // Dependiendo del tipo de entidad referenciada, suponemos que para CITA o CONSULTA se trata de un médico:
-            if (pago.getEntidadReferencia().toString().equals("CITA")
-                    || pago.getEntidadReferencia().toString().equals("CONSULTA")) {
+            // Estado
+            switch (pago.getEstado()) {
+                case COMPLETADO -> dto.setStatus("paid");
+                case PENDIENTE -> dto.setStatus("pending");
+                case FALLIDO -> dto.setStatus("failed");
+                default -> dto.setStatus("unknown");
+            }
 
-                // Llamada al otro microservicio utilizando el Feign Client
-                try {
-                    MedicoDTO medicoDTO = medicoClient.obtenerMedico(pago.getEntidadReferenciaId());
-                    dto.setDoctor(medicoDTO.getNombre()); // Asume que MedicoDTO tiene el campo 'nombre'
-                    dto.setAreaTrabajo(medicoDTO.getEspecialidad()); // Y que 'especialidad' tiene 'nombre'
-                } catch (Exception e) {
-                    // Manejar la excepción según la política de error de la aplicación.
-                    dto.setDoctor("Desconocido");
-                    dto.setAreaTrabajo("Desconocido");
+            // Obtener nombre del paciente (si tienes acceso a PacienteClient o UsuarioClient)
+            try {
+                PacienteDTO paciente = pacienteClient.findPacienteById(String.valueOf(pago.getIdPaciente())).getBody();
+                if (paciente != null) {
+                    UsuarioDTO usuario = usuarioClient.obtenerUsuario(Math.toIntExact(paciente.getIdUsuario())).getBody();
+                    dto.setPatient(usuario.getNombreUsuario());
+                } else {
+                    dto.setPatient("Desconocido");
                 }
-            } else if (pago.getEntidadReferencia().toString().equals("EXAMEN")) {
-                // Si es examen, quizá se llame a otro cliente o se asuma otro dato
-                dto.setDoctor("Técnico responsable");
-                dto.setAreaTrabajo("Laboratorio Clínico");
+            } catch (Exception e) {
+                dto.setPatient("Desconocido");
             }
 
             historial.add(dto);
         }
+
         return historial;
     }
+
 
 }

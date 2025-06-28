@@ -3,28 +3,59 @@ package dev.diegoqm.healthyme_citas.dto;
 import java.time.LocalTime;
 
 public class CitasHoyDTO {
-    private String nombreMedico;
-    private String especialidad;
-    private LocalTime horaInicio;
+    private String id;
+    private String doctor;
+    private String area;
+    private String time;
+    private String status;
+    private String patient; // opcional
 
-    // Getters & Setters
+    // Getters y Setters
+    public String getId() {
+        return id;
+    }
 
-    public String getNombreMedico() {
-        return nombreMedico;
+    public void setId(String id) {
+        this.id = id;
     }
-    public void setNombreMedico(String nombreMedico) {
-        this.nombreMedico = nombreMedico;
+
+    public String getDoctor() {
+        return doctor;
     }
-    public String getEspecialidad() {
-        return especialidad;
+
+    public void setDoctor(String doctor) {
+        this.doctor = doctor;
     }
-    public void setEspecialidad(String especialidad) {
-        this.especialidad = especialidad;
+
+    public String getArea() {
+        return area;
     }
-    public LocalTime getHoraInicio() {
-        return horaInicio;
+
+    public void setArea(String area) {
+        this.area = area;
     }
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPatient() {
+        return patient;
+    }
+
+    public void setPatient(String patient) {
+        this.patient = patient;
     }
 }

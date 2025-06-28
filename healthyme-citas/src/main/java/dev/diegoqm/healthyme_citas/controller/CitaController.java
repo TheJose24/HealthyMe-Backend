@@ -2,6 +2,7 @@ package dev.diegoqm.healthyme_citas.controller;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
+import dev.diegoqm.healthyme_citas.dto.EspecialidadContadaDTO;
 import dev.diegoqm.healthyme_citas.service.interfaces.CitaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,6 +52,7 @@ public class CitaController {
     }
 
     @Operation(summary = "Obtener el número total de citas")
+
     @GetMapping("/count")
     public ResponseEntity<Long> getTotalCitas() {
         return ResponseEntity.ok(citaService.countCitas());
@@ -62,6 +64,13 @@ public class CitaController {
         List<CitasHoyDTO> citas = citaService.getCitasDeHoy();
         return ResponseEntity.ok(citas);
     }
+
+    @GetMapping("/especialidades/mas-solicitadas")
+    @Operation(summary = "Obtener especialidades más solicitadas", description = "Devuelve la cantidad de citas por especialidad")
+    public ResponseEntity<List<EspecialidadContadaDTO>> getEspecialidadesMasSolicitadas() {
+        return ResponseEntity.ok(citaService.getEspecialidadesMasSolicitadas());
+    }
+
 
     @Operation(summary = "Eliminar una cita por ID")
     @DeleteMapping("/{id}")

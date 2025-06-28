@@ -95,9 +95,9 @@ public class PagoController {
     }
 
     @GetMapping("/historial")
-    @Operation(summary = "Obtener historial de pagos", description = "Retorna los 3 últimos pagos con información extendida, incluyendo nombre del médico, área, fecha, hora y monto")
+    @Operation(summary = "Obtener historial de pagos", description = "Retorna los 3 últimos pagos con nombre del paciente, monto, fecha y estado")
     public ResponseEntity<List<HistorialPagoDTO>> getHistorialPagos() {
-        List<HistorialPagoDTO> historial = pagoService.getHistorialPagos();
-        return ResponseEntity.ok(historial);
+        return ResponseEntity.ok(pagoService.getHistorialPagos());
     }
+
 }

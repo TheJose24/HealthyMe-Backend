@@ -10,7 +10,7 @@ spring:
     time-zone: America/Lima
 
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:healthyme_consultas}?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${DB_HOST:mysql}:${DB_PORT:3306}/${DB_NAME:healthyme_consultas}?createDatabaseIfNotExist=true
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -11,7 +11,7 @@ spring:
     property-naming-strategy: SNAKE_CASE
     time-zone: America/Lima
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:healthyme_payment}?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${DB_HOST:mysql}:${DB_PORT:3306}/${DB_NAME:healthyme_payment}?createDatabaseIfNotExist=true
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:j0s33nr1qu3}
     driver-class-name: com.mysql.cj.jdbc.Driver

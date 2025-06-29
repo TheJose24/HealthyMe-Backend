@@ -30,6 +30,6 @@ public abstract class FileMetadataMapper {
 
     @Named("createDownloadUrl")
     protected String createDownloadUrl(String filename) {
-        return "http://localhost:" + serverPort + contextPath + "/api/storage/files/" + filename;
+        return "http://healthyme-storage:" + serverPort + contextPath + "/api/storage/files/" + filename;
     }
 }

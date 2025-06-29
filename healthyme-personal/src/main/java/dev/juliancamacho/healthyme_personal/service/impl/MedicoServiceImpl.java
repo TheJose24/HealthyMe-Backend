@@ -87,7 +87,7 @@ public class MedicoServiceImpl implements MedicoService {
         }
 
         medico.setIdUsuario(usuarioDTO.getBody().getIdUsuario());
-        medico.setHorarios(medicoDto.getIdHorarios());
+        medico.setHorariosMedico(medicoDto.getIdHorarios());
 
         Medico savedMedico = medicoRepository.save(medico);
 

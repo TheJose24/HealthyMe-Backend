@@ -1,7 +1,6 @@
 package dev.juliancamacho.healthyme_personal.dto;
 
 import dev.juliancamacho.healthyme_personal.entity.HorarioTecnico;
-import dev.juliancamacho.healthyme_personal.entity.HorarioTrabajo;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import studio.devbyjose.healthyme_commons.client.dto.ContratoDTO;

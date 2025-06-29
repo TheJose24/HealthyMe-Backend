@@ -28,11 +28,6 @@ public class Tecnico extends Auditable {
     @JoinColumn(name = "id_unidad", nullable = false)
     private Unidad unidad;
 
-    @ManyToMany
-    @JoinTable(
-            name = "horario_tecnico",
-            joinColumns = @JoinColumn(name = "id_tecnico"),
-            inverseJoinColumns = @JoinColumn(name = "id_horario")
-    )
-    private Set<HorarioTrabajo> horarios;
+    @OneToMany(mappedBy = "tecnico")
+    private Set<HorarioTecnico> horariosTecnico;
 }

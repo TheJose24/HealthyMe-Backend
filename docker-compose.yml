@@ -132,7 +132,7 @@ services:
     ports:
       - "8085:8085"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -146,7 +146,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   # Healthyme Pacientes
@@ -158,7 +158,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -172,7 +172,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   # Healthyme Personal
@@ -184,7 +184,7 @@ services:
     ports:
       - "8082:8082"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -198,7 +198,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   # Healthyme Notification
@@ -210,7 +210,7 @@ services:
     ports:
       - "8090:8090"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -229,7 +229,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   # Healthyme Laboratorio
@@ -241,7 +241,7 @@ services:
     ports:
       - "8087:8087"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -258,7 +258,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   # Healthyme Consultas
@@ -270,7 +270,7 @@ services:
     ports:
       - "8089:8089"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -287,7 +287,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   # Healthyme Storage
@@ -299,7 +299,7 @@ services:
     ports:
       - "8088:8088"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -307,7 +307,7 @@ services:
         condition: service_healthy
     volumes:
       # 📁 Volumen principal para archivos almacenados
-      - storage_files:/app/storage/files
+      - ./storage:/app/storage/files
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8088/actuator/health"]
       interval: 90s
@@ -316,7 +316,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   # Healthyme Reclamaciones
@@ -328,7 +328,7 @@ services:
     ports:
       - "8091:8091"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -342,7 +342,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   # Resto de servicios...
@@ -354,7 +354,7 @@ services:
     ports:
       - "8083:8083"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -368,7 +368,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
   healthyme-citas:
@@ -379,7 +379,7 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -407,7 +407,7 @@ services:
     ports:
       - "8086:8086"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -421,7 +421,7 @@ services:
       start_period: 180s
     networks:
       - healthyme-network
-      - database_db_mysql
+      - dev_default
     restart: no
 
 # ==========================================
@@ -430,7 +430,6 @@ services:
 volumes:
   mongo_citas_data:
   kafka_data:
-  storage_files:
 
 # ==========================================
 # NETWORKS
@@ -438,5 +437,5 @@ volumes:
 networks:
   healthyme-network:
     driver: bridge
-  database_db_mysql:
+  dev_default:
     external: true

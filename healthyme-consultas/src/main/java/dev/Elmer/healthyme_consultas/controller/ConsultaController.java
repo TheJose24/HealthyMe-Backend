@@ -22,7 +22,7 @@ public class ConsultaController {
     private final ConsultaService service;
 
     @Operation(summary = "Crear nueva consulta", description = "Guarda una nueva consulta médica.")
-    @ApiResponse(responseCode = "201", description = "Consulta creada exitosamente")
+    @ApiResponse(responseCode = "201", description = "Consulta creada e xitosamente")
     @PostMapping
     public ResponseEntity<ConsultaDto> guardar(@Valid @RequestBody ConsultaDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(dto));

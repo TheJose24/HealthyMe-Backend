@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import studio.devbyjose.healthyme_commons.client.dto.CreatePagoDTO;
-import studio.devbyjose.healthyme_commons.client.dto.PagoDTO;
+import studio.devbyjose.healthyme_commons.client.dto.*;
+import studio.devbyjose.healthyme_commons.client.fallback.PacienteClientFallback;
+import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 import studio.devbyjose.healthyme_commons.enums.EntidadOrigen;
 import studio.devbyjose.healthyme_commons.enums.payment.EstadoPago;
 import studio.devbyjose.healthyme_payment.dto.CreateFacturaDTO;
+import studio.devbyjose.healthyme_payment.dto.HistorialPagoDTO;
 import studio.devbyjose.healthyme_payment.dto.PagoResponseDTO;
 import studio.devbyjose.healthyme_payment.dto.PaymentIntentDTO;
 import studio.devbyjose.healthyme_payment.entity.MetodoPago;
@@ -27,9 +29,12 @@ import studio.devbyjose.healthyme_payment.service.interfaces.FacturaService;
 import studio.devbyjose.healthyme_payment.service.interfaces.NotificationService;
 import studio.devbyjose.healthyme_payment.service.interfaces.PagoService;
 import studio.devbyjose.healthyme_payment.service.interfaces.StripeService;
+import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
+import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +51,14 @@ public class PagoServiceImpl implements PagoService {
     private final PagoMapperExtended pagoMapperExtended;
     private final FacturaService facturaService;
     private final StripeService stripeService;
+    private final MedicoClient medicoClient;
+    private final PacienteClient pacienteClient;
+    private final UsuarioClient usuarioClient;
 
     @Override
     @Transactional
     public PagoDTO createPago(CreatePagoDTO createPagoDTO) {
-        // Verificar si el método de pago existe
+        // Verificar si el metodo de pago existe
         MetodoPago metodoPago = metodoPagoRepository.findById(createPagoDTO.getIdMetodoPago())
                 .orElseThrow(() -> new MetodoPagoNotFoundException(createPagoDTO.getIdMetodoPago()));
 
@@ -178,4 +186,44 @@ public class PagoServiceImpl implements PagoService {
 
         return pagoMapper.toDto(pago);
     }
+
+    @Override
+    public List<HistorialPagoDTO> getHistorialPagos() {
+        List<Pago> ultimosPagos = pagoRepository.findTop3ByOrderByFechaPagoDesc();
+        List<HistorialPagoDTO> historial = new ArrayList<>();
+
+        for (Pago pago : ultimosPagos) {
+            HistorialPagoDTO dto = new HistorialPagoDTO();
+            dto.setId("PAY" + String.format("%03d", pago.getId()));
+            dto.setAmount(pago.getMonto());
+            dto.setDate(pago.getFechaPago().toLocalDate().toString());
+
+            // Estado
+            switch (pago.getEstado()) {
+                case COMPLETADO -> dto.setStatus("paid");
+                case PENDIENTE -> dto.setStatus("pending");
+                case FALLIDO -> dto.setStatus("failed");
+                default -> dto.setStatus("unknown");
+            }
+
+            // Obtener nombre del paciente (si tienes acceso a PacienteClient o UsuarioClient)
+            try {
+                PacienteDTO paciente = pacienteClient.findPacienteById(String.valueOf(pago.getIdPaciente())).getBody();
+                if (paciente != null) {
+                    UsuarioDTO usuario = usuarioClient.obtenerUsuario(Math.toIntExact(paciente.getIdUsuario())).getBody();
+                    dto.setPatient(usuario.getNombreUsuario());
+                } else {
+                    dto.setPatient("Desconocido");
+                }
+            } catch (Exception e) {
+                dto.setPatient("Desconocido");
+            }
+
+            historial.add(dto);
+        }
+
+        return historial;
+    }
+
+
 }

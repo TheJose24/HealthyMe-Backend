@@ -10,6 +10,7 @@ import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
+import studio.devbyjose.healthyme_payment.dto.BalanceMensualDTO;
 import studio.devbyjose.healthyme_payment.dto.CreateFacturaDTO;
 import studio.devbyjose.healthyme_payment.entity.Factura;
 import studio.devbyjose.healthyme_payment.entity.Pago;
@@ -22,6 +23,9 @@ import studio.devbyjose.healthyme_payment.repository.PagoRepository;
 import studio.devbyjose.healthyme_payment.service.interfaces.FacturaService;
 import studio.devbyjose.healthyme_payment.service.interfaces.NotificationService;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 
@@ -143,7 +147,7 @@ public class FacturaServiceImpl implements FacturaService {
 
         try {
             // 1. Obtener el paciente por su ID
-            ResponseEntity<PacienteDTO> pacienteResponse = pacienteClient.findPacienteById(idPaciente);
+            ResponseEntity<PacienteDTO> pacienteResponse = pacienteClient.findPacienteById(String.valueOf(idPaciente));
 
             if (!pacienteResponse.getStatusCode().is2xxSuccessful() || pacienteResponse.getBody() == null) {
                 throw new PaymentException("No se pudo obtener datos del paciente con ID: " + idPaciente,
@@ -171,4 +175,26 @@ public class FacturaServiceImpl implements FacturaService {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Override
+    public List<BalanceMensualDTO> obtenerBalanceMensual() {
+        List<Object[]> resultados = facturaRepository.obtenerIngresosPorMes();
+        List<BalanceMensualDTO> balances = new ArrayList<>();
+
+        String[] nombresMeses = {
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        };
+
+        for (Object[] fila : resultados) {
+            Integer mesNumero = (Integer) fila[0];
+            BigDecimal ingresos = (BigDecimal) fila[1];
+            BigDecimal egresos = ingresos.multiply(new BigDecimal("0.7")); // 70% como egresos simulados
+
+            balances.add(new BalanceMensualDTO(nombresMeses[mesNumero - 1], ingresos, egresos));
+        }
+
+        return balances;
+    }
+
 }

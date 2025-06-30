@@ -11,6 +11,7 @@ public interface ReservaLabService {
     ReservaLabDTO guardar(ReservaLabDTO dto);
     ReservaLabDTO buscarPorId(Integer id);
     ReservaLabDTO actualizar(Integer id,@Valid ReservaLabDTO dto);
+    Long countReservas();
     void eliminar(Integer id);
 
 }

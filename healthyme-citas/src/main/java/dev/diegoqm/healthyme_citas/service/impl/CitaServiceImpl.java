@@ -4,6 +4,7 @@ import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
 import dev.diegoqm.healthyme_citas.dto.EspecialidadContadaDTO;
 import dev.diegoqm.healthyme_citas.entity.Cita;
+import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 import dev.diegoqm.healthyme_citas.exception.CitaNotFoundException;
 import dev.diegoqm.healthyme_citas.mapper.CitaMapper;
 import dev.diegoqm.healthyme_citas.repository.CitaRepository;
@@ -18,7 +19,9 @@ import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
 import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -137,6 +140,81 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
+    public CitaDTO findNextCitaByPaciente(Long idPaciente) {
+        LocalDate hoy = LocalDate.now();
+        return citaRepository
+                .findFirstByIdPacienteAndFechaAfterOrderByFechaAscHoraAsc(idPaciente, hoy)
+                .map(citaMapper::toDTO)
+                .orElseThrow(() -> new CitaNotFoundException(
+                        "No se encontró próxima cita para paciente " + idPaciente,
+                        HttpStatus.NOT_FOUND
+                ));
+    }
+
+    @Override
+    public Long countByPacienteAndEstado(Long idPaciente, EstadoCita estado) {
+        return citaRepository.countByIdPacienteAndEstado(idPaciente, estado);
+    }
+
+    @Override
+    public List<CitaDTO> findUltimasCitasByPaciente(Long idPaciente, int size) {
+        Pageable page = PageRequest.of(
+            0,
+            size,
+            Sort.by(Sort.Direction.DESC, "fecha", "hora")
+        );
+        return citaRepository
+                .findByIdPaciente(idPaciente, page)
+                .stream()
+                .map(citaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    private Long resolveIdPaciente(Long usuarioId) {
+        var resp = pacienteClient.findPacienteByIdUsuario(usuarioId);
+        if (!resp.getStatusCode().is2xxSuccessful() || resp.getBody() == null) {
+            throw new CitaNotFoundException(
+                    "Paciente no encontrado para usuario " + usuarioId,
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return resp.getBody().getId();
+    }
+
+    @Override
+    public CitaDTO findNextCitaByUsuario(Long usuarioId) {
+        Long idPac = resolveIdPaciente(usuarioId);
+        return findNextCitaByPaciente(idPac);
+    }
+
+    @Override
+    public Long countByUsuarioAndEstado(Long usuarioId, EstadoCita estado) {
+        Long idPac = resolveIdPaciente(usuarioId);
+        return countByPacienteAndEstado(idPac, estado);
+    }
+
+    @Override
+    public List<CitaDTO> findUltimasByUsuario(Long usuarioId, int size) {
+        Long idPac = resolveIdPaciente(usuarioId);
+        return findUltimasCitasByPaciente(idPac, size);
+    }
+
+    @Override
+    public List<CitaDTO> findAllByUsuario(Long usuarioId) {
+        Long idPac = resolveIdPaciente(usuarioId);
+        return citaRepository.findByIdPacienteOrderByFechaDesc(idPac)
+                .stream().map(citaMapper::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CitaDTO> findByUsuarioAndEstado(Long usuarioId, EstadoCita estado) {
+        Long idPac = resolveIdPaciente(usuarioId);
+        return citaRepository.findByIdPacienteAndEstadoOrderByFechaDesc(idPac, estado)
+                .stream().map(citaMapper::toDTO).collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<EspecialidadContadaDTO> getEspecialidadesMasSolicitadas() {
         List<Cita> citas = citaRepository.findAll();
         Map<String, Long> conteoPorEspecialidad = new HashMap<>();
@@ -159,8 +237,6 @@ public class CitaServiceImpl implements CitaService {
                 .sorted((a, b) -> Long.compare(b.getCantidad(), a.getCantidad())) // orden descendente
                 .collect(Collectors.toList());
     }
-
-
 
     @Override
     public void deleteCitaById(String id) {

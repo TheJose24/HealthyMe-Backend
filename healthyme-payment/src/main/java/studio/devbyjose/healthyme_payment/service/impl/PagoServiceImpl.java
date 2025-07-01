@@ -208,7 +208,7 @@ public class PagoServiceImpl implements PagoService {
 
             // Obtener nombre del paciente (si tienes acceso a PacienteClient o UsuarioClient)
             try {
-                PacienteDTO paciente = pacienteClient.findPacienteById(String.valueOf(pago.getIdPaciente())).getBody();
+                PacienteDTO paciente = pacienteClient.findPacienteById(pago.getIdPaciente()).getBody();
                 if (paciente != null) {
                     UsuarioDTO usuario = usuarioClient.obtenerUsuario(Math.toIntExact(paciente.getIdUsuario())).getBody();
                     dto.setPatient(usuario.getNombreUsuario());

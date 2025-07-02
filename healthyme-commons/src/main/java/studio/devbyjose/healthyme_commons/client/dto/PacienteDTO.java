@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PacienteDTO {
-    private String id;
+    private Long id;
 
     @NotNull(message = "El ID de usuario es obligatorio")
     private Long idUsuario;

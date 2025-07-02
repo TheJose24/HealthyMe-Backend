@@ -8,7 +8,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 
 @Data
@@ -26,9 +25,9 @@ public class Cita extends Auditable{
     
     private EstadoCita estado;
     @Field("id_paciente")
-    private String idPaciente;
+    private Long idPaciente;
     @Field("id_medico")
-    private String idMedico;
+    private Integer idMedico;
     @Field("id_consultorio")
     private String idConsultorio;
 

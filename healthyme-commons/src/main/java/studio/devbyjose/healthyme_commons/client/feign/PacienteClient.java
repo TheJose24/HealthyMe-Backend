@@ -15,7 +15,7 @@ public interface PacienteClient {
     ResponseEntity<List<PacienteDTO>> findAllPacientes();
     
     @GetMapping("/api/v1/pacientes/{id}")
-    ResponseEntity<PacienteDTO> findPacienteById(@PathVariable("id") String id);
+    ResponseEntity<PacienteDTO> findPacienteById(@PathVariable("id") Long id);
     
     @GetMapping("/api/v1/pacientes/usuario/{idUsuario}")
     ResponseEntity<PacienteDTO> findPacienteByIdUsuario(@PathVariable("idUsuario") Long idUsuario);

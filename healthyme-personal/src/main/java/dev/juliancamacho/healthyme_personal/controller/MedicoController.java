@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/medicos")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Medicos",
         description = "API para gestionar medicos")
 public class MedicoController {
@@ -96,5 +97,12 @@ public class MedicoController {
     public ResponseEntity<String> deleteMedicoById(@PathVariable Integer id) {
         medicoService.deleteMedicoById(id);
         return ResponseEntity.ok("Medico eliminado con éxito");
+    }
+
+    // COUNT
+    @GetMapping("/count")
+    @Operation(summary = "Obtener el número total de médicos")
+    public ResponseEntity<Long> getTotalMedicos() {
+        return ResponseEntity.ok(medicoService.countMedicos());
     }
 }

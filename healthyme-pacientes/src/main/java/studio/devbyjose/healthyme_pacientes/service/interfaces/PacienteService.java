@@ -1,7 +1,9 @@
 package studio.devbyjose.healthyme_pacientes.service.interfaces;
 
 import studio.devbyjose.healthyme_pacientes.dto.PacienteDTO;
+import studio.devbyjose.healthyme_pacientes.dto.PacientesPorMesDTO;
 
+import java.util.Map;
 import java.util.List;
 
 /**
@@ -52,7 +54,13 @@ public interface PacienteService {
      * @throws RuntimeException si no se encuentra el paciente
      */
     PacienteDTO update(Long id, PacienteDTO pacienteDTO);
-    
+
+    //COUNT
+    Long countPacientes();
+
+
+    List<PacientesPorMesDTO> getPacientesPorMes();
+
     /**
      * Elimina un paciente
      * 

@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/reservas-lab")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Reservas de Laboratorio", description = "Gestión de reservas para exámenes de laboratorio")
 
 public class ReservaLabController {
@@ -55,6 +56,12 @@ public class ReservaLabController {
     @PutMapping("/{id}")
     public ResponseEntity<ReservaLabDTO> actualizar(@PathVariable Integer id,@Valid @RequestBody ReservaLabDTO dto) {
         return ResponseEntity.ok(service.actualizar(id, dto));
+    }
+
+    @Operation(summary = "Obtener el número total de reservas de laboratorio")
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalReservas() {
+        return ResponseEntity.ok(service.countReservas());
     }
 
     @Operation(

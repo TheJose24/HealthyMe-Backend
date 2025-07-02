@@ -27,7 +27,7 @@ public class CitaDTO {
     private Long idPaciente;
 
     @NotNull(message = "El id del medico es obligatorio")
-    private Long idMedico;
-    private Long idConsultorio;
+    private Integer idMedico;
+    private String idConsultorio;
 
 }

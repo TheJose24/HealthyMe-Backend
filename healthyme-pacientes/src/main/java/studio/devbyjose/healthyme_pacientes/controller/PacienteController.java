@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studio.devbyjose.healthyme_pacientes.dto.PacienteDTO;
+import studio.devbyjose.healthyme_pacientes.dto.PacientesPorMesDTO;
 import studio.devbyjose.healthyme_pacientes.service.interfaces.PacienteService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/pacientes")
@@ -48,6 +50,19 @@ public class PacienteController {
     public ResponseEntity<PacienteDTO> update(@PathVariable Long id, @Valid @RequestBody PacienteDTO pacienteDTO) {
         return ResponseEntity.ok(pacienteService.update(id, pacienteDTO));
     }
+
+    @GetMapping("/count")
+    @Operation(summary = "Obtener el número total de pacientes")
+    public ResponseEntity<Long> getTotalPacientes() {
+        return ResponseEntity.ok(pacienteService.countPacientes());
+    }
+
+    @Operation(summary = "Obtener pacientes agrupados por mes")
+    @GetMapping("/por-mes")
+    public ResponseEntity<List<PacientesPorMesDTO>> getPacientesPorMes() {
+        return ResponseEntity.ok(pacienteService.getPacientesPorMes());
+    }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un paciente")

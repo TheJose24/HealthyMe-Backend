@@ -134,10 +134,10 @@ public class CitaController {
     }
 
 
-    @GetMapping("/usuario/{usuarioId}")
+    @GetMapping("/usuario/{usuarioId}/estado/{estado}")
     public ResponseEntity<List<CitaDTO>> getByUsuarioAndEstado(
             @PathVariable Long usuarioId,
-            @RequestParam EstadoCita estado) {
+            @PathVariable EstadoCita estado) {
         return ResponseEntity.ok(
                 citaService.findByUsuarioAndEstado(usuarioId, estado)
         );

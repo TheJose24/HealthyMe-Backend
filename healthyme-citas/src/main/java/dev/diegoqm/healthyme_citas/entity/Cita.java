@@ -29,6 +29,6 @@ public class Cita extends Auditable{
     @Field("id_medico")
     private Integer idMedico;
     @Field("id_consultorio")
-    private Long idConsultorio;
+    private String idConsultorio;
 
 }

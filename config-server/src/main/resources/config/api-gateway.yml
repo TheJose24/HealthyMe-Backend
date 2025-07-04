@@ -8,6 +8,7 @@ spring:
   cloud:
     gateway:
       globalcors:
+        add-to-simple-url-handler-mapping: true
         corsConfigurations:
           '[/**]':
             allowedOrigins:
@@ -149,6 +150,8 @@ spring:
               args:
                 name: reclamacionesCircuitBreaker
                 fallbackUri: forward:/fallback/reclamaciones
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
 
 # Resilience4j configuration
 resilience4j:

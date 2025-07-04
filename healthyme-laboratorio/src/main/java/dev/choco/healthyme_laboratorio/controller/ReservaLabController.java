@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/reservas")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+
 @Tag(name = "Reservas de Laboratorio", description = "Gestión de reservas para exámenes de laboratorio")
 
 public class ReservaLabController {

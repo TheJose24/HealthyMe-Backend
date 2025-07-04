@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/medicos")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+
 @Tag(name = "Medicos",
         description = "API para gestionar medicos")
 public class MedicoController {

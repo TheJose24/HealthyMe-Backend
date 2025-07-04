@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/citas")
-@CrossOrigin(origins = "http://localhost:4200")
+
 public class CitaController {
 
     private final CitaService citaService;

@@ -3,6 +3,12 @@ server:
   shutdown: graceful
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://security-service:9000/.well-known/jwks.json
+          issuer-uri: http://security-service:9000
   application:
     name: api-gateway
   cloud:

@@ -18,16 +18,12 @@ public class CorsGlobalConfig {
             "https://healthyme.devbyjose.me"
         ));
         config.setAllowedMethods(List.of(
-            "GET", 
-            "POST", 
-            "PUT", 
-            "DELETE", 
-            "OPTIONS", 
-            "PATCH"
+            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
         ));
         
         config.setAllowedHeaders(List.of(
             "Authorization",
+            "Bearer",
             "Content-Type",
             "Accept",
             "Origin",

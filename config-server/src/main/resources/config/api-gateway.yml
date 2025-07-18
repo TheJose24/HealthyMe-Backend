@@ -3,6 +3,12 @@ server:
   shutdown: graceful
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://security-service:9000/.well-known/jwks.json
+          issuer-uri: http://security-service:9000
   cloud:
     gateway:
       globalcors:
@@ -58,12 +64,7 @@ spring:
         - id: healthyme-citas
           uri: lb://healthyme-citas
           predicates:
-            - Path=/api/citas/**
-
-        - id: healthyme-laboratorio
-          uri: lb://healthyme-laboratorio
-          predicates:
-            - Path=/api/**
+            - Path=/api/v1/citas/**
 
         - id: healthyme-payment
           uri: lb://healthyme-payment
@@ -73,7 +74,7 @@ spring:
         - id: healthyme-personal
           uri: lb://healthyme-personal
           predicates:
-            - Path=/api/medicos/**
+            - Path=/api/v1/medicos/**
 
 # Resilience4j configuration
 resilience4j:

@@ -34,7 +34,7 @@ spring:
   security:
     oauth2:
       authorizationserver:
-        issuer: http://security-service:8085/auth
+        issuer: http://security-service:8085
 
 server:
   port: 8085

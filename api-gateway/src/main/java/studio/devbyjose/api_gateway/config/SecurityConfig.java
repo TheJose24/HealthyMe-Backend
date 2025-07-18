@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 // URL del servidor de autorización (tu security-service)
-                                .jwkSetUri("http://security-service:9000/.well-known/jwks.json")
+                                .jwkSetUri("http://security-service:8085/.well-known/jwks.json")
                         )
                 )
                 

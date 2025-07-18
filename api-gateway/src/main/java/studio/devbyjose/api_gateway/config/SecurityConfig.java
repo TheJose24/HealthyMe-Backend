@@ -37,7 +37,7 @@ public class SecurityConfig {
                         ).permitAll()
                         
                         // 🔒 Todas las demás rutas requieren autenticación
-                        .anyExchange().authenticated()
+                        .anyExchange().permitAll()
                 )
                 
                 // ⚙️ Configurar OAuth2 Resource Server para validar JWT

@@ -20,8 +20,7 @@ import java.util.Map;
 @Tag(name = "Citas", description = "API para gestionar citas")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/citas")
-
+@RequestMapping("/api/v1/citas")
 public class CitaController {
 
     private final CitaService citaService;
@@ -135,10 +134,10 @@ public class CitaController {
     }
 
 
-    @GetMapping("/usuario/{usuarioId}")
+    @GetMapping("/usuario/{usuarioId}/estado/{estado}")
     public ResponseEntity<List<CitaDTO>> getByUsuarioAndEstado(
             @PathVariable Long usuarioId,
-            @RequestParam EstadoCita estado) {
+            @PathVariable EstadoCita estado) {
         return ResponseEntity.ok(
                 citaService.findByUsuarioAndEstado(usuarioId, estado)
         );

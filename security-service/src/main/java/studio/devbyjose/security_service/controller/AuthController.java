@@ -9,7 +9,7 @@ import studio.devbyjose.security_service.dto.*;
 import studio.devbyjose.security_service.service.AuthService;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {

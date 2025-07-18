@@ -11,7 +11,7 @@ import studio.devbyjose.healthyme_commons.client.fallback.PaymentClientFallback;
 import java.util.List;
 
 @FeignClient(name = "healthyme-payment",
-             path = "/payment/api",
+             path = "/api/v1",
              fallback = PaymentClientFallback.class)
 public interface PaymentClient {
     

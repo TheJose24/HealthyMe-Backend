@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/unidades")
+@RequestMapping("/api/v1/unidades")
 @RequiredArgsConstructor
 @Tag(name = "Unidades Médicas",
         description = "API para gestionar unidades médicas")

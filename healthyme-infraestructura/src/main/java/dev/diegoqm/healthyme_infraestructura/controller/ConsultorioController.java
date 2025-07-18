@@ -15,7 +15,7 @@ import java.util.List;
 @Tag(name = "Consultorios", description = "API para gestionar consultorios")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/consultorios")
+@RequestMapping("/api/v1/consultorios")
 public class ConsultorioController {
 
     private final ConsultorioService service;

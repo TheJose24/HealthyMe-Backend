@@ -10,7 +10,7 @@ import studio.devbyjose.healthyme_commons.client.fallback.NotificationClientFall
 import java.util.Map;
 
 @FeignClient(name = "healthyme-notification",
-        path = "/api/notificaciones",
+        path = "/api/v1/notificaciones",
         fallback = NotificationClientFallback.class)
 public interface NotificationClient {
 

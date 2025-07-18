@@ -15,7 +15,7 @@ import java.util.List;
 @Tag(name = "Horario de Trabajo", description = "API para gestionar horarios de trabajo")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/horario-trabajo")
+@RequestMapping("/api/v1/horario-trabajo")
 public class HorarioTrabajoController {
 
     private final HorarioTrabajoService horarioTrabajoService;

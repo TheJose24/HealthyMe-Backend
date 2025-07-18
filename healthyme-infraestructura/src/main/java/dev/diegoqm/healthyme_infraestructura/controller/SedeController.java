@@ -15,7 +15,7 @@ import java.util.List;
 @Tag(name = "Sedes", description = "API para gestionar sedes")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/sedes")
+@RequestMapping("/api/v1/sedes")
 public class SedeController {
 
     private final SedeService sedeService;

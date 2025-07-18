@@ -12,7 +12,7 @@ import studio.devbyjose.healthyme_payment.service.interfaces.MetodoPagoService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/metodos-pago")
+@RequestMapping("/api/v1/metodos-pago")
 @RequiredArgsConstructor
 public class MetodoPagoController {
 

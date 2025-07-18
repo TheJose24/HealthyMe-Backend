@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/enfermeros")
+@RequestMapping("/api/v1/enfermeros")
 @RequiredArgsConstructor
 @Tag(name = "Enfermeros",
         description = "API para gestionar enfermeros")

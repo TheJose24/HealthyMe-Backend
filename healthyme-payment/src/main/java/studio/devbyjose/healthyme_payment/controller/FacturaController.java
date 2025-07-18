@@ -13,7 +13,7 @@ import studio.devbyjose.healthyme_payment.service.interfaces.FacturaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/facturas")
+@RequestMapping("/api/v1/facturas")
 @RequiredArgsConstructor
 
 public class FacturaController {

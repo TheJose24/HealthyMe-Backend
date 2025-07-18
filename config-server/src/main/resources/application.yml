@@ -8,54 +8,48 @@ spring:
       server:
         native:
           search-locations: classpath:/config
+        default-profile: native
+        git:
+          skip-ssl-validation: true
+          default-label: main
 
 # Server configuration
 server:
   port: 8888
   shutdown: graceful
 
-# Monitoring and metrics
+# Monitoring y métricas para producción
 management:
   endpoints:
     web:
       exposure:
-        include: ["health", "info", "metrics", "prometheus", "refresh", "env"]
+        include: ["health", "info", "refresh"]
   endpoint:
     health:
-      show-details: always
-  health:
-    db:
-      enabled: true
-  info:
-    git:
-      mode: full
-  prometheus:
-    metrics:
-      export:
-        enabled: true
+      show-details: when-authorized
+  security:
+    enabled: false
 
-# Logging
+# Logging para producción
 logging:
   level:
-    root: INFO
+    root: WARN
     org.springframework.cloud: INFO
-    org.springframework.boot: INFO
+    org.springframework.boot: WARN
+    org.springframework.cloud.config: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: logs/config-server.log
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB
-      max-history: 10
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
-    # el config server debe registrarse despues de Eureka
+      defaultZone: http://discovery-server:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+    initial-instance-info-replication-interval-seconds: 40
+    instance-info-replication-interval-seconds: 30
   instance:
     prefer-ip-address: true
+    hostname: config-server
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90

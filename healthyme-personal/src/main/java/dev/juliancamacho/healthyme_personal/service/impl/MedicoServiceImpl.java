@@ -74,6 +74,22 @@ public class MedicoServiceImpl implements MedicoService {
                 }).collect(Collectors.toList());
     }
 
+    // SELECT BY ESPECIALIDAD
+    @Override
+    public List<MedicoDto> getMedicosByEspecialidad(Integer idEspecialidad) {
+        return medicoRepository.findByEspecialidadIdEspecialidad(idEspecialidad)
+                .stream().map(medico -> {
+                    MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
+                    ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
+                    medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
+                    medicoDto.setContratos(usuarioDTO.getBody().getContratos());
+                    medicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
+                    medicoDto.setRol(usuarioDTO.getBody().getRol());
+                    medicoDto.setEstado(usuarioDTO.getBody().getEstado());
+                    return medicoDto;
+                }).collect(Collectors.toList());
+    }
+
     // UPDATE
     @Override
     public MedicoDto updateMedico(Integer id, MedicoDto medicoDto) {

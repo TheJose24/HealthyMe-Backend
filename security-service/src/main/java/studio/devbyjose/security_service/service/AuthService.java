@@ -481,7 +481,7 @@ public class AuthService {
      * Obtiene un cliente OAuth2 registrado por su ID.
      */
     private RegisteredClient getRegisteredClient(String clientId) {
-        RegisteredClient client = clientRepository.findById(clientId);
+        RegisteredClient client = clientRepository.findByClientId(clientId);
         if (client == null) {
             log.error("Cliente OAuth2 '{}' no encontrado", clientId);
             throw new IllegalStateException("Cliente OAuth2 no configurado correctamente");

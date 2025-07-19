@@ -33,6 +33,7 @@ public interface UserMapper {
     @Mapping(target = "refreshToken", source = "refreshToken.tokenValue")
     @Mapping(target = "username", source = "usuario.nombreUsuario")
     @Mapping(target = "rol", source = "usuario.rol.nombreRol")
+    @Mapping(target = "id", source = "usuario.idUsuario")
     AuthResponse toAuthResponse(Usuario usuario, OAuth2AccessToken accessToken, OAuth2RefreshToken refreshToken);
 
     @Mapping(target = "contrasena", ignore = true)

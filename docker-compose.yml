@@ -77,6 +77,23 @@ services:
       --innodb-buffer-pool-size=256M
       --max-connections=100
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    ports:
+      - "8000:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: j0s33nr1qu3
+      MYSQL_ROOT_PASSWORD: j0s33nr1qu3
+    depends_on:
+      - mysql
+    networks:
+      - healthyme-network
+    restart: on-failure
+
   mongo-citas:
     image: mongo:4.4
     container_name: mongo-citas

@@ -137,9 +137,8 @@
             font-weight: bold;
         }
 
-        .status-active { background-color: #d4edda; color: #155724; }
-        .status-pending { background-color: #fff3cd; color: #856404; }
         .status-completed { background-color: #d1ecf1; color: #0c5460; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
         .status-cancelled { background-color: #f8d7da; color: #721c24; }
 
         .highlight {
@@ -182,7 +181,7 @@
             <p>Total Citas</p>
         </div>
         <div class="metric">
-            <h3 th:text="${reporte.ingresosTotales ?: 0}">$0</h3>
+            <h3 th:text="${'$' + (reporte.ingresosTotales ?: 0)}">$0</h3>
             <p>Ingresos Totales</p>
         </div>
         <div class="metric">
@@ -208,7 +207,6 @@
                 <tr>
                     <th>Estado</th>
                     <th>Cantidad</th>
-                    <th>Porcentaje</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -217,21 +215,18 @@
                         <span class="status-badge status-completed">Realizadas</span>
                     </td>
                     <td th:text="${estadisticasCitas.citasRealizadas ?: 0}">0</td>
-                    <td th:text="${estadisticasCitas.porcentajeRealizadas ?: 0} + '%'">0%</td>
                 </tr>
                 <tr>
                     <td>
                         <span class="status-badge status-pending">Pendientes</span>
                     </td>
                     <td th:text="${estadisticasCitas.citasPendientes ?: 0}">0</td>
-                    <td th:text="${estadisticasCitas.porcentajePendientes ?: 0} + '%'">0%</td>
                 </tr>
                 <tr>
                     <td>
                         <span class="status-badge status-cancelled">Canceladas</span>
                     </td>
                     <td th:text="${estadisticasCitas.citasCanceladas ?: 0}">0</td>
-                    <td th:text="${estadisticasCitas.porcentajeCanceladas ?: 0} + '%'">0%</td>
                 </tr>
                 </tbody>
             </table>
@@ -240,11 +235,11 @@
         <div>
             <h3>Indicadores Clave</h3>
             <div class="highlight">
-                <p><strong>Tasa de Completitud:</strong>
-                    <span th:text="${estadisticasCitas.tasaCompletitud ?: 0} + '%'">0%</span>
+                <p><strong>Total de Citas:</strong> 
+                    <span th:text="${estadisticasCitas.totalCitas ?: 0}">0</span>
                 </p>
-                <p><strong>Promedio diario:</strong>
-                    <span th:text="${estadisticasCitas.promedioDiario ?: 0}">0</span> citas
+                <p><strong>Tasa de Completitud:</strong> 
+                    <span th:text="${estadisticasCitas.tasaCompletitud ?: 0} + '%'">0%</span>
                 </p>
             </div>
         </div>
@@ -259,21 +254,17 @@
         <h3>Ingresos por Período</h3>
         <div class="metrics">
             <div class="metric">
-                <h3 th:text="${balanceFinanciero.ingresosBrutos ?: 0}">$0</h3>
-                <p>Ingresos Brutos</p>
+                <h3 th:text="${'$' + (balanceFinanciero.monto ?: 0)}">$0</h3>
+                <p>Ingresos del Período</p>
             </div>
             <div class="metric">
                 <h3 th:text="${balanceFinanciero.cantidadTransacciones ?: 0}">0</h3>
                 <p>Transacciones</p>
             </div>
-            <div class="metric">
-                <h3 th:text="${balanceFinanciero.promedioTransaccion ?: 0}">$0</h3>
-                <p>Promedio por Transacción</p>
-            </div>
         </div>
     </div>
 
-    <!-- 📊 Tabla de ingresos por día (si existe) -->
+    <!-- 📊 Tabla de ingresos por día -->
     <div th:if="${ingresosPorDia != null and !ingresosPorDia.isEmpty()}">
         <h3>Ingresos Diarios</h3>
         <table>
@@ -281,16 +272,12 @@
             <tr>
                 <th>Fecha</th>
                 <th>Ingresos</th>
-                <th>Transacciones</th>
-                <th>Promedio</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="ingreso : ${ingresosPorDia}">
                 <td th:text="${#temporals.format(ingreso.fecha, 'dd/MM/yyyy')}">01/01/2024</td>
-                <td th:text="${#numbers.formatCurrency(ingreso.monto)}">$0</td>
-                <td th:text="${ingreso.cantidadTransacciones}">0</td>
-                <td th:text="${#numbers.formatCurrency(ingreso.promedioTransaccion)}">$0</td>
+                <td th:text="${'$' + ingreso.monto}">$0</td>
             </tr>
             </tbody>
         </table>
@@ -305,14 +292,12 @@
         <tr>
             <th>Especialidad</th>
             <th>Cantidad de Citas</th>
-            <th>Porcentaje</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="especialidad : ${especialidades}">
             <td th:text="${especialidad.nombre}">Cardiología</td>
             <td th:text="${especialidad.cantidad}">0</td>
-            <td th:text="${especialidad.porcentaje} + '%'">0%</td>
         </tr>
         </tbody>
     </table>

@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import studio.devbyjose.healthyme_commons.client.dto.PageDTO;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.fallback.UsuarioClientFallback;
 
@@ -25,5 +26,5 @@ public interface UsuarioClient {
     ResponseEntity<List<UsuarioDTO>> obtenerUsuariosPorRol(@PathVariable("rolNombre") String rolNombre);
 
     @GetMapping("/api/v1/users?estado=ACTIVO&rol=MEDICO")
-    ResponseEntity<List<UsuarioDTO>> obtenerUsuariosActivos();
+    ResponseEntity<PageDTO<UsuarioDTO>> obtenerUsuariosActivos();
 }

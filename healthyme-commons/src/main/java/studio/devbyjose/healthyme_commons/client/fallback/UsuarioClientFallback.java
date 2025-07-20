@@ -3,6 +3,7 @@ package studio.devbyjose.healthyme_commons.client.fallback;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import studio.devbyjose.healthyme_commons.client.dto.PageDTO;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 
@@ -37,7 +38,7 @@ public class UsuarioClientFallback implements UsuarioClient {
     }
 
     @Override
-    public ResponseEntity<List<UsuarioDTO>> obtenerUsuariosActivos() {
+    public ResponseEntity<PageDTO<UsuarioDTO>> obtenerUsuariosActivos() {
         return null;
     }
 }

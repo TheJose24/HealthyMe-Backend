@@ -123,13 +123,6 @@ public class MedicoServiceImpl implements MedicoService {
 
     @Override
     public Long countMedicosActivos() {
-        // en base al id de usuario contar los médicos activos usando el cliente feign de usuario
-        List<UsuarioDTO> usuarios = usuarioClient.obtenerUsuariosActivos().getBody();
-        if (usuarios == null) {
-            return 0L;
-        }
-
-        Long medicosActivos = (long) usuarios.size();
-        return medicosActivos;
+        return Objects.requireNonNull(usuarioClient.obtenerUsuariosActivos().getBody()).getTotalElements();
     }
 }

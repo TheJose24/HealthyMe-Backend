@@ -35,10 +35,10 @@ public interface CitaClient {
     @GetMapping("/api/v1/citas/count")
     Long getTotalCitas();
 
-    @GetMapping("/api/v1/citas//especialidades/mas-solicitadas")
+    @GetMapping("/api/v1/citas/especialidades/mas-solicitadas")
     List<EspecialidadContadaDTO> getEspecialidadesMasSolicitadas();
 
-    @GetMapping("/estado/{estado}")
+    @GetMapping("/api/v1/citas/estado/{estado}")
     Long getCitasByEstado(@PathVariable("estado") EstadoCita estado);
 
     @GetMapping("/api/v1/citas/rango")

@@ -60,8 +60,7 @@ public class UserController {
     }
 
     @GetMapping
-    @Operation(summary = "Buscar usuarios con filtros", security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @Operation(summary = "Buscar usuarios con filtros")
     public ResponseEntity<Page<UserDTO>> searchUsers(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String rol,

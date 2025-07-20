@@ -110,10 +110,14 @@ public class ReporteServiceImpl implements ReporteService {
 
         BigDecimal ingresos = BigDecimal.ZERO;
         Long cantidadPagos = 0L;
+
+        //parsear LocalDate a LocalDateTime
+        LocalDateTime inicio = fechaInicio.atStartOfDay();
+        LocalDateTime fin = fechaFin.atTime(23, 59, 59);
         
         try {
-            ingresos = pagoRepository.sumIngresosPorPeriodo(fechaInicio, fechaFin);
-            cantidadPagos = pagoRepository.countPagosPorPeriodo(fechaInicio, fechaFin);
+            ingresos = pagoRepository.sumIngresosPorPeriodo(inicio, fin);
+            cantidadPagos = pagoRepository.countPagosPorPeriodo(inicio, fin);
         } catch (Exception e) {
             log.warn("Error al calcular ingresos: {}", e.getMessage());
         }

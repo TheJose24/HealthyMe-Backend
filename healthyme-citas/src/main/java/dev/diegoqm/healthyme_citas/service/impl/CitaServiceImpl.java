@@ -246,7 +246,7 @@ public class CitaServiceImpl implements CitaService {
 
     @Override
     public Long getCitasByEstado(EstadoCita estado) {
-        return citaRepository.findByEstado(estado);
+        return (long) citaRepository.findByEstado(estado).size();
     }
 
     @Override

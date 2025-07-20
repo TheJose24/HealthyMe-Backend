@@ -26,4 +26,6 @@ public interface MedicoService
 
     // DELETE BY ID
     void deleteMedicoById(Integer id);
+
+    Long countMedicosActivos();
 }

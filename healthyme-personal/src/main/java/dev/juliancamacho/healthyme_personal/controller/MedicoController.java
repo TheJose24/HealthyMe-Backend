@@ -114,4 +114,10 @@ public class MedicoController {
     public ResponseEntity<Long> getTotalMedicos() {
         return ResponseEntity.ok(medicoService.countMedicos());
     }
+
+    @GetMapping("/activos")
+    @Operation(summary = "Obtener el número de médicos activos")
+    public ResponseEntity<Long> getMedicosActivos() {
+        return ResponseEntity.ok(medicoService.countMedicosActivos());
+    }
 }

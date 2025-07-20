@@ -23,4 +23,7 @@ public interface UsuarioClient {
 
     @GetMapping("/api/v1/users/by-role/{rolNombre}")
     ResponseEntity<List<UsuarioDTO>> obtenerUsuariosPorRol(@PathVariable("rolNombre") String rolNombre);
+
+    @GetMapping("/api/v1/users?estado=ACTIVO&rol=MEDICO")
+    ResponseEntity<List<UsuarioDTO>> obtenerUsuariosActivos();
 }

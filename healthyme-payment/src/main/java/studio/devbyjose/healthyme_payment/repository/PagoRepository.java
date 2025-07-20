@@ -11,6 +11,7 @@ import studio.devbyjose.healthyme_payment.entity.Pago;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,11 +28,11 @@ public interface PagoRepository extends JpaRepository<Pago, Integer> {
     BigDecimal sumTotalIngresos();
 
     @Query("SELECT COALESCE(SUM(p.monto), 0) FROM Pago p WHERE p.estado = 'COMPLETADO' AND p.fechaPago BETWEEN :fechaInicio AND :fechaFin")
-    BigDecimal sumIngresosPorPeriodo(@Param("fechaInicio") LocalDate fechaInicio, @Param("fechaFin") LocalDate fechaFin);
+    BigDecimal sumIngresosPorPeriodo(@Param("fechaInicio") LocalDateTime fechaInicio, @Param("fechaFin") LocalDateTime fechaFin);
 
     @Query("SELECT COUNT(p) FROM Pago p WHERE p.fechaPago BETWEEN :fechaInicio AND :fechaFin")
-    Long countPagosPorPeriodo(@Param("fechaInicio") LocalDate fechaInicio,
-                              @Param("fechaFin") LocalDate fechaFin);
+    Long countPagosPorPeriodo(@Param("fechaInicio") LocalDateTime fechaInicio,
+                              @Param("fechaFin") LocalDateTime fechaFin);
 
     @Query(value = "SELECT DATE(fecha_pago) as fecha, COALESCE(SUM(monto), 0) as total " +
             "FROM pago WHERE estado = 'COMPLETADO' AND DATE(fecha_pago) BETWEEN ?1 AND ?2 " +

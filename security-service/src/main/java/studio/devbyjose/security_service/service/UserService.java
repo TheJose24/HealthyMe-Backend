@@ -369,21 +369,12 @@ public class UserService {
      * Obtiene estadísticas generales de usuarios.
      */
     public UserStatsDTO getUserStats() {
-        // Solo administradores pueden ver estadísticas
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_" + Rol.ROLE_ADMIN));
-
-        if (!isAdmin) {
-            throw new AccessDeniedException("Se requieren permisos de administrador para ver estadísticas");
-        }
-
         long totalUsers = usuarioRepository.count();
         long activeUsers = usuarioRepository.countByEstado(EstadoUsuario.ACTIVO);
         long suspendedUsers = usuarioRepository.countByEstado(EstadoUsuario.SUSPENDIDO);
 
         // Contar usuarios por rol
-        List<Rol> roles = rolRepository.findAll();
+        //List<Rol> roles = rolRepository.findAll();
 
         return UserStatsDTO.builder()
                 .totalUsuarios(totalUsers)

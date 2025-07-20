@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MedicoRepository extends JpaRepository<Medico, Integer> {
     List<Medico> findByEspecialidadIdEspecialidad(Integer idEspecialidad);
+
+    Long countByEstadoTrue(); // Contar médicos activos
 }

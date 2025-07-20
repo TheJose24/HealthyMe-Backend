@@ -29,7 +29,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService {
             datos.forEach(context::setVariable);
 
             // 📝 Procesar plantilla HTML
-            String htmlContent = templateEngine.process("reporte-completo", context);
+            String htmlContent = templateEngine.process("reporte-completo-pdf", context);
 
             // ⚙️ Configurar propiedades de conversión
             ConverterProperties converterProperties = new ConverterProperties();

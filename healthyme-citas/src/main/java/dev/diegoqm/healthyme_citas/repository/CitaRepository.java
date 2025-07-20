@@ -32,4 +32,12 @@ public interface CitaRepository extends JpaRepository<Cita, String> {
     Long countByIdPacienteAndEstado(Long idPaciente, EstadoCita estado);
 
     List<Cita> findByIdPaciente(Long idPaciente, Pageable pageable);
+
+    // CITA POR ESTADO
+    Long findByEstado(EstadoCita estado);
+
+    // Citas en un rango de fechas
+    @Query("SELECT COUNT(c) FROM Cita c WHERE c.fecha BETWEEN :fechaInicio AND :fechaFin")
+    Long countByFechaBetween(@Param("fechaInicio") LocalDate fechaInicio,
+                             @Param("fechaFin") LocalDate fechaFin);
 }

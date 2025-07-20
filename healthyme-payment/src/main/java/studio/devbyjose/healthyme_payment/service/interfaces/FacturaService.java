@@ -35,6 +35,4 @@ public interface FacturaService {
      * @return la factura encontrada
      */
     FacturaDTO getFacturaByPago(Integer idPago);
-
-    List<BalanceMensualDTO> obtenerBalanceMensual();
 }

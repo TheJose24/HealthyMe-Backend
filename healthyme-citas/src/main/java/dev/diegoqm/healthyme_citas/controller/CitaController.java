@@ -2,7 +2,7 @@ package dev.diegoqm.healthyme_citas.controller;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
-import dev.diegoqm.healthyme_citas.dto.EspecialidadContadaDTO;
+import studio.devbyjose.healthyme_commons.client.dto.EspecialidadContadaDTO;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 import dev.diegoqm.healthyme_citas.service.interfaces.CitaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -148,5 +148,17 @@ public class CitaController {
     public ResponseEntity<String> deleteCitaById(@PathVariable String id) {
         citaService.deleteCitaById(id);
         return new ResponseEntity<>("Cita eliminada con éxito", HttpStatus.OK);
+    }
+
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<Long> getCitasByEstado(@PathVariable EstadoCita estado) {
+        return new ResponseEntity<>(citaService.getCitasByEstado(estado), HttpStatus.OK);
+    }
+
+    @GetMapping("/rango")
+    public ResponseEntity<Long> getCitasEnRango(
+            @RequestParam("fechaInicio") String fechaInicio,
+            @RequestParam("fechaFin") String fechaFin) {
+        return new ResponseEntity<>(citaService.getCitasEnRango(fechaInicio, fechaFin), HttpStatus.OK);
     }
 }

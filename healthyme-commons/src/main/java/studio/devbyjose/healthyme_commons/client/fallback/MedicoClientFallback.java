@@ -14,4 +14,9 @@ public class MedicoClientFallback implements MedicoClient {
                 .especialidad("Medicina General")
                 .build();
     }
+
+    @Override
+    public Long getMedicosActivos() {
+        return 0L;
+    }
 }

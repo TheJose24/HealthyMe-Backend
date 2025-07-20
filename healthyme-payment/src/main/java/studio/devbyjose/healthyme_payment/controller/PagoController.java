@@ -68,7 +68,7 @@ public class PagoController {
     }
 
     @GetMapping("/paciente/{idPaciente}")
-    public ResponseEntity<List<PagoDTO>> getPagosByPaciente(@PathVariable Integer idPaciente) {
+    public ResponseEntity<List<PagoDTO>> getPagosByPaciente(@PathVariable Long idPaciente) {
         List<PagoDTO> pagos = pagoService.getPagosByPaciente(idPaciente);
         return ResponseEntity.ok(pagos);
     }

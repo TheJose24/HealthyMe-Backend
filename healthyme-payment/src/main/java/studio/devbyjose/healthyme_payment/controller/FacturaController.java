@@ -44,9 +44,4 @@ public class FacturaController {
         return ResponseEntity.ok(facturaDTO);
     }
 
-    @GetMapping("/balance-mensual")
-    public ResponseEntity<List<BalanceMensualDTO>> getBalanceMensual() {
-        return ResponseEntity.ok(facturaService.obtenerBalanceMensual());
-    }
-
 }

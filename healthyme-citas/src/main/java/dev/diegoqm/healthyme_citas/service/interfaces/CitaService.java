@@ -2,12 +2,10 @@ package dev.diegoqm.healthyme_citas.service.interfaces;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
-import dev.diegoqm.healthyme_citas.dto.EspecialidadContadaDTO;
+import studio.devbyjose.healthyme_commons.client.dto.EspecialidadContadaDTO;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 
 import java.util.List;
-
-import org.springdoc.core.converters.models.Pageable;
 
 public interface CitaService {
     // CREATE
@@ -44,5 +42,10 @@ public interface CitaService {
 
     // DELETE BY ID
     void deleteCitaById(String id);
+
+    // SELECT BY ESTADO
+    Long getCitasByEstado(EstadoCita estado);
+
+    Long getCitasEnRango(String fechaInicio, String fechaFin);
 
 }

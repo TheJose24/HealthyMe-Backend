@@ -176,25 +176,4 @@ public class FacturaServiceImpl implements FacturaService {
         }
     }
 
-    @Override
-    public List<BalanceMensualDTO> obtenerBalanceMensual() {
-        List<Object[]> resultados = facturaRepository.obtenerIngresosPorMes();
-        List<BalanceMensualDTO> balances = new ArrayList<>();
-
-        String[] nombresMeses = {
-                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        };
-
-        for (Object[] fila : resultados) {
-            Integer mesNumero = (Integer) fila[0];
-            BigDecimal ingresos = (BigDecimal) fila[1];
-            BigDecimal egresos = ingresos.multiply(new BigDecimal("0.7")); // 70% como egresos simulados
-
-            balances.add(new BalanceMensualDTO(nombresMeses[mesNumero - 1], ingresos, egresos));
-        }
-
-        return balances;
-    }
-
 }

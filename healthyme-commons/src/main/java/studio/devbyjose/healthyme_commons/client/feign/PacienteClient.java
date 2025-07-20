@@ -28,4 +28,7 @@ public interface PacienteClient {
     
     @DeleteMapping("/api/v1/pacientes/{id}")
     ResponseEntity<Void> deletePaciente(@PathVariable("id") String id);
+
+    @GetMapping("/api/v1/pacientes/count")
+    Long getTotalPacientes();
 }

@@ -48,4 +48,9 @@ public class PacienteClientFallback implements PacienteClient {
         log.error("Fallback: Error al eliminar paciente con ID {}", id);
         return ResponseEntity.internalServerError().build();
     }
+
+    @Override
+    public Long getTotalPacientes() {
+        return 0L;
+    }
 }

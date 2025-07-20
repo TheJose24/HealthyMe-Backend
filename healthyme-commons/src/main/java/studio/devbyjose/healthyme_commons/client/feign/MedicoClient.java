@@ -11,4 +11,7 @@ public interface MedicoClient {
 
     @GetMapping("/api/v1/medicos/{id}")
     MedicoDTO obtenerMedico(@PathVariable("id") Integer id);
+
+    @GetMapping("/api/v1/medicos/activos")
+    Long getMedicosActivos();
 }

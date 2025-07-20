@@ -136,7 +136,7 @@ public class PagoServiceImpl implements PagoService {
     }
 
     @Override
-    public List<PagoDTO> getPagosByPaciente(Integer idPaciente) {
+    public List<PagoDTO> getPagosByPaciente(Long idPaciente) {
         List<Pago> pagos = pagoRepository.findByIdPaciente(idPaciente);
         return pagoMapper.toDtoList(pagos);
     }

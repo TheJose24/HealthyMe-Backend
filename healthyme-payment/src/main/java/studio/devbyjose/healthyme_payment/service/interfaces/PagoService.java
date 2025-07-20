@@ -37,7 +37,7 @@ public interface PagoService {
      * @param idPaciente identificador del paciente
      * @return lista de pagos del paciente
      */
-    List<PagoDTO> getPagosByPaciente(Integer idPaciente);
+    List<PagoDTO> getPagosByPaciente(Long idPaciente);
     
     /**
      * Obtiene pagos por estado

@@ -2,7 +2,7 @@ package dev.diegoqm.healthyme_citas.service.impl;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
-import dev.diegoqm.healthyme_citas.dto.EspecialidadContadaDTO;
+import studio.devbyjose.healthyme_commons.client.dto.EspecialidadContadaDTO;
 import dev.diegoqm.healthyme_citas.entity.Cita;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 import dev.diegoqm.healthyme_citas.exception.CitaNotFoundException;
@@ -111,7 +111,7 @@ public class CitaServiceImpl implements CitaService {
 
             // Obtener datos del médico
             try {
-                Integer idMedico = Integer.valueOf(cita.getIdMedico());
+                Integer idMedico = cita.getIdMedico();
                 MedicoDTO medicoDTO = medicoClient.obtenerMedico(idMedico);
                 dto.setDoctor(medicoDTO.getNombre() + " " + medicoDTO.getApellido());
                 dto.setArea(medicoDTO.getEspecialidad());
@@ -221,7 +221,7 @@ public class CitaServiceImpl implements CitaService {
 
         for (Cita cita : citas) {
             try {
-                Integer idMedico = Integer.valueOf(cita.getIdMedico());
+                Integer idMedico = cita.getIdMedico();
                 MedicoDTO medico = medicoClient.obtenerMedico(idMedico);
                 String especialidad = medico.getEspecialidad();
 
@@ -244,5 +244,17 @@ public class CitaServiceImpl implements CitaService {
             throw new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND);
         }
         citaRepository.deleteById(id);
+    }
+
+    @Override
+    public Long getCitasByEstado(EstadoCita estado) {
+        return citaRepository.findByEstado(estado);
+    }
+
+    @Override
+    public Long getCitasEnRango(String fechaInicio, String fechaFin) {
+        LocalDate inicio = LocalDate.parse(fechaInicio);
+        LocalDate fin = LocalDate.parse(fechaFin);
+        return citaRepository.countByFechaBetween(inicio, fin);
     }
 }

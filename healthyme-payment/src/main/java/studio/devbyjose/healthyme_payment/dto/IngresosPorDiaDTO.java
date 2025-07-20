@@ -9,13 +9,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class BalanceMensualDTO {
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
+@NoArgsConstructor
+@AllArgsConstructor
+public class IngresosPorDiaDTO {
+    private LocalDate fecha;
     private BigDecimal monto;
-    private BigDecimal ingresos;
-    private Long cantidadTransacciones;
 }

@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "citas")
@@ -48,4 +49,10 @@ public class Cita {
     @Column(name = "ultima_modificacion")
     private LocalDateTime ultimaModificacion;
 
+    @PrePersist
+    public void prePersist() {
+        if (id == null || id.trim().isEmpty()) {
+            id = UUID.randomUUID().toString();
+        }
+    }
 }

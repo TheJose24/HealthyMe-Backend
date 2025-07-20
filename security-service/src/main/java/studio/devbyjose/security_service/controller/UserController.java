@@ -61,12 +61,14 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Buscar usuarios con filtros")
-    public ResponseEntity<Page<UserDTO>> searchUsers(
+    public ResponseEntity<List<UserDTO>> searchUsers(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String rol,
             @RequestParam(required = false) String estado,
             @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(userService.searchUsers(search, rol, estado, pageable));
+
+        Page<UserDTO> userPage = userService.searchUsers(search, rol, estado, pageable);
+        return ResponseEntity.ok(userPage.getContent());
     }
 
     @GetMapping("/stats")

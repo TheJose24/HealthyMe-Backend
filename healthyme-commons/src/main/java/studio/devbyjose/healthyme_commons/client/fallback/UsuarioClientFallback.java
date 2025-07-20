@@ -38,7 +38,7 @@ public class UsuarioClientFallback implements UsuarioClient {
     }
 
     @Override
-    public ResponseEntity<PageDTO<UsuarioDTO>> obtenerUsuariosActivos() {
+    public ResponseEntity<List<UsuarioDTO>> obtenerUsuariosActivos() {
         return null;
     }
 }

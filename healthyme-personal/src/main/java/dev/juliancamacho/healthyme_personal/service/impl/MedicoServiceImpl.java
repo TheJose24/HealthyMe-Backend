@@ -123,6 +123,6 @@ public class MedicoServiceImpl implements MedicoService {
 
     @Override
     public Long countMedicosActivos() {
-        return Objects.requireNonNull(usuarioClient.obtenerUsuariosActivos().getBody()).getTotalElements();
+        return (long) Objects.requireNonNull(usuarioClient.obtenerUsuariosActivos().getBody()).size();
     }
 }

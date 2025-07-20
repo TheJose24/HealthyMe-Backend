@@ -35,4 +35,9 @@ public class UsuarioClientFallback implements UsuarioClient {
         log.error("Fallback para getUsuariosByRol con Rol: {}", rolNombre);
         return ResponseEntity.notFound().build();
     }
+
+    @Override
+    public ResponseEntity<List<UsuarioDTO>> obtenerUsuariosActivos() {
+        return null;
+    }
 }

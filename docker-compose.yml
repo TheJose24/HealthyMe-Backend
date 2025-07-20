@@ -398,7 +398,6 @@ services:
     depends_on:
       - discovery-server
       - config-server
-      - mongo-citas
       - kafka
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]

@@ -8,10 +8,18 @@ spring:
     serialization:
       write-dates-as-timestamps: false
     date-format: yyyy-MM-dd HH:mm:ss
-  data:
-    mongodb:
-      uri: mongodb://mongo-citas:27017/healthyme_citas
-      auto-index-creation: true
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/healthyme_citas?createDatabaseIfNotExist=true
+    username: root
+    password: j0s33nr1qu3
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
   kafka:
     bootstrap-servers: kafka:29092
     producer:
@@ -40,7 +48,6 @@ management:
 logging:
   level:
     dev.diegoqm.healthyme_citas: INFO
-    org.springframework.data.mongodb: WARN
     org.apache.kafka: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

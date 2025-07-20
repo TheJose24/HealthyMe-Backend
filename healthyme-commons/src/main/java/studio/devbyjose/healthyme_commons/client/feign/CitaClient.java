@@ -1,6 +1,7 @@
 package studio.devbyjose.healthyme_commons.client.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import studio.devbyjose.healthyme_commons.client.dto.CitaDTO;
 import studio.devbyjose.healthyme_commons.client.dto.CitasPorDiaDTO;
@@ -41,19 +42,15 @@ public interface CitaClient {
     Long getCitasByEstado(@PathVariable("estado") EstadoCita estado);
 
     @GetMapping("/api/v1/citas/rango")
-    Long getCitasEnRango(@RequestParam("fechaInicio") LocalDate fechaInicio,
-                         @RequestParam("fechaFin") LocalDate fechaFin);
+    Long getCitasEnRango(@RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+                         @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin);
 
     @GetMapping("/api/v1/citas/estado/{estado}/rango")
     Long getCitasByEstadoEnRango(@PathVariable("estado") EstadoCita estado,
-                                 @RequestParam("fechaInicio") LocalDate fechaInicio,
-                                 @RequestParam("fechaFin") LocalDate fechaFin);
+                                 @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+                                 @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin);
 
     @GetMapping("/api/v1/citas/por-dia")
-    List<CitasPorDiaDTO> getCitasPorDiaEnRango(@RequestParam("fechaInicio") LocalDate fechaInicio,
-                                               @RequestParam("fechaFin") LocalDate fechaFin);
-
-    @GetMapping("/api/v1/citas/por-especialidad")
-    List<CitasPorEspecialidadDTO> getCitasPorEspecialidad(@RequestParam("fechaInicio") LocalDate fechaInicio,
-                                                          @RequestParam("fechaFin") LocalDate fechaFin);
+    List<CitasPorDiaDTO> getCitasPorDiaEnRango(@RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+                                               @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin);
 }

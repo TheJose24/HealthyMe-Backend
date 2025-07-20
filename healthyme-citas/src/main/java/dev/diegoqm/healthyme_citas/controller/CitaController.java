@@ -2,6 +2,8 @@ package dev.diegoqm.healthyme_citas.controller;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
+import org.springframework.format.annotation.DateTimeFormat;
+import studio.devbyjose.healthyme_commons.client.dto.CitasPorDiaDTO;
 import studio.devbyjose.healthyme_commons.client.dto.EspecialidadContadaDTO;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 import dev.diegoqm.healthyme_citas.service.interfaces.CitaService;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,10 +158,27 @@ public class CitaController {
         return new ResponseEntity<>(citaService.getCitasByEstado(estado), HttpStatus.OK);
     }
 
+    @GetMapping("/estado/{estado}/rango")
+    public ResponseEntity<Long> getCitasByEstadoEnRango(
+            @PathVariable("estado") EstadoCita estado,
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+        Long count = citaService.getCitasByEstadoEnRango(estado, fechaInicio, fechaFin);
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/por-dia")
+    public ResponseEntity<List<CitasPorDiaDTO>> getCitasPorDiaEnRango(
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+        List<CitasPorDiaDTO> citas = citaService.getCitasPorDiaEnRango(fechaInicio, fechaFin);
+        return ResponseEntity.ok(citas);
+    }
+
     @GetMapping("/rango")
     public ResponseEntity<Long> getCitasEnRango(
-            @RequestParam("fechaInicio") String fechaInicio,
-            @RequestParam("fechaFin") String fechaFin) {
+            @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         return new ResponseEntity<>(citaService.getCitasEnRango(fechaInicio, fechaFin), HttpStatus.OK);
     }
 }

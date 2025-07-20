@@ -75,10 +75,5 @@ public class CitaClientFallback implements CitaClient {
     public List<CitasPorDiaDTO> getCitasPorDiaEnRango(LocalDate fechaInicio, LocalDate fechaFin) {
         return List.of();
     }
-
-    @Override
-    public List<CitasPorEspecialidadDTO> getCitasPorEspecialidad(LocalDate fechaInicio, LocalDate fechaFin) {
-        return List.of();
-    }
 }
 

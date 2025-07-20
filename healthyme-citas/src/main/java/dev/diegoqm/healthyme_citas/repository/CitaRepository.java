@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import studio.devbyjose.healthyme_commons.client.dto.CitasPorDiaDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,4 +41,15 @@ public interface CitaRepository extends JpaRepository<Cita, String> {
     @Query("SELECT COUNT(c) FROM Cita c WHERE c.fecha BETWEEN :fechaInicio AND :fechaFin")
     Long countByFechaBetween(@Param("fechaInicio") LocalDate fechaInicio,
                              @Param("fechaFin") LocalDate fechaFin);
+
+    Long countByEstadoAndFechaBetween(@Param("estado") EstadoCita estado,
+                                      @Param("fechaInicio") LocalDate fechaInicio,
+                                      @Param("fechaFin") LocalDate fechaFin);
+
+    @Query("SELECT c.fecha, COUNT(c) " +
+            "FROM Cita c WHERE c.fecha BETWEEN :fechaInicio AND :fechaFin " +
+            "GROUP BY c.fecha ORDER BY c.fecha")
+    List<Object[]> findCitasPorDiaEnRango(@Param("fechaInicio") LocalDate fechaInicio,
+                                          @Param("fechaFin") LocalDate fechaFin);
+
 }

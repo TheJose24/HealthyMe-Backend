@@ -2,7 +2,7 @@ package dev.diegoqm.healthyme_citas.service.impl;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
-import studio.devbyjose.healthyme_commons.client.dto.EspecialidadContadaDTO;
+import studio.devbyjose.healthyme_commons.client.dto.*;
 import dev.diegoqm.healthyme_citas.entity.Cita;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 import dev.diegoqm.healthyme_citas.exception.CitaNotFoundException;
@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import studio.devbyjose.healthyme_commons.client.dto.MedicoDTO;
-import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
 import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 
@@ -252,9 +250,24 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public Long getCitasEnRango(String fechaInicio, String fechaFin) {
-        LocalDate inicio = LocalDate.parse(fechaInicio);
-        LocalDate fin = LocalDate.parse(fechaFin);
-        return citaRepository.countByFechaBetween(inicio, fin);
+    public Long getCitasEnRango(LocalDate fechaInicio, LocalDate fechaFin) {
+        return citaRepository.countByFechaBetween(fechaInicio, fechaFin);
     }
+
+    @Override
+    public Long getCitasByEstadoEnRango(EstadoCita estado, LocalDate fechaInicio, LocalDate fechaFin) {
+        return citaRepository.countByEstadoAndFechaBetween(estado, fechaInicio, fechaFin);
+    }
+
+    @Override
+    public List<CitasPorDiaDTO> getCitasPorDiaEnRango(LocalDate fechaInicio, LocalDate fechaFin) {
+        return citaRepository.findCitasPorDiaEnRango(fechaInicio, fechaFin)
+                .stream()
+                .map(row -> CitasPorDiaDTO.builder()
+                        .fecha((LocalDate) row[0])
+                        .cantidad((Long) row[1])
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }

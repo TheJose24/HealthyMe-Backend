@@ -2,9 +2,12 @@ package dev.diegoqm.healthyme_citas.service.interfaces;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
+import studio.devbyjose.healthyme_commons.client.dto.CitasPorDiaDTO;
+import studio.devbyjose.healthyme_commons.client.dto.CitasPorEspecialidadDTO;
 import studio.devbyjose.healthyme_commons.client.dto.EspecialidadContadaDTO;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CitaService {
@@ -46,6 +49,8 @@ public interface CitaService {
     // SELECT BY ESTADO
     Long getCitasByEstado(EstadoCita estado);
 
-    Long getCitasEnRango(String fechaInicio, String fechaFin);
+    Long getCitasEnRango(LocalDate fechaInicio, LocalDate fechaFin);
 
+    Long getCitasByEstadoEnRango(EstadoCita estado, LocalDate fechaInicio, LocalDate fechaFin);
+    List<CitasPorDiaDTO> getCitasPorDiaEnRango(LocalDate fechaInicio, LocalDate fechaFin);
 }

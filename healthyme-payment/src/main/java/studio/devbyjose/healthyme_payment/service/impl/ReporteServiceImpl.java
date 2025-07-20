@@ -18,21 +18,19 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReporteServiceImpl implements ReporteService {
 
-    // 🔗 Clientes Feign existentes
     private final CitaClient citaClient;
     private final PacienteClient pacienteClient;
     private final MedicoClient medicoClient;
 
-    // 💾 Repositorios existentes
     private final PagoRepository pagoRepository;
 
-    // Dependencias existentes...
     private final PdfGenerationService pdfGenerationService;
 
     @Override
@@ -137,8 +135,6 @@ public class ReporteServiceImpl implements ReporteService {
             return 0L;
         }
     }
-
-    // 📄 MÉTODOS PARA GENERAR PDFs (sin cambios)
 
     @Override
     public byte[] generatePdfReporteGeneral() {
@@ -247,7 +243,13 @@ public class ReporteServiceImpl implements ReporteService {
 
     private List<IngresosPorDiaDTO> getIngresosPorDiaEnRangoSafe(LocalDate fechaInicio, LocalDate fechaFin) {
         try {
-            return pagoRepository.getIngresosPorDiaEnRango(fechaInicio, fechaFin);
+            List<Object[]> results = pagoRepository.getIngresosPorDiaEnRangoNative(fechaInicio, fechaFin);
+            return results.stream()
+                    .map(row -> IngresosPorDiaDTO.builder()
+                            .fecha(((java.sql.Date) row[0]).toLocalDate())
+                            .monto((BigDecimal) row[1])
+                            .build())
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             log.warn("Error al obtener ingresos por día: {}", e.getMessage());
             return List.of();
@@ -287,84 +289,4 @@ public class ReporteServiceImpl implements ReporteService {
         return getIngresosPorPeriodo(inicioMes, finMes).getMonto();
     }
 
-    // Métodos para construir contenido del PDF (sin cambios)
-    private String buildReporteGeneralContent(ReporteGeneralDTO reporte) {
-        return String.format(
-                """
-                        Total Citas: %d
-                        Citas Pendientes: %d
-                        Citas Realizadas: %d
-                        Ingresos Totales: $%s
-                        Ingresos Mes Actual: $%s
-                        Médicos Activos: %d
-                        Total Pacientes: %d
-                        """,
-            reporte.getTotalCitas(),
-            reporte.getCitasPendientes(),
-            reporte.getCitasRealizadas(),
-            reporte.getIngresosTotales(),
-            reporte.getIngresosMesActual(),
-            reporte.getMedicosActivos(),
-            reporte.getPacientesTotales()
-        );
-    }
-
-    private String buildReporteMensualContent(ReporteMensualDTO reporte) {
-        return String.format(
-                """
-                        Mes: %s
-                        Citas del Mes: %d
-                        Ingresos del Mes: $%s
-                        Médicos Activos: %d
-                        """,
-            reporte.getMes(),
-            reporte.getCitasDelMes(),
-            reporte.getIngresosDelMes(),
-            reporte.getMedicosActivosDelMes()
-        );
-    }
-
-    private String buildReporteAnualContent(ReporteAnualDTO reporte) {
-        return String.format(
-                """
-                        Año: %d
-                        Citas del Año: %d
-                        Ingresos del Año: $%s
-                        """,
-            reporte.getYear(),
-            reporte.getCitasDelAno(),
-            reporte.getIngresosDelAno()
-        );
-    }
-
-    private String buildCitasReporteContent(CitasReporteDTO reporte) {
-        return String.format(
-                """
-                        Total Citas: %d
-                        Pendientes: %d
-                        Realizadas: %d
-                        Canceladas: %d
-                        Tasa de Completitud: %.1f%%
-                        """,
-            reporte.getTotalCitas(),
-            reporte.getCitasPendientes(),
-            reporte.getCitasRealizadas(),
-            reporte.getCitasCanceladas(),
-            reporte.getTasaCompletitud()
-        );
-    }
-
-    private String buildIngresosContent(BalanceMensualDTO balance) {
-        return String.format(
-                """
-                        Período: %s - %s
-                        Monto Total: $%s
-                        Cantidad Transacciones: %d
-                        """,
-            balance.getFechaInicio(),
-            balance.getFechaFin(),
-            balance.getMonto(),
-            balance.getCantidadTransacciones()
-        );
-    }
 }

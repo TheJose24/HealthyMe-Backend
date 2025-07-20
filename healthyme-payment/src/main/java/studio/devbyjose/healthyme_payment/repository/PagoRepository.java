@@ -33,9 +33,10 @@ public interface PagoRepository extends JpaRepository<Pago, Integer> {
     Long countPagosPorPeriodo(@Param("fechaInicio") LocalDate fechaInicio,
                               @Param("fechaFin") LocalDate fechaFin);
 
-    @Query("SELECT new studio.devbyjose.healthyme_payment.dto.IngresosPorDiaDTO(DATE(p.fechaPago), COALESCE(SUM(p.monto), 0)) " +
-            "FROM Pago p WHERE p.estado = 'COMPLETADO' AND DATE(p.fechaPago) BETWEEN :fechaInicio AND :fechaFin " +
-            "GROUP BY DATE(p.fechaPago) ORDER BY DATE(p.fechaPago)")
-    List<IngresosPorDiaDTO> getIngresosPorDiaEnRango(@Param("fechaInicio") LocalDate fechaInicio,
-                                                     @Param("fechaFin") LocalDate fechaFin);
+    @Query(value = "SELECT DATE(fecha_pago) as fecha, COALESCE(SUM(monto), 0) as total " +
+            "FROM pago WHERE estado = 'COMPLETADO' AND DATE(fecha_pago) BETWEEN ?1 AND ?2 " +
+            "GROUP BY DATE(fecha_pago) ORDER BY DATE(fecha_pago)",
+            nativeQuery = true)
+    List<Object[]> getIngresosPorDiaEnRangoNative(LocalDate fechaInicio, LocalDate fechaFin);
+
 }

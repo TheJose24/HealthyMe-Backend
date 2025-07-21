@@ -165,7 +165,7 @@ public class AuthorizationServerConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://security-service:8085/auth")
+                .issuer("http://security-service:8085")
                 .build();
     }
 
@@ -174,7 +174,7 @@ public class AuthorizationServerConfig {
         return context -> {
             if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
                 // Datos básicos del token
-                context.getClaims().claim("iss", "http://security-service:8085/auth");
+                context.getClaims().claim("iss", "http://security-service:8085");
 
                 // Obtener datos del usuario si está disponible
                 Authentication principal = context.getPrincipal();

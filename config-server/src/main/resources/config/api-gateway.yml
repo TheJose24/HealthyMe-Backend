@@ -7,7 +7,6 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://security-service:8085/.well-known/jwks.json
           issuer-uri: http://security-service:8085
   application:
     name: api-gateway

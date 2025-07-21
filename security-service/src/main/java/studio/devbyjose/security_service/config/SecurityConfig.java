@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/v1/users/me").authenticated()
                         .requestMatchers("/api/v1/auth/**", "/api/v1/users/**","/oauth2/**", "/login").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Para pre-flight CORS requests
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/actuator/**").permitAll()

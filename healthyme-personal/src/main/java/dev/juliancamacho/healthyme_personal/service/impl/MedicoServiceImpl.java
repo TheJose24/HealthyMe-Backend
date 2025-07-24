@@ -64,12 +64,15 @@ public class MedicoServiceImpl implements MedicoService {
         return medicoRepository.findAll()
                 .stream().map(medico -> {
                     MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
+                    medicoDto.setIdEspecialidad(medico.getEspecialidad().getIdEspecialidad());
                     ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
                     medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
                     medicoDto.setContratos(usuarioDTO.getBody().getContratos());
                     medicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
                     medicoDto.setRol(usuarioDTO.getBody().getRol());
                     medicoDto.setEstado(usuarioDTO.getBody().getEstado());
+                    medicoDto.setPersona(usuarioDTO.getBody().getPersona());
+                    
                     return medicoDto;
                 }).collect(Collectors.toList());
     }
@@ -80,12 +83,15 @@ public class MedicoServiceImpl implements MedicoService {
         return medicoRepository.findByEspecialidadIdEspecialidad(idEspecialidad)
                 .stream().map(medico -> {
                     MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
+                    medicoDto.setIdEspecialidad(medico.getEspecialidad().getIdEspecialidad());
                     ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
                     medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
                     medicoDto.setContratos(usuarioDTO.getBody().getContratos());
                     medicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
                     medicoDto.setRol(usuarioDTO.getBody().getRol());
                     medicoDto.setEstado(usuarioDTO.getBody().getEstado());
+                    medicoDto.setPersona(usuarioDTO.getBody().getPersona());
+                    
                     return medicoDto;
                 }).collect(Collectors.toList());
     }

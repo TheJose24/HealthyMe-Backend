@@ -22,7 +22,7 @@ public class ConsultaDto {
     private LocalDate fecha;
 
     @NotNull(message = "El ID de la cita es obligatorio")
-    private UUID idCita;
+    private String idCita;
 
     @NotNull(message = "El ID del paciente es obligatorio")
     private Integer idPaciente;

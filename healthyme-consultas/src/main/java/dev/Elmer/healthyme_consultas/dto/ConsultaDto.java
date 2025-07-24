@@ -3,6 +3,7 @@ package dev.Elmer.healthyme_consultas.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 public class ConsultaDto {
@@ -21,7 +22,7 @@ public class ConsultaDto {
     private LocalDate fecha;
 
     @NotNull(message = "El ID de la cita es obligatorio")
-    private Integer idCita;
+    private UUID idCita;
 
     @NotNull(message = "El ID del paciente es obligatorio")
     private Integer idPaciente;

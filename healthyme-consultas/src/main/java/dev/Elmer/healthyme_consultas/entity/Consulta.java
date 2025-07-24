@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "consulta")
@@ -30,7 +31,7 @@ public class Consulta {
     private LocalDate fecha;
 
     @Column(name = "id_cita")
-    private Integer idCita;
+    private UUID idCita;
 
     @Column(name = "id_paciente")
     private Integer idPaciente;

@@ -117,7 +117,6 @@ public class MedicoServiceImpl implements MedicoService {
         }
 
         medico.setIdUsuario(usuarioDTO.getBody().getIdUsuario());
-        medico.setHorariosMedico(medicoDto.getIdHorarios());
         EspecialidadDto especialidadDto = especialidadServiceImpl.getEspecialidadById(medicoDto.getIdEspecialidad());
         Especialidad especialidad = especialidadMapper.especialidadDtoToEspecialidad(especialidadDto);
         medico.setEspecialidad(especialidad);

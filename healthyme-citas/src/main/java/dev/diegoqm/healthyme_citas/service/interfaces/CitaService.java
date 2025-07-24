@@ -16,13 +16,13 @@ public interface CitaService {
     CitaDTO createCita(CitaDTO citaDto);
 
     // SELECT BY ID
-    CitaDTO getCitaById(UUID id);
+    CitaDTO getCitaById(String id);
 
     // SELECT ALL
     List<CitaDTO> getAllCitas();
 
     // UPDATE
-    CitaDTO updateCita(UUID id, CitaDTO citaDto);
+    CitaDTO updateCita(String id, CitaDTO citaDto);
 
     // COUNT
     Long countCitas();
@@ -45,7 +45,7 @@ public interface CitaService {
     List<CitaDTO> findByUsuarioAndEstado(Long usuarioId, EstadoCita estado);
 
     // DELETE BY ID
-    void deleteCitaById(UUID id);
+    void deleteCitaById(String id);
 
     // SELECT BY ESTADO
     Long getCitasByEstado(EstadoCita estado);
@@ -62,5 +62,5 @@ public interface CitaService {
 
     List<CitaDTO> findCitasDeHoyByMedico(Integer idMedico);
     List<CitaDTO> findCitasDeHoyByMedicoAndEstado(Integer idMedico, EstadoCita estado);
-    void updateEstado(UUID id, EstadoCita estado);
+    void updateEstado(String id, EstadoCita estado);
 }

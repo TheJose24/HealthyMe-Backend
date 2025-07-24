@@ -25,7 +25,7 @@ public class CitaClientFallback implements CitaClient {
     }
 
     @Override
-    public CitaDTO getCitaById(UUID id) {
+    public CitaDTO getCitaById(String id) {
         log.error("⚠️ Fallback: getCitaById failed for id={}", id);
         return CitaDTO.builder().id(id).build();
     }
@@ -37,13 +37,13 @@ public class CitaClientFallback implements CitaClient {
     }
 
     @Override
-    public CitaDTO updateCita(UUID id, CitaDTO citaDTO) {
+    public CitaDTO updateCita(String id, CitaDTO citaDTO) {
         log.error("⚠️ Fallback: updateCita failed for id={}, payload={}", id, citaDTO);
         return CitaDTO.builder().id(id).build();
     }
 
     @Override
-    public void deleteCitaById(UUID id) {
+    public void deleteCitaById(String id) {
         log.error("⚠️ Fallback: deleteCitaById failed for id={}", id);
     }
 

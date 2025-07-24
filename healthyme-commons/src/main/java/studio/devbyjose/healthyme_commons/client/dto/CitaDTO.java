@@ -9,7 +9,6 @@ import studio.devbyjose.healthyme_commons.enums.citas.EstadoCita;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -17,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CitaDTO {
 
-    private UUID id;
+    private String id;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fecha;
     private LocalTime hora;

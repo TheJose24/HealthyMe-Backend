@@ -38,7 +38,7 @@ public class CitaController {
 
     @Operation(summary = "Obtener una cita por ID")
     @GetMapping("/{id}")
-    public ResponseEntity<CitaDTO> getCitaById(@PathVariable UUID id) {
+    public ResponseEntity<CitaDTO> getCitaById(@PathVariable String id) {
         CitaDTO cita = citaService.getCitaById(id);
         return new ResponseEntity<>(cita, HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class CitaController {
 
     @Operation(summary = "Actualizar una cita existente")
     @PutMapping("/{id}")
-    public ResponseEntity<CitaDTO> updateCita(@PathVariable UUID id,
+    public ResponseEntity<CitaDTO> updateCita(@PathVariable String id,
                                               @Valid @RequestBody CitaDTO citaDTO) {
         CitaDTO actualizado = citaService.updateCita(id, citaDTO);
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
@@ -149,7 +149,7 @@ public class CitaController {
 
     @Operation(summary = "Eliminar una cita por ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCitaById(@PathVariable UUID id) {
+    public ResponseEntity<String> deleteCitaById(@PathVariable String id) {
         citaService.deleteCitaById(id);
         return new ResponseEntity<>("Cita eliminada con éxito", HttpStatus.OK);
     }
@@ -208,7 +208,7 @@ public class CitaController {
     @PatchMapping("/{id}/estado")
     @Operation(summary = "Cambiar estado de la cita")
     public ResponseEntity<Void> cambiarEstado(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @RequestBody Map<String, String> payload) {
 
         EstadoCita nuevo = EstadoCita.valueOf(payload.get("estado"));

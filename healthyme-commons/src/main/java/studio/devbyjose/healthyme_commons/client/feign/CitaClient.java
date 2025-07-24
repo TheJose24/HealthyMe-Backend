@@ -21,17 +21,17 @@ public interface CitaClient {
     CitaDTO createCita(@RequestBody CitaDTO citaDTO);
 
     @GetMapping("/api/v1/citas/{id}")
-    CitaDTO getCitaById(@PathVariable("id") UUID id);
+    CitaDTO getCitaById(@PathVariable("id") String id);
 
     @GetMapping("/api/v1/citas")
     List<CitaDTO> getAllCitas();
 
     @PutMapping("/api/v1/citas/{id}")
-    CitaDTO updateCita(@PathVariable("id") UUID id,
+    CitaDTO updateCita(@PathVariable("id") String id,
                        @RequestBody CitaDTO citaDTO);
 
     @DeleteMapping("/api/v1/citas/{id}")
-    void deleteCitaById(@PathVariable("id") UUID id);
+    void deleteCitaById(@PathVariable("id") String id);
 
     @GetMapping("/api/v1/citas/count")
     Long getTotalCitas();

@@ -48,7 +48,7 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public CitaDTO getCitaById(UUID id) {
+    public CitaDTO getCitaById(String id) {
         Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND));
         return citaMapper.toDTO(cita);
@@ -63,7 +63,7 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public CitaDTO updateCita(UUID id, @Valid CitaDTO citaDto) {
+    public CitaDTO updateCita(String id, @Valid CitaDTO citaDto) {
         Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND));
 
@@ -235,7 +235,7 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public void deleteCitaById(UUID id) {
+    public void deleteCitaById(String id) {
         if (!citaRepository.existsById(id)) {
             throw new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND);
         }
@@ -299,7 +299,7 @@ public class CitaServiceImpl implements CitaService {
     }
     @Override
     @Transactional
-    public void updateEstado(UUID id, EstadoCita estado) {
+    public void updateEstado(String id, EstadoCita estado) {
         Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new CitaNotFoundException(
                         "Cita con id "+id+" no encontrada", HttpStatus.NOT_FOUND));

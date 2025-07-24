@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
+import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 import studio.devbyjose.healthyme_pacientes.dto.PacienteDTO;
 import studio.devbyjose.healthyme_pacientes.dto.PacientesPorMesDTO;
 import studio.devbyjose.healthyme_pacientes.entity.Paciente;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class PacienteServiceImpl implements PacienteService {
     private final PacienteRepository pacienteRepository;
     private final PacienteMapper pacienteMapper;
+    private final UsuarioClient usuarioClient;
 
     @Override
     @Transactional(readOnly = true)
@@ -37,10 +40,21 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     @Transactional(readOnly = true)
     public PacienteDTO findById(Long id) {
-        log.info("Buscando paciente con id: {}", id);
-        return pacienteRepository.findById(id)
+        PacienteDTO dto = pacienteRepository.findById(id)
                 .map(pacienteMapper::toDTO)
-                .orElseThrow(() -> new PacienteNotFoundException("No se encontró paciente con el id: " + id, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new PacienteNotFoundException(
+                        "No se encontró paciente con id " + id, HttpStatus.NOT_FOUND));
+
+        UsuarioDTO usuario = usuarioClient
+                .obtenerUsuario(Math.toIntExact(dto.getIdUsuario()))
+                .getBody();
+
+        if (usuario != null && usuario.getPersona() != null) {
+            dto.setNombre(usuario.getPersona().getNombre());
+            dto.setApellido(usuario.getPersona().getApellido());
+        }
+        return dto;
+
     }
 
     @Override

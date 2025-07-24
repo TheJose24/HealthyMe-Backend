@@ -12,4 +12,5 @@ public class ConsultorioDTO {
     private Integer numeroHabitacion;
     private Integer idSede;
     private Integer idEspecialidad;
+    private String nombreSede;
 }

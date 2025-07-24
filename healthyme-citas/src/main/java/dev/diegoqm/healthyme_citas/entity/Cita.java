@@ -20,7 +20,7 @@ import java.util.UUID;
 public class Cita {
 
     @Id
-    private String id;
+    private UUID id;
 
     @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
@@ -39,7 +39,7 @@ public class Cita {
     private Integer idMedico;
 
     @Column(name = "id_consultorio")
-    private String idConsultorio;
+    private Long idConsultorio;
 
     @CreationTimestamp
     @Column(name = "fecha_creacion", updatable = false)
@@ -51,8 +51,8 @@ public class Cita {
 
     @PrePersist
     public void prePersist() {
-        if (id == null || id.trim().isEmpty()) {
-            id = UUID.randomUUID().toString();
+        if (id == null ) {
+            id = UUID.randomUUID();
         }
     }
 }

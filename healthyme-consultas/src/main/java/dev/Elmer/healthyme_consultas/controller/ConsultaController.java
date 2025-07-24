@@ -48,6 +48,12 @@ public class ConsultaController {
         return ResponseEntity.ok(service.actualizar(id, dto));
     }
 
+    @Operation(summary="Consultas de un paciente")
+    @GetMapping("/paciente/{idPaciente}")
+    public ResponseEntity<List<ConsultaDto>> porPaciente(@PathVariable Integer idPaciente){
+        return ResponseEntity.ok(service.listarPorPaciente(idPaciente));
+    }
+
     @Operation(summary = "Eliminar consulta", description = "Elimina una consulta médica por su ID.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {

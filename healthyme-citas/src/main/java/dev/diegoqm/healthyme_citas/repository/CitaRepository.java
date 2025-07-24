@@ -12,9 +12,10 @@ import studio.devbyjose.healthyme_commons.client.dto.CitasPorDiaDTO;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CitaRepository extends JpaRepository<Cita, String> {
+public interface CitaRepository extends JpaRepository<Cita, UUID> {
 
 
     List<Cita> findByFecha(LocalDate fecha);
@@ -52,5 +53,20 @@ public interface CitaRepository extends JpaRepository<Cita, String> {
             "GROUP BY c.fecha ORDER BY c.fecha")
     List<Object[]> findCitasPorDiaEnRango(@Param("fechaInicio") LocalDate fechaInicio,
                                           @Param("fechaFin") LocalDate fechaFin);
+
+    List<Cita> findByIdMedicoAndFecha(
+            Integer idMedico,
+            LocalDate fecha);
+
+    List<Cita> findByIdMedicoAndFechaAndEstado(
+            Integer idMedico,
+            LocalDate fecha,
+            EstadoCita estado);
+
+    List<Cita> findByIdMedicoAndFechaBetween(
+            Integer idMedico,
+            LocalDate fechaInicio,
+            LocalDate fechaFin
+    );
 
 }

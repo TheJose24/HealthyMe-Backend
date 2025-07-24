@@ -2,6 +2,7 @@ package dev.diegoqm.healthyme_citas.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
@@ -11,7 +12,7 @@ import lombok.Data;
 
 @Data
 public class CitaDTO {
-    private String id;
+    private UUID id;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "La fecha es obligatoria")
@@ -28,6 +29,6 @@ public class CitaDTO {
 
     @NotNull(message = "El id del medico es obligatorio")
     private Integer idMedico;
-    private String idConsultorio;
+    private Long idConsultorio;
 
 }

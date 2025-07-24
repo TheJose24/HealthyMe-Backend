@@ -1,9 +1,10 @@
 package dev.diegoqm.healthyme_citas.dto;
 
 import java.time.LocalTime;
+import java.util.UUID;
 
 public class CitasHoyDTO {
-    private String id;
+    private UUID id;
     private String doctor;
     private String area;
     private String time;
@@ -11,11 +12,11 @@ public class CitasHoyDTO {
     private String patient; // opcional
 
     // Getters y Setters
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

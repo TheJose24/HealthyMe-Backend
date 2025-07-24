@@ -9,19 +9,20 @@ import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public interface CitaService {
     // CREATE
     CitaDTO createCita(CitaDTO citaDto);
 
     // SELECT BY ID
-    CitaDTO getCitaById(String id);
+    CitaDTO getCitaById(UUID id);
 
     // SELECT ALL
     List<CitaDTO> getAllCitas();
 
     // UPDATE
-    CitaDTO updateCita(String id, CitaDTO citaDto);
+    CitaDTO updateCita(UUID id, CitaDTO citaDto);
 
     // COUNT
     Long countCitas();
@@ -44,7 +45,7 @@ public interface CitaService {
     List<CitaDTO> findByUsuarioAndEstado(Long usuarioId, EstadoCita estado);
 
     // DELETE BY ID
-    void deleteCitaById(String id);
+    void deleteCitaById(UUID id);
 
     // SELECT BY ESTADO
     Long getCitasByEstado(EstadoCita estado);
@@ -53,4 +54,13 @@ public interface CitaService {
 
     Long getCitasByEstadoEnRango(EstadoCita estado, LocalDate fechaInicio, LocalDate fechaFin);
     List<CitasPorDiaDTO> getCitasPorDiaEnRango(LocalDate fechaInicio, LocalDate fechaFin);
+    List<CitaDTO> findByMedicoAndRango(
+            Integer idMedico,
+            LocalDate fechaInicio,
+            LocalDate fechaFin
+    );
+
+    List<CitaDTO> findCitasDeHoyByMedico(Integer idMedico);
+    List<CitaDTO> findCitasDeHoyByMedicoAndEstado(Integer idMedico, EstadoCita estado);
+    void updateEstado(UUID id, EstadoCita estado);
 }

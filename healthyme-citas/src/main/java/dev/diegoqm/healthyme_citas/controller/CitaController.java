@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Tag(name = "Citas", description = "API para gestionar citas")
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class CitaController {
 
     @Operation(summary = "Obtener una cita por ID")
     @GetMapping("/{id}")
-    public ResponseEntity<CitaDTO> getCitaById(@PathVariable String id) {
+    public ResponseEntity<CitaDTO> getCitaById(@PathVariable UUID id) {
         CitaDTO cita = citaService.getCitaById(id);
         return new ResponseEntity<>(cita, HttpStatus.OK);
     }
@@ -51,7 +52,7 @@ public class CitaController {
 
     @Operation(summary = "Actualizar una cita existente")
     @PutMapping("/{id}")
-    public ResponseEntity<CitaDTO> updateCita(@PathVariable String id,
+    public ResponseEntity<CitaDTO> updateCita(@PathVariable UUID id,
                                               @Valid @RequestBody CitaDTO citaDTO) {
         CitaDTO actualizado = citaService.updateCita(id, citaDTO);
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
@@ -148,7 +149,7 @@ public class CitaController {
 
     @Operation(summary = "Eliminar una cita por ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCitaById(@PathVariable String id) {
+    public ResponseEntity<String> deleteCitaById(@PathVariable UUID id) {
         citaService.deleteCitaById(id);
         return new ResponseEntity<>("Cita eliminada con éxito", HttpStatus.OK);
     }
@@ -180,5 +181,38 @@ public class CitaController {
             @RequestParam("fechaInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         return new ResponseEntity<>(citaService.getCitasEnRango(fechaInicio, fechaFin), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Listar citas de un médico en un rango de fechas")
+    @GetMapping("/medico/{id}")
+    public ResponseEntity<List<CitaDTO>> getCitasPorMedicoYRango(
+            @PathVariable("id") Integer idMedico,
+            @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("end")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin
+    ) {
+        List<CitaDTO> citas = citaService.findByMedicoAndRango(idMedico, fechaInicio, fechaFin);
+        return ResponseEntity.ok(citas);
+    }
+
+    @Operation(summary = "Citas del médico para el día de hoy")
+    @GetMapping("/medico/{id}/hoy")
+    public ResponseEntity<List<CitaDTO>> citasDeHoyPorMedico(
+            @PathVariable Integer id,
+            @RequestParam(name = "estado", required = false) EstadoCita estado
+    ) {
+        List<CitaDTO> citas = (estado == null)
+                ? citaService.findCitasDeHoyByMedico(id)
+                : citaService.findCitasDeHoyByMedicoAndEstado(id, estado);
+        return ResponseEntity.ok(citas);
+    }
+    @PatchMapping("/{id}/estado")
+    @Operation(summary = "Cambiar estado de la cita")
+    public ResponseEntity<Void> cambiarEstado(
+            @PathVariable UUID id,
+            @RequestBody Map<String, String> payload) {
+
+        EstadoCita nuevo = EstadoCita.valueOf(payload.get("estado"));
+        citaService.updateEstado(id, nuevo);
+        return ResponseEntity.noContent().build();
     }
 }

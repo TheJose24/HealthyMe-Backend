@@ -12,6 +12,7 @@ import studio.devbyjose.healthyme_commons.enums.citas.EstadoCita;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -24,7 +25,7 @@ public class CitaClientFallback implements CitaClient {
     }
 
     @Override
-    public CitaDTO getCitaById(Integer id) {
+    public CitaDTO getCitaById(UUID id) {
         log.error("⚠️ Fallback: getCitaById failed for id={}", id);
         return CitaDTO.builder().id(id).build();
     }
@@ -36,13 +37,13 @@ public class CitaClientFallback implements CitaClient {
     }
 
     @Override
-    public CitaDTO updateCita(Integer id, CitaDTO citaDTO) {
+    public CitaDTO updateCita(UUID id, CitaDTO citaDTO) {
         log.error("⚠️ Fallback: updateCita failed for id={}, payload={}", id, citaDTO);
         return CitaDTO.builder().id(id).build();
     }
 
     @Override
-    public void deleteCitaById(Integer id) {
+    public void deleteCitaById(UUID id) {
         log.error("⚠️ Fallback: deleteCitaById failed for id={}", id);
     }
 

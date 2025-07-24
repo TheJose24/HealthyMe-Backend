@@ -1,6 +1,7 @@
 package studio.devbyjose.healthyme_commons.client.fallback;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import studio.devbyjose.healthyme_commons.client.dto.PageDTO;
@@ -40,5 +41,29 @@ public class UsuarioClientFallback implements UsuarioClient {
     @Override
     public ResponseEntity<List<UsuarioDTO>> obtenerUsuariosActivos() {
         return null;
+    }
+
+    @Override
+    public ResponseEntity<Void> activarUsuario(Integer id) {
+        log.error("Fallback para activarUsuario con ID: {}", id);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
+    @Override
+    public ResponseEntity<Void> suspenderUsuario(Integer id) {
+        log.error("Fallback para suspenderUsuario con ID: {}", id);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
+    @Override
+    public ResponseEntity<Void> eliminarUsuario(Integer id) {
+        log.error("Fallback para eliminarUsuario con ID: {}", id);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
+    @Override
+    public ResponseEntity<UsuarioDTO> actualizarRolUsuario(Integer id, String rolNombre) {
+        log.error("Fallback para actualizarRolUsuario — ID: {}, Rol: {}", id, rolNombre);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
     }
 }

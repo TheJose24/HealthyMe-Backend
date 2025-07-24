@@ -8,14 +8,12 @@ import dev.juliancamacho.healthyme_personal.exception.NotFoundException;
 import dev.juliancamacho.healthyme_personal.mapper.MedicoMapper;
 import dev.juliancamacho.healthyme_personal.mapper.EspecialidadMapper;
 import dev.juliancamacho.healthyme_personal.repository.MedicoRepository;
-import dev.juliancamacho.healthyme_personal.repository.EspecialidadRepository;
 import dev.juliancamacho.healthyme_personal.service.interfaces.MedicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
-import studio.devbyjose.healthyme_commons.enums.EstadoUsuario;
 
 import java.util.List;
 import java.util.Objects;
@@ -71,6 +69,7 @@ public class MedicoServiceImpl implements MedicoService {
         return medicoRepository.findAll()
                 .stream().map(medico -> {
                     MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
+                    medicoDto.setIdEspecialidad(medico.getEspecialidad().getIdEspecialidad());
                     ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
                     medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
                     medicoDto.setContratos(usuarioDTO.getBody().getContratos());
@@ -87,6 +86,7 @@ public class MedicoServiceImpl implements MedicoService {
         return medicoRepository.findByEspecialidadIdEspecialidad(idEspecialidad)
                 .stream().map(medico -> {
                     MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
+                    medicoDto.setIdEspecialidad(medico.getEspecialidad().getIdEspecialidad());
                     ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
                     medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
                     medicoDto.setContratos(usuarioDTO.getBody().getContratos());
@@ -117,16 +117,6 @@ public class MedicoServiceImpl implements MedicoService {
 
 
         Medico savedMedico = medicoRepository.save(medico);
-
-        usuarioClient.actualizarRolUsuario(medicoDto.getIdUsuario(), medicoDto.getRol());
-
-        if (medicoDto.getEstado() == EstadoUsuario.ACTIVO) {
-            usuarioClient.activarUsuario(medicoDto.getIdUsuario());
-        } else if (medicoDto.getEstado() == EstadoUsuario.SUSPENDIDO) {
-            usuarioClient.suspenderUsuario(medicoDto.getIdUsuario());
-        } else if (medicoDto.getEstado() == EstadoUsuario.ELIMINADO) {
-            usuarioClient.eliminarUsuario(medicoDto.getIdUsuario());
-        }
 
         return medicoMapper.medicoToMedicoDto(savedMedico);
     }

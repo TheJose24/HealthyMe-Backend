@@ -13,6 +13,8 @@ public class PacienteDTO {
 
     @NotNull(message = "El ID de usuario es obligatorio")
     private Long idUsuario;
+    private String nombre;
+    private String apellido;
 
     private SeguroDTO seguro;
 }

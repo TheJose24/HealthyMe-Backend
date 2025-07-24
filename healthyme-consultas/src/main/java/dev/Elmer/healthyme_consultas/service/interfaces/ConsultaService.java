@@ -12,5 +12,7 @@ public interface ConsultaService {
 
     ConsultaDto actualizar(Integer id, ConsultaDto dto);
 
+    List<ConsultaDto> listarPorPaciente(Integer idPaciente);
+
     void eliminar(Integer id);
 }

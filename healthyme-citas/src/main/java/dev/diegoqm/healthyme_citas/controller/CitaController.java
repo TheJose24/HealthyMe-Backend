@@ -181,4 +181,37 @@ public class CitaController {
             @RequestParam("fechaFin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         return new ResponseEntity<>(citaService.getCitasEnRango(fechaInicio, fechaFin), HttpStatus.OK);
     }
+
+    @Operation(summary = "Listar citas de un médico en un rango de fechas")
+    @GetMapping("/medico/{id}")
+    public ResponseEntity<List<CitaDTO>> getCitasPorMedicoYRango(
+            @PathVariable("id") Integer idMedico,
+            @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("end")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin
+    ) {
+        List<CitaDTO> citas = citaService.findByMedicoAndRango(idMedico, fechaInicio, fechaFin);
+        return ResponseEntity.ok(citas);
+    }
+
+    @Operation(summary = "Citas del médico para el día de hoy")
+    @GetMapping("/medico/{id}/hoy")
+    public ResponseEntity<List<CitaDTO>> citasDeHoyPorMedico(
+            @PathVariable Integer id,
+            @RequestParam(name = "estado", required = false) EstadoCita estado
+    ) {
+        List<CitaDTO> citas = (estado == null)
+                ? citaService.findCitasDeHoyByMedico(id)
+                : citaService.findCitasDeHoyByMedicoAndEstado(id, estado);
+        return ResponseEntity.ok(citas);
+    }
+    @PatchMapping("/{id}/estado")
+    @Operation(summary = "Cambiar estado de la cita")
+    public ResponseEntity<Void> cambiarEstado(
+            @PathVariable String id,
+            @RequestBody Map<String, String> payload) {
+
+        EstadoCita nuevo = EstadoCita.valueOf(payload.get("estado"));
+        citaService.updateEstado(id, nuevo);
+        return ResponseEntity.noContent().build();
+    }
 }

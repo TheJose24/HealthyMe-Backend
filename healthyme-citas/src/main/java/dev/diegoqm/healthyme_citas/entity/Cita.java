@@ -39,7 +39,7 @@ public class Cita {
     private Integer idMedico;
 
     @Column(name = "id_consultorio")
-    private String idConsultorio;
+    private Long idConsultorio;
 
     @CreationTimestamp
     @Column(name = "fecha_creacion", updatable = false)

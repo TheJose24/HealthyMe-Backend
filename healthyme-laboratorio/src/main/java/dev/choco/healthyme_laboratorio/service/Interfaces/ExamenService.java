@@ -10,4 +10,5 @@ public interface ExamenService {
     ExamenDTO buscarPorId(Integer id);
     ExamenDTO actualizar(Integer id, ExamenDTO dto);
     void eliminar(Integer id);
+    List<ExamenDTO> listarPorPaciente(Integer idPaciente);
 }

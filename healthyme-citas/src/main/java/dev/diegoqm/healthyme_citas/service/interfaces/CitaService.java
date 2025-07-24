@@ -53,4 +53,13 @@ public interface CitaService {
 
     Long getCitasByEstadoEnRango(EstadoCita estado, LocalDate fechaInicio, LocalDate fechaFin);
     List<CitasPorDiaDTO> getCitasPorDiaEnRango(LocalDate fechaInicio, LocalDate fechaFin);
+    List<CitaDTO> findByMedicoAndRango(
+            Integer idMedico,
+            LocalDate fechaInicio,
+            LocalDate fechaFin
+    );
+
+    List<CitaDTO> findCitasDeHoyByMedico(Integer idMedico);
+    List<CitaDTO> findCitasDeHoyByMedicoAndEstado(Integer idMedico, EstadoCita estado);
+    void updateEstado(String id, EstadoCita estado);
 }

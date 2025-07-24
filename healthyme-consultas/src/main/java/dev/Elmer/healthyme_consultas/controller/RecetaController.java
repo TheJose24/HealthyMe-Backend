@@ -56,6 +56,12 @@ public class RecetaController {
         return ResponseEntity.ok(service.actualizar(id, dto));
     }
 
+    @Operation(summary="Recetas de un paciente")
+    @GetMapping("/paciente/{idPaciente}")
+    public ResponseEntity<List<RecetaDto>> porPaciente(@PathVariable Integer idPaciente){
+        return ResponseEntity.ok(service.listarPorPaciente(idPaciente));
+    }
+
     @Operation(summary = "Eliminar receta", description = "Elimina una receta médica por su ID.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {

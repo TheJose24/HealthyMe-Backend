@@ -80,6 +80,15 @@ public class ConsultaServiceImpl implements ConsultaService {
     }
 
     @Override
+    public List<ConsultaDto> listarPorPaciente(Integer idPaciente){
+        return repository.findByIdPacienteOrderByFechaDesc(idPaciente)
+                .stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+
+    @Override
     @Transactional
     public void eliminar(Integer id) {
         if (!repository.existsById(id)) {

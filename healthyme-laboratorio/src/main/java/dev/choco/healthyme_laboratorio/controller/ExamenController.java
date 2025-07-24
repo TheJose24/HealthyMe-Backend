@@ -87,5 +87,11 @@ public class ExamenController {
                 .body(pdfBytes);
     }
 
+    @Operation(summary = "Listar consultas por paciente")
+    @GetMapping("/paciente/{idPaciente}")
+    public ResponseEntity<List<ExamenDTO>> listarPorPaciente(@PathVariable Integer idPaciente) {
+        return ResponseEntity.ok(service.listarPorPaciente(idPaciente));
+    }
+
 }
 

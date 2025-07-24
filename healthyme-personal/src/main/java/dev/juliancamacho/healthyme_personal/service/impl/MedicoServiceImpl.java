@@ -49,6 +49,9 @@ public class MedicoServiceImpl implements MedicoService {
 
         MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
 
+        medicoDto.setPersona(Objects.requireNonNull(usuarioDTO.getBody()).getPersona());
+        medicoDto.setNombreMedico(usuarioDTO.getBody().getPersona().getNombre() + " " + usuarioDTO.getBody().getPersona().getApellido());
+        medicoDto.setNombreEspecialidad(medico.getEspecialidad().getNombreEspecialidad());
         medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
         medicoDto.setContratos(usuarioDTO.getBody().getContratos());
         medicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
@@ -72,6 +75,8 @@ public class MedicoServiceImpl implements MedicoService {
                     medicoDto.setRol(usuarioDTO.getBody().getRol());
                     medicoDto.setEstado(usuarioDTO.getBody().getEstado());
                     medicoDto.setPersona(usuarioDTO.getBody().getPersona());
+                    medicoDto.setNombreMedico(usuarioDTO.getBody().getPersona().getNombre() + " " + usuarioDTO.getBody().getPersona().getApellido());
+                    medicoDto.setNombreEspecialidad(medico.getEspecialidad().getNombreEspecialidad());
                     
                     return medicoDto;
                 }).collect(Collectors.toList());

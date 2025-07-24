@@ -2,6 +2,7 @@ package dev.diegoqm.healthyme_citas.service.impl;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
+import org.springframework.transaction.annotation.Transactional;
 import studio.devbyjose.healthyme_commons.client.dto.*;
 import dev.diegoqm.healthyme_citas.entity.Cita;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
@@ -268,6 +269,45 @@ public class CitaServiceImpl implements CitaService {
                         .cantidad((Long) row[1])
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CitaDTO> findByMedicoAndRango(
+            Integer idMedico,
+            LocalDate fechaInicio,
+            LocalDate fechaFin
+    ) {
+        return citaRepository
+                .findByIdMedicoAndFechaBetween(idMedico, fechaInicio, fechaFin)
+                .stream()
+                .map(citaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<CitaDTO> findCitasDeHoyByMedico(Integer idMedico) {
+        LocalDate hoy = LocalDate.now();
+        return citaRepository.findByIdMedicoAndFecha(idMedico, hoy)
+                .stream()
+                .map(citaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CitaDTO> findCitasDeHoyByMedicoAndEstado(Integer idMedico, EstadoCita estado) {
+        LocalDate hoy = LocalDate.now();
+        return citaRepository.findByIdMedicoAndFechaAndEstado(idMedico, hoy, estado)
+                .stream()
+                .map(citaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    @Override
+    @Transactional
+    public void updateEstado(String id, EstadoCita estado) {
+        Cita cita = citaRepository.findById(id)
+                .orElseThrow(() -> new CitaNotFoundException(
+                        "Cita con id "+id+" no encontrada", HttpStatus.NOT_FOUND));
+        cita.setEstado(estado);
+        citaRepository.save(cita);
     }
 
 }

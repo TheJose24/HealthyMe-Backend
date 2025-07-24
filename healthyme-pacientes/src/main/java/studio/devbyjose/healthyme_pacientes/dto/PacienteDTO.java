@@ -15,4 +15,6 @@ public class PacienteDTO {
     private Long idUsuario;
     
     private SeguroDTO seguro;
+    private String nombre;
+    private String apellido;
 }

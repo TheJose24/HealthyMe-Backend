@@ -23,6 +23,9 @@ public class MedicoDto {
 
     private Set<HorarioMedico> idHorarios;
 
+    private String nombreMedico;
+    private String nombreEspecialidad;
+
     // Datos del usuario obtenidos via Feign
     private String nombreUsuario;
     private EstadoUsuario estado;

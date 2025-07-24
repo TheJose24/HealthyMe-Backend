@@ -12,5 +12,7 @@ public interface RecetaService {
 
     RecetaDto actualizar(Integer id, RecetaDto dto);
 
+    List<RecetaDto> listarPorPaciente(Integer idPaciente);
+
     void eliminar(Integer id);
 }

@@ -53,4 +53,19 @@ public interface CitaRepository extends JpaRepository<Cita, String> {
     List<Object[]> findCitasPorDiaEnRango(@Param("fechaInicio") LocalDate fechaInicio,
                                           @Param("fechaFin") LocalDate fechaFin);
 
+    List<Cita> findByIdMedicoAndFecha(
+            Integer idMedico,
+            LocalDate fecha);
+
+    List<Cita> findByIdMedicoAndFechaAndEstado(
+            Integer idMedico,
+            LocalDate fecha,
+            EstadoCita estado);
+
+    List<Cita> findByIdMedicoAndFechaBetween(
+            Integer idMedico,
+            LocalDate fechaInicio,
+            LocalDate fechaFin
+    );
+
 }

@@ -87,6 +87,14 @@ public class RecetaServiceImpl implements RecetaService {
     }
 
     @Override
+    public List<RecetaDto> listarPorPaciente(Integer idPaciente){
+        return recetaRepository.findByConsulta_IdPacienteOrderByFechaEmisionDesc(idPaciente)
+                .stream()
+                .map(recetaMapper::toDto)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void eliminar(Integer id) {
         Receta receta = recetaRepository.findById(id)

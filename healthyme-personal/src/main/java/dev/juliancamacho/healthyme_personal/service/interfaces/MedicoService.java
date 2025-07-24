@@ -15,6 +15,9 @@ public interface MedicoService
     // SELECT ALL
     List<MedicoDto> getAllMedico();
 
+    // SELECT BY ESPECIALIDAD
+    List<MedicoDto> getMedicosByEspecialidad(Integer idEspecialidad);
+
     // UPDATE
     MedicoDto updateMedico(Integer id, MedicoDto medicoDto);
 

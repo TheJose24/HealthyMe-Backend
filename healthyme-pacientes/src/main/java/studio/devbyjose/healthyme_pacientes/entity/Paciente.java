@@ -23,7 +23,7 @@ public class Paciente {
     private Long id;
 
     @Column(name = "id_usuario", nullable = false, unique = true)
-    private Long idUsuario;
+    private Integer idUsuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_seguro")
@@ -36,4 +36,9 @@ public class Paciente {
     @UpdateTimestamp
     @Column(name = "ultima_modificacion")
     private LocalDateTime ultimaModificacion;
+
+    @Transient
+    private String nombre;
+    @Transient
+    private String apellido;
 }

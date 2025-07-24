@@ -1,34 +1,60 @@
 package dev.diegoqm.healthyme_citas.entity;
 
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.UUID;
 
-
+@Entity
+@Table(name = "citas")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "cita")
-public class Cita extends Auditable{
+@Builder
+public class Cita {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_cita")
     private String id;
 
+    @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
 
+    @Column(name = "hora", nullable = false)
     private LocalTime hora;
-    
-    private EstadoCita estado;
-    @Field("id_paciente")
-    private Long idPaciente;
-    @Field("id_medico")
-    private Integer idMedico;
-    @Field("id_consultorio")
-    private String idConsultorio;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
+    private EstadoCita estado;
+
+    @Column(name = "id_paciente", nullable = false)
+    private Long idPaciente;
+
+    @Column(name = "id_medico", nullable = false)
+    private Integer idMedico;
+
+    @Column(name = "id_consultorio")
+    private Long idConsultorio;
+
+    @CreationTimestamp
+    @Column(name = "fecha_creacion", updatable = false)
+    private LocalDateTime fechaCreacion;
+
+    @UpdateTimestamp
+    @Column(name = "ultima_modificacion")
+    private LocalDateTime ultimaModificacion;
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null || id.trim().isEmpty()) {
+            id = UUID.randomUUID().toString();
+        }
+    }
 }

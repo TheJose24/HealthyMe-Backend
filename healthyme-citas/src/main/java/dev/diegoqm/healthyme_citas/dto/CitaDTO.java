@@ -28,6 +28,6 @@ public class CitaDTO {
 
     @NotNull(message = "El id del medico es obligatorio")
     private Integer idMedico;
-    private String idConsultorio;
+    private Long idConsultorio;
 
 }

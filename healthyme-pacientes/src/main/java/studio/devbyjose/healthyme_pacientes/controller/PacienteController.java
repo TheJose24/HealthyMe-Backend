@@ -35,7 +35,7 @@ public class PacienteController {
 
     @GetMapping("/usuario/{idUsuario}")
     @Operation(summary = "Obtener un paciente por ID de usuario")
-    public ResponseEntity<PacienteDTO> findByIdUsuario(@PathVariable Long idUsuario) {
+    public ResponseEntity<PacienteDTO> findByIdUsuario(@PathVariable Integer idUsuario) {
         return ResponseEntity.ok(pacienteService.findByIdUsuario(idUsuario));
     }
 

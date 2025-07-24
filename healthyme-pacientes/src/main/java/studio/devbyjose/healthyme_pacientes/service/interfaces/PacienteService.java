@@ -34,7 +34,7 @@ public interface PacienteService {
      * @return PacienteDTO encontrado
      * @throws RuntimeException si no se encuentra el paciente
      */
-    PacienteDTO findByIdUsuario(Long idUsuario);
+    PacienteDTO findByIdUsuario(Integer idUsuario);
     
     /**
      * Crea un nuevo paciente

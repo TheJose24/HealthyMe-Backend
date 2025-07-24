@@ -74,6 +74,12 @@ public class ExamenController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Listar consultas por paciente")
+    @GetMapping("/paciente/{idPaciente}")
+    public ResponseEntity<List<ExamenDTO>> listarPorPaciente(@PathVariable Integer idPaciente) {
+        return ResponseEntity.ok(service.listarPorPaciente(idPaciente));
+    }
+
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> generarPdf(@PathVariable Integer id) {
         Examen examen = examenRepository.findById(id)

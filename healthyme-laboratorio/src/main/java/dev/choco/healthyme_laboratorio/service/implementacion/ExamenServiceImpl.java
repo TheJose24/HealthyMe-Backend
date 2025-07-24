@@ -72,4 +72,13 @@ public class ExamenServiceImpl implements ExamenService {
                 .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado con ID: " + id));
         repository.delete(examen);
     }
+
+    @Override
+    public List<ExamenDTO> listarPorPaciente(Integer idPaciente){
+        return repository.findByIdPacienteOrderByFechaRealizacionDesc(idPaciente)
+                .stream()
+                .map(mapper::toDTO)
+                .toList();
+    }
+
 }

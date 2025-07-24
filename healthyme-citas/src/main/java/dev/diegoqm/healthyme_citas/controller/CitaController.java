@@ -2,7 +2,9 @@ package dev.diegoqm.healthyme_citas.controller;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
-import dev.diegoqm.healthyme_citas.dto.EspecialidadContadaDTO;
+import org.springframework.format.annotation.DateTimeFormat;
+import studio.devbyjose.healthyme_commons.client.dto.CitasPorDiaDTO;
+import studio.devbyjose.healthyme_commons.client.dto.EspecialidadContadaDTO;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 import dev.diegoqm.healthyme_citas.service.interfaces.CitaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +23,7 @@ import java.util.Map;
 @Tag(name = "Citas", description = "API para gestionar citas")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/citas")
-
+@RequestMapping("/api/v1/citas")
 public class CitaController {
 
     private final CitaService citaService;
@@ -135,10 +137,10 @@ public class CitaController {
     }
 
 
-    @GetMapping("/usuario/{usuarioId}")
+    @GetMapping("/usuario/{usuarioId}/estado/{estado}")
     public ResponseEntity<List<CitaDTO>> getByUsuarioAndEstado(
             @PathVariable Long usuarioId,
-            @RequestParam EstadoCita estado) {
+            @PathVariable EstadoCita estado) {
         return ResponseEntity.ok(
                 citaService.findByUsuarioAndEstado(usuarioId, estado)
         );
@@ -149,5 +151,37 @@ public class CitaController {
     public ResponseEntity<String> deleteCitaById(@PathVariable String id) {
         citaService.deleteCitaById(id);
         return new ResponseEntity<>("Cita eliminada con éxito", HttpStatus.OK);
+    }
+    @Operation(summary = "Listar citas de un médico en un rango de fechas")
+    @GetMapping("/medico/{id}")
+    public ResponseEntity<List<CitaDTO>> getCitasPorMedicoYRango(
+            @PathVariable("id") Integer idMedico,
+            @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam("end")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin
+    ) {
+        List<CitaDTO> citas = citaService.findByMedicoAndRango(idMedico, fechaInicio, fechaFin);
+        return ResponseEntity.ok(citas);
+    }
+
+    @Operation(summary = "Citas del médico para el día de hoy")
+    @GetMapping("/medico/{id}/hoy")
+    public ResponseEntity<List<CitaDTO>> citasDeHoyPorMedico(
+            @PathVariable Integer id,
+            @RequestParam(name = "estado", required = false) EstadoCita estado
+    ) {
+        List<CitaDTO> citas = (estado == null)
+                ? citaService.findCitasDeHoyByMedico(id)
+                : citaService.findCitasDeHoyByMedicoAndEstado(id, estado);
+        return ResponseEntity.ok(citas);
+    }
+    @PatchMapping("/{id}/estado")
+    @Operation(summary = "Cambiar estado de la cita")
+    public ResponseEntity<Void> cambiarEstado(
+            @PathVariable String id,
+            @RequestBody Map<String, String> payload) {
+
+        EstadoCita nuevo = EstadoCita.valueOf(payload.get("estado"));
+        citaService.updateEstado(id, nuevo);
+        return ResponseEntity.noContent().build();
     }
 }

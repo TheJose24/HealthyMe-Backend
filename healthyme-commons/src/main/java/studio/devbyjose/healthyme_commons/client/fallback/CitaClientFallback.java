@@ -41,4 +41,3 @@ public class CitaClientFallback implements CitaClient {
         log.error("⚠️ Fallback: deleteCitaById failed for id={}", id);
     }
 }
-

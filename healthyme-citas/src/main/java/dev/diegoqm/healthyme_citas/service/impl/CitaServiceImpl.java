@@ -2,7 +2,8 @@ package dev.diegoqm.healthyme_citas.service.impl;
 
 import dev.diegoqm.healthyme_citas.dto.CitaDTO;
 import dev.diegoqm.healthyme_citas.dto.CitasHoyDTO;
-import dev.diegoqm.healthyme_citas.dto.EspecialidadContadaDTO;
+import org.springframework.transaction.annotation.Transactional;
+import studio.devbyjose.healthyme_commons.client.dto.*;
 import dev.diegoqm.healthyme_citas.entity.Cita;
 import dev.diegoqm.healthyme_citas.enums.EstadoCita;
 import dev.diegoqm.healthyme_citas.exception.CitaNotFoundException;
@@ -14,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import studio.devbyjose.healthyme_commons.client.dto.MedicoDTO;
-import studio.devbyjose.healthyme_commons.client.dto.PacienteDTO;
 import studio.devbyjose.healthyme_commons.client.feign.MedicoClient;
 import studio.devbyjose.healthyme_commons.client.feign.PacienteClient;
 
@@ -111,7 +110,7 @@ public class CitaServiceImpl implements CitaService {
 
             // Obtener datos del médico
             try {
-                Integer idMedico = Integer.valueOf(cita.getIdMedico());
+                Integer idMedico = cita.getIdMedico();
                 MedicoDTO medicoDTO = medicoClient.obtenerMedico(idMedico);
                 dto.setDoctor(medicoDTO.getNombre() + " " + medicoDTO.getApellido());
                 dto.setArea(medicoDTO.getEspecialidad());
@@ -159,9 +158,9 @@ public class CitaServiceImpl implements CitaService {
     @Override
     public List<CitaDTO> findUltimasCitasByPaciente(Long idPaciente, int size) {
         Pageable page = PageRequest.of(
-            0,
-            size,
-            Sort.by(Sort.Direction.DESC, "fecha", "hora")
+                0,
+                size,
+                Sort.by(Sort.Direction.DESC, "fecha", "hora")
         );
         return citaRepository
                 .findByIdPaciente(idPaciente, page)
@@ -221,7 +220,7 @@ public class CitaServiceImpl implements CitaService {
 
         for (Cita cita : citas) {
             try {
-                Integer idMedico = Integer.valueOf(cita.getIdMedico());
+                Integer idMedico = cita.getIdMedico();
                 MedicoDTO medico = medicoClient.obtenerMedico(idMedico);
                 String especialidad = medico.getEspecialidad();
 
@@ -245,4 +244,43 @@ public class CitaServiceImpl implements CitaService {
         }
         citaRepository.deleteById(id);
     }
+    @Override
+    public List<CitaDTO> findByMedicoAndRango(
+            Integer idMedico,
+            LocalDate fechaInicio,
+            LocalDate fechaFin
+    ) {
+        return citaRepository
+                .findByIdMedicoAndFechaBetween(idMedico, fechaInicio, fechaFin)
+                .stream()
+                .map(citaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<CitaDTO> findCitasDeHoyByMedico(Integer idMedico) {
+        LocalDate hoy = LocalDate.now();
+        return citaRepository.findByIdMedicoAndFecha(idMedico, hoy)
+                .stream()
+                .map(citaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CitaDTO> findCitasDeHoyByMedicoAndEstado(Integer idMedico, EstadoCita estado) {
+        LocalDate hoy = LocalDate.now();
+        return citaRepository.findByIdMedicoAndFechaAndEstado(idMedico, hoy, estado)
+                .stream()
+                .map(citaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    @Override
+    @Transactional
+    public void updateEstado(String id, EstadoCita estado) {
+        Cita cita = citaRepository.findById(id)
+                .orElseThrow(() -> new CitaNotFoundException(
+                        "Cita con id "+id+" no encontrada", HttpStatus.NOT_FOUND));
+        cita.setEstado(estado);
+        citaRepository.save(cita);
+    }
+
 }

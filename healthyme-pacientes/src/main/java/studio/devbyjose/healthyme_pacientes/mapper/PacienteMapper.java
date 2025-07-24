@@ -19,6 +19,8 @@ public abstract class PacienteMapper {
     @Mapping(target = "seguro", source = "seguro.id", qualifiedByName = "idToSeguro")
     @Mapping(target = "fechaCreacion", ignore = true)
     @Mapping(target = "ultimaModificacion", ignore = true)
+    @Mapping(target = "nombre", ignore = true)
+    @Mapping(target = "apellido", ignore = true)
     public abstract Paciente toEntity(PacienteDTO dto);
 
     @Mapping(target = "seguro", source = "seguro")

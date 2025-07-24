@@ -69,6 +69,15 @@ public class MedicoController {
         return new ResponseEntity<>(medico, HttpStatus.OK);
     }
 
+    @GetMapping("/especialidad/{idEspecialidad}")
+    public ResponseEntity<List<MedicoDto>> getMedicosByEspecialidad(@PathVariable Integer idEspecialidad) {
+        List<MedicoDto> medicos = medicoService.getMedicosByEspecialidad(idEspecialidad);
+        if (medicos.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Retorna 204 si no hay datos
+        }
+        return new ResponseEntity<>(medicos, HttpStatus.OK);
+    }
+
     // UPDATE
     @Operation(
             summary = "Actualizar una medico",

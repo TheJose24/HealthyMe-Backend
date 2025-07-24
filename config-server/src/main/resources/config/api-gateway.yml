@@ -48,7 +48,7 @@ spring:
         - id: healthyme-pacientes-service
           uri: lb://healthyme-pacientes
           predicates:
-            - Path=/api/v1/pacientes/**
+            - Path=/api/v1/pacientes/**,/api/v1/triajes/**
           filters:
             - name: CircuitBreaker
               args:
@@ -58,12 +58,12 @@ spring:
         - id: healthyme-citas
           uri: lb://healthyme-citas
           predicates:
-            - Path=/api/citas/**
+            - Path=/api/v1/citas/**
 
         - id: healthyme-laboratorio
           uri: lb://healthyme-laboratorio
           predicates:
-            - Path=/api/**
+            - Path=/api/examenes/**
 
         - id: healthyme-payment
           uri: lb://healthyme-payment
@@ -74,6 +74,26 @@ spring:
           uri: lb://healthyme-personal
           predicates:
             - Path=/api/medicos/**
+
+        - id: healthyme-consultas
+          uri: lb://healthyme-consultas
+          predicates:
+            - Path=/api/recetas/**,/api/recetas,/api/v1/consultas/**,/api/v1/consultas
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: consultasCircuitBreaker
+                fallbackUri: forward:/fallback/default
+        - id: healthyme-infraestructura
+          uri: lb://healthyme-infraestructura
+          predicates:
+            - Path=/api/v1/sedes/**,/api/v1/consultorios/**,/api/v1/laboratorios/**,/api/v1/horarios/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: infraestructuraCircuitBreaker
+                fallbackUri: forward:/fallback/infraestructura
+
 
 # Resilience4j configuration
 resilience4j:

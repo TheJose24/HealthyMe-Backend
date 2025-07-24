@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/consultas")
+@RequestMapping("/api/v1/consultas")
 @RequiredArgsConstructor
 @Tag(name = "Consultas", description = "Gestión de Consultas Médicas")
 public class ConsultaController {
@@ -46,6 +46,12 @@ public class ConsultaController {
     @PutMapping("/{id}")
     public ResponseEntity<ConsultaDto> actualizar(@PathVariable Integer id, @Valid @RequestBody ConsultaDto dto) {
         return ResponseEntity.ok(service.actualizar(id, dto));
+    }
+
+    @Operation(summary="Consultas de un paciente")
+    @GetMapping("/paciente/{idPaciente}")
+    public ResponseEntity<List<ConsultaDto>> porPaciente(@PathVariable Integer idPaciente){
+        return ResponseEntity.ok(service.listarPorPaciente(idPaciente));
     }
 
     @Operation(summary = "Eliminar consulta", description = "Elimina una consulta médica por su ID.")

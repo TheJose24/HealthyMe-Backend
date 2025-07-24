@@ -9,6 +9,7 @@ import dev.juliancamacho.healthyme_personal.service.interfaces.MedicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import studio.devbyjose.healthyme_commons.client.dto.MedicoDTO;
 import studio.devbyjose.healthyme_commons.client.dto.UsuarioDTO;
 import studio.devbyjose.healthyme_commons.client.feign.UsuarioClient;
 
@@ -49,6 +50,10 @@ public class MedicoServiceImpl implements MedicoService {
 
         MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
 
+
+        medicoDto.setPersona(Objects.requireNonNull(usuarioDTO.getBody()).getPersona());
+        medicoDto.setNombreMedico(usuarioDTO.getBody().getPersona().getNombre() + " " + usuarioDTO.getBody().getPersona().getApellido());
+        medicoDto.setNombreEspecialidad(medico.getEspecialidad().getNombreEspecialidad());
         medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
         medicoDto.setContratos(usuarioDTO.getBody().getContratos());
         medicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
@@ -62,6 +67,25 @@ public class MedicoServiceImpl implements MedicoService {
     @Override
     public List<MedicoDto> getAllMedico() {
         return medicoRepository.findAll()
+                .stream().map(medico -> {
+                    MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
+                    ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());
+                    medicoDto.setNombreUsuario(Objects.requireNonNull(usuarioDTO.getBody()).getNombreUsuario());
+                    medicoDto.setPersona(Objects.requireNonNull(usuarioDTO.getBody()).getPersona());
+                    medicoDto.setNombreMedico(usuarioDTO.getBody().getPersona().getNombre() + " " + usuarioDTO.getBody().getPersona().getApellido());
+                    medicoDto.setNombreEspecialidad(medico.getEspecialidad().getNombreEspecialidad());
+                    medicoDto.setContratos(usuarioDTO.getBody().getContratos());
+                    medicoDto.setImagenPerfil(usuarioDTO.getBody().getImagenPerfil());
+                    medicoDto.setRol(usuarioDTO.getBody().getRol());
+                    medicoDto.setEstado(usuarioDTO.getBody().getEstado());
+                    return medicoDto;
+                }).collect(Collectors.toList());
+    }
+
+    // SELECT BY ESPECIALIDAD
+    @Override
+    public List<MedicoDto> getMedicosByEspecialidad(Integer idEspecialidad) {
+        return medicoRepository.findByEspecialidadIdEspecialidad(idEspecialidad)
                 .stream().map(medico -> {
                     MedicoDto medicoDto = medicoMapper.medicoToMedicoDto(medico);
                     ResponseEntity<UsuarioDTO> usuarioDTO = usuarioClient.obtenerUsuario(medico.getIdUsuario());

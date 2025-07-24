@@ -12,6 +12,7 @@ import studio.devbyjose.healthyme_commons.enums.citas.EstadoCita;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @FeignClient(name = "healthyme-citas", fallback = CitaClientFallback.class)
 public interface CitaClient {
@@ -20,17 +21,17 @@ public interface CitaClient {
     CitaDTO createCita(@RequestBody CitaDTO citaDTO);
 
     @GetMapping("/api/v1/citas/{id}")
-    CitaDTO getCitaById(@PathVariable("id") Integer id);
+    CitaDTO getCitaById(@PathVariable("id") UUID id);
 
     @GetMapping("/api/v1/citas")
     List<CitaDTO> getAllCitas();
 
     @PutMapping("/api/v1/citas/{id}")
-    CitaDTO updateCita(@PathVariable("id") Integer id,
+    CitaDTO updateCita(@PathVariable("id") UUID id,
                        @RequestBody CitaDTO citaDTO);
 
     @DeleteMapping("/api/v1/citas/{id}")
-    void deleteCitaById(@PathVariable("id") Integer id);
+    void deleteCitaById(@PathVariable("id") UUID id);
 
     @GetMapping("/api/v1/citas/count")
     Long getTotalCitas();

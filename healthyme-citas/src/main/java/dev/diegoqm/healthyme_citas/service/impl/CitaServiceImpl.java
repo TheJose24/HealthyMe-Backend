@@ -23,10 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +48,7 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public CitaDTO getCitaById(String id) {
+    public CitaDTO getCitaById(UUID id) {
         Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND));
         return citaMapper.toDTO(cita);
@@ -66,7 +63,7 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public CitaDTO updateCita(String id, @Valid CitaDTO citaDto) {
+    public CitaDTO updateCita(UUID id, @Valid CitaDTO citaDto) {
         Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND));
 
@@ -238,7 +235,7 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public void deleteCitaById(String id) {
+    public void deleteCitaById(UUID id) {
         if (!citaRepository.existsById(id)) {
             throw new CitaNotFoundException("Cita con id " + id + " no encontrada", HttpStatus.NOT_FOUND);
         }
@@ -302,7 +299,7 @@ public class CitaServiceImpl implements CitaService {
     }
     @Override
     @Transactional
-    public void updateEstado(String id, EstadoCita estado) {
+    public void updateEstado(UUID id, EstadoCita estado) {
         Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new CitaNotFoundException(
                         "Cita con id "+id+" no encontrada", HttpStatus.NOT_FOUND));

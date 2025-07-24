@@ -12,9 +12,10 @@ import studio.devbyjose.healthyme_commons.client.dto.CitasPorDiaDTO;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CitaRepository extends JpaRepository<Cita, String> {
+public interface CitaRepository extends JpaRepository<Cita, UUID> {
 
 
     List<Cita> findByFecha(LocalDate fecha);

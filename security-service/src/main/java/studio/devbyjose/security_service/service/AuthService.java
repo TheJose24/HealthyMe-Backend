@@ -498,7 +498,7 @@ public class AuthService {
         // Crear contexto del token con información adicional
         Map<String, Object> additionalParameters = new HashMap<>();
         additionalParameters.put("username", usuario.getNombreUsuario());
-        additionalParameters.put("rol", usuario.getRol().getNombreRol());
+        additionalParameters.put("rol", List.of(usuario.getRol().getNombreRol()));
         additionalParameters.put("nombreCompleto", usuario.getPersona().getNombreCompleto());
         additionalParameters.put("dni", usuario.getPersona().getDni());
 

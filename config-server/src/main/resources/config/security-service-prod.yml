@@ -14,16 +14,18 @@ spring:
     username: root
     password: j0s33nr1qu3
     driver-class-name: com.mysql.cj.jdbc.Driver
-    initialization-mode: always
-    data: classpath:script.sql
-    sql:
-      init:
-        mode: always
-        continue-on-error: false
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
       connection-timeout: 30000
+  # Boot 3 SQL init: creates the OAuth2 Authorization Server tables that
+  # JdbcRegisteredClientRepository queries at startup, before app beans run.
+  # Replaces the removed Boot 2 props (datasource.initialization-mode / datasource.data).
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:script.sql
+      continue-on-error: false
   jackson:
     property-naming-strategy: SNAKE_CASE
     time-zone: America/Lima

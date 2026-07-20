@@ -30,7 +30,8 @@ public class Reclamacion {
     @Column(name = "numero_hoja", length = 50)
     private String numeroHoja; // Para cumplimiento legal
     
-    @CreationTimestamp
+    // No @CreationTimestamp here: the business "fecha de reclamación" is set explicitly
+    // (e.g. seeder / historical data). prePersist defaults it to now() when null.
     @Column(name = "fecha_reclamacion", nullable = false)
     private LocalDateTime fechaReclamacion;
     
@@ -134,6 +135,9 @@ public class Reclamacion {
     // Métodos de utilidad
     @PrePersist
     public void prePersist() {
+        if (fechaReclamacion == null) {
+            fechaReclamacion = LocalDateTime.now();
+        }
         if (fechaLimiteRespuesta == null && requiereRespuesta && prioridad != null) {
             fechaLimiteRespuesta = fechaReclamacion.plusDays(prioridad.getDiasRespuesta());
         }

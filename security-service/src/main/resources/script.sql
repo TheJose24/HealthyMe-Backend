@@ -59,22 +59,6 @@ CREATE TABLE IF NOT EXISTS oauth2_authorization_consent (
                                                             PRIMARY KEY (registered_client_id, principal_name)
 );
 
-INSERT INTO roles (rol)
-SELECT 'USER' FROM DUAL
-WHERE NOT EXISTS (SELECT 1 FROM roles WHERE rol = 'USER');
-
-INSERT INTO roles (rol)
-SELECT 'PACIENTE' FROM DUAL
-WHERE NOT EXISTS (SELECT 1 FROM roles WHERE rol = 'PACIENTE');
-
-INSERT INTO roles (rol)
-SELECT 'MEDICO' FROM DUAL
-WHERE NOT EXISTS (SELECT 1 FROM roles WHERE rol = 'MEDICO');
-
-INSERT INTO roles (rol)
-SELECT 'ENFERMERO' FROM DUAL
-WHERE NOT EXISTS (SELECT 1 FROM roles WHERE rol = 'ENFERMERO');
-
-INSERT INTO roles (rol)
-SELECT 'ADMIN' FROM DUAL
-WHERE NOT EXISTS (SELECT 1 FROM roles WHERE rol = 'ADMIN');
+-- Roles are seeded by DemoDataSeeder (@Profile("seed")) via JPA against the real
+-- `roles` table (column `nombre_rol`). The previous INSERT INTO roles (rol) targeted
+-- a column that does not exist and only ran under removed Spring Boot 2 sql-init props.

@@ -11,12 +11,14 @@ spring:
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:j0s33nr1qu3}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    initialization-mode: always
-    data: classpath:script.sql
-    sql:
-      init:
-        mode: always
-        continue-on-error: false
+  # Boot 3 SQL init: creates the OAuth2 Authorization Server tables that
+  # JdbcRegisteredClientRepository queries at startup, before app beans run.
+  # Replaces the removed Boot 2 props (datasource.initialization-mode / datasource.data).
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:script.sql
+      continue-on-error: false
   # Configuración OAuth2
   security:
     oauth2:

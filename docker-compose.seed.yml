@@ -1,0 +1,41 @@
+# Demo-data overlay: activates the "seed" Spring profile so each service's
+# DemoDataSeeder (@Profile("seed")) loads coordinated MVP demo data on startup.
+# The seeders are idempotent (skip when their tables already have rows).
+#
+# Usage (see SEED-DEMO.md):
+#   docker compose -f docker-compose.yml -f docker-compose.seed.yml up -d --build
+#
+services:
+  security-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-pacientes:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-personal:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-infraestructura:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-consultas:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-laboratorio:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-payment:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-notification:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-reclamaciones:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-storage:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed
+  healthyme-citas:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod,seed

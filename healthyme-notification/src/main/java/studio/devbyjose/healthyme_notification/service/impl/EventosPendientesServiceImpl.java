@@ -25,6 +25,9 @@ public class EventosPendientesServiceImpl implements EventosPendientesService {
     private final NotificationService notificationService;
     private final ObjectMapper objectMapper;
 
+    // Default retention (days) for the daily cleanup job.
+    private static final int DIAS_RETENCION_EVENTOS = 30;
+
     @Override
     public void guardarEventoFallido(Object evento, String tipo, String tipoEvento, Integer id, String destinatario, String error) {
         try {
@@ -144,7 +147,12 @@ public class EventosPendientesServiceImpl implements EventosPendientesService {
         eventoPendienteRepository.save(evento);
     }
 
+    // @Scheduled methods must be no-arg, so this wrapper triggers the cleanup with a default retention.
     @Scheduled(cron = "0 0 1 * * ?") // Ejecutar a la 1am todos los días
+    public void limpiarEventosCompletadosProgramado() {
+        limpiarEventosCompletados(DIAS_RETENCION_EVENTOS);
+    }
+
     @Override
     public void limpiarEventosCompletados(int diasAntiguedad) {
         try {

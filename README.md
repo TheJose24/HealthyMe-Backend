@@ -3,7 +3,7 @@
 ## Descripción General
 **HealthyMe** es un sistema de microservicios desarrollado en Java con Spring Boot para la gestión integral de clínicas médicas. Esta arquitectura facilita la administración escalable de pacientes, personal médico, citas médicas, consultas, laboratorios y toda la infraestructura asociada a un entorno clínico moderno.
 
-Este proyecto se desarrolla como parte del curso "Desarrollo Web Integrado" de la Universidad Tecnológica del Perú, constituyendo una solución empresarial completa para el sector salud.
+El sistema se despliega de forma automatizada con Jenkins e integra un modelo de lenguaje autoalojado para la atención a pacientes.
 
 ## Arquitectura de Microservicios
 
